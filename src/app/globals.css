@@ -1,26 +1,180 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* RESET & GLOBAL */
+* {
+  box-sizing: border-box;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
+  background: #000;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* NAVBAR */
+.navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+.navbar .logo {
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+}
+.navbar a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  transition: color .3s;
+}
+.navbar a:hover { color: #a7ff8f; }
+
+.nav-actions {
+  display: flex;
+  gap: 15px;
+}
+.nav-actions .login {
+  color: #fff;
+   padding: 8px 18px;
+}
+.nav-actions .signup {
+  background: #8FA31E;
+  color: #333;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 600;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* HERO SECTION */
+.hero {
+  width: 100%;
+  height: 100vh;                /* selalu setinggi layar */
+  background: url('/pemandangan.png') center/cover no-repeat;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 5%;
+}
+.hero .overlay {
+  position: absolute;
+  inset: 0;                     /* top:0; right:0; bottom:0; left:0 */
+  background: rgba(0,0,0,0.45);
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 550px;
+}
+.hero-content h5 {
+  letter-spacing: 10px;
+  font-weight: 300px;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+.hero-content h1 {
+  font-size: clamp(3rem, 5vw, 4rem);
+  margin: 0 0 15px 0;
+  font-weight: 700;
+}
+.hero-content p {
+  margin-bottom: 40px;
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+.hero-content .cta {
+  background: #8FA31E;
+  color: #333;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* MINI SLIDER */
+.mini-slider {
+  position: absolute;
+  bottom: 40px;
+  right: 5%;
+  z-index: 20;
+}
+.mini-slider .slide {
+  width: 270px;
+  height: 150px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.mini-slider .slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s;
+}
+.mini-slider .slide img:hover {
+  transform: scale(1.05);
+}
+
+/* === SWIPER CUSTOM === */
+.mini-slider .swiper {
+  width: 600px;   /* atau sesuai layout */
+  height: 150px;
+  position: relative; /* penting biar tombol bisa absolute di dalam */
+  z-index: 10;         /* biar ga ketimpa overlay */
+}
+
+.mini-slider .swiper-wrapper {
+  /* Swiper sudah pakai flex default, ini opsional */
+}
+
+.mini-slider .swiper-slide {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.mini-slider .swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s;
+}
+
+.mini-slider .swiper-slide img:hover {
+  transform: scale(1.05);
+}
+
+/* tombol next/prev */
+.mini-slider .swiper-button-prev,
+.mini-slider .swiper-button-next {
+  color: #fff;
+  --swiper-navigation-size: 25px;
+}
+
+/* pagination bullet (kalau dipakai) */
+.mini-slider .swiper-pagination-bullet {
+  background: #8FA31E;
+  opacity: 0.7;
+}
+.mini-slider .swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
+/* RESPONSIVE (opsional) */
+@media (max-width: 768px) {
+  .navbar ul { gap: 15px; }
+  .hero { padding-left: 20px; }
+  .mini-slider { left: 20px; }
 }
