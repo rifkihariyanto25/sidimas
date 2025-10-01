@@ -9,14 +9,15 @@ html, body {
   width: 100%;
   height: 100%;
   font-family: 'Segoe UI', sans-serif;
-  color: #fff;
-  background: #000;
+  background: #fff;
+  color: #222;
   overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 /* NAVBAR */
 .navbar {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -24,11 +25,14 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 100; /* ✅ naikkan biar aman di atas slide */
+  z-index: 100;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px);
 }
 .navbar .logo {
   font-weight: 700;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
+  color: #fff;
 }
 .navbar ul {
   list-style: none;
@@ -60,27 +64,24 @@ html, body {
   transition: background .3s;
 }
 .nav-actions .signup:hover {
-  background: #77901a; /* ✅ hover lebih gelap */
+  background: #77901a;
 }
 
-/* HERO SLIDER (utama) */
+/* HERO SLIDER */
 .hero-slider {
   width: 100%;
   height: 100vh;
   position: relative;
-  overflow: hidden;
 }
-
 .hero-slide {
   width: 100%;
   height: 100vh;
-  position: relative;
   display: flex;
   align-items: center;
   padding-left: 5%;
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat; /* ✅ biar gak ngulang */
+  position: relative;
 }
 .hero-slide::before {
   content: "";
@@ -89,28 +90,26 @@ html, body {
   background: rgba(0,0,0,0.45);
   z-index: 1;
 }
-
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: 550px;
+  max-width: 600px;
+  color: #fff;
 }
 .hero-content h5 {
-  letter-spacing: 8px;  /* ✅ lebih proporsional */
+  letter-spacing: 6px;
   font-weight: 300;
   margin-bottom: 10px;
-  font-size: 1.2rem;
 }
 .hero-content h1 {
   font-size: clamp(2.5rem, 5vw, 4rem);
-  margin: 0 0 15px 0;
+  margin-bottom: 15px;
   font-weight: 700;
   line-height: 1.1;
 }
 .hero-content p {
   margin-bottom: 30px;
   line-height: 1.6;
-  font-size: 1rem;
 }
 .hero-content .cta {
   background: #8FA31E;
@@ -121,11 +120,9 @@ html, body {
   text-decoration: none;
   transition: background .3s;
 }
-.hero-content .cta:hover {
-  background: #77901a;
-}
+.hero-content .cta:hover { background: #77901a; }
 
-/* MINI SLIDER (per slide) */
+/* MINI SLIDER */
 .mini-slider {
   position: absolute;
   bottom: 40px;
@@ -146,28 +143,173 @@ html, body {
   object-fit: cover;
   transition: transform .3s;
 }
-.mini-slider .swiper-slide img:hover {
-  transform: scale(1.05);
+.mini-slider .swiper-slide img:hover { transform: scale(1.05); }
+
+/* ======================
+   SECTION ABOUT
+====================== */
+.about {
+  background: #fff;
+  color: #222;
+  padding: 100px 5% 80px;
+  text-align: center;
+}
+.about h2 {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #333;
+}
+.about p {
+  max-width: 800px;
+  margin: 0 auto 50px;
+  color: #555;
+  line-height: 1.7;
 }
 
-/* tombol navigasi */
-.mini-slider .swiper-button-prev,
-.mini-slider .swiper-button-next {
-  color: #fff;
-  --swiper-navigation-size: 25px;
-  z-index: 10;
+/* TIMELINE */
+.timeline {
+  position: relative;
+  margin: 0 auto;
+  padding: 40px 0;
+  max-width: 1000px;
 }
-
-/* bullet pagination */
-.mini-slider .swiper-pagination-bullet {
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 4px;
+  margin-left: -2px;
   background: #8FA31E;
-  opacity: 0.7;
+  border-radius: 2px;
+  z-index: 1;
 }
-.mini-slider .swiper-pagination-bullet-active {
-  opacity: 1;
+.timeline-item {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 0;
+  width: 50%;
+  z-index: 2;
+}
+.timeline-item.left { left: 0; }
+.timeline-item.right { left: 50%; }
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  right: -10px;
+  width: 20px;
+  height: 20px;
+  background: #8FA31E;
+  border-radius: 50%;
+  z-index: 3;
+}
+.timeline-item.right::before { left: -10px; right: auto; }
+
+.timeline-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  max-width: 90%;
+}
+.timeline-content img {
+  max-width: 160px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.timeline-content p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.6;
 }
 
-/* RESPONSIVE */
+/* ======================
+   SECTION KHAS
+====================== */
+.khas {
+  background: #f9fbe7;
+  padding: 100px 5%;
+  text-align: center;
+}
+.khas h2 {
+  font-size: 2.2rem;
+  margin-bottom: 40px;
+  font-weight: 700;
+}
+.khas .grid div {
+  background: #dcedc8;
+  border-radius: 14px;
+  padding: 30px;
+  font-weight: 500;
+  transition: transform .3s, box-shadow .3s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+.khas .grid div:hover { 
+  transform: translateY(-6px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+/* ======================
+   CTA
+====================== */
+.cta {
+  background: url('/batik.png') center/cover no-repeat;
+  color: #fff;
+  padding: 120px 5%;
+  text-align: center;
+  position: relative;
+}
+.cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+}
+.cta h2 {
+  font-size: 2rem;
+  margin-bottom: 25px;
+  position: relative;
+  z-index: 2;
+}
+.cta a {
+  background: #8FA31E;
+  padding: 14px 34px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .3s;
+  position: relative;
+  z-index: 2;
+}
+.cta a:hover { background: #77901a; }
+
+/* ======================
+   FOOTER
+====================== */
+.footer {
+  background: #4A5D23;
+  color: #fff;
+  padding: 60px 5% 30px;
+  text-align: center;
+}
+.footer p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+.footer .brand {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* ======================
+   RESPONSIVE
+====================== */
 @media (max-width: 768px) {
   .navbar ul { gap: 15px; font-size: 0.9rem; }
   .hero-slide { padding-left: 20px; }
@@ -175,4 +317,20 @@ html, body {
   .hero-content p { font-size: 0.9rem; }
   .mini-slider { left: 20px; right: auto; bottom: 20px; }
   .mini-slider .swiper { height: 100px; }
+  .about, .khas, .cta, .footer { padding: 60px 20px; }
+  
+  /* Timeline mobile jadi 1 kolom */
+  .timeline::before { left: 20px; }
+  .timeline-item, .timeline-item.left, .timeline-item.right {
+    width: 100%;
+    padding-left: 50px;
+  }
+  .timeline-item::before,
+  .timeline-item.right::before {
+    left: 10px;
+    right: auto;
+  }
+  .timeline-content {
+    max-width: 100%;
+  }
 }
