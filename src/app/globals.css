@@ -1,16 +1,17 @@
 /* RESET & GLOBAL */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html, body {
-  margin: 0;
-  padding: 0;
   width: 100%;
-  min-height: 100%;
+  height: 100%;
   font-family: 'Segoe UI', sans-serif;
   color: #fff;
   background: #000;
+  overflow-x: hidden;
 }
 
 /* NAVBAR */
@@ -23,7 +24,7 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 10;
+  z-index: 100; /* ✅ naikkan biar aman di atas slide */
 }
 .navbar .logo {
   font-weight: 700;
@@ -33,8 +34,6 @@ html, body {
   list-style: none;
   display: flex;
   gap: 30px;
-  margin: 0;
-  padding: 0;
 }
 .navbar a {
   text-decoration: none;
@@ -50,120 +49,116 @@ html, body {
 }
 .nav-actions .login {
   color: #fff;
-   padding: 8px 18px;
+  padding: 8px 18px;
 }
 .nav-actions .signup {
   background: #8FA31E;
-  color: #333;
+  color: #fff;
   padding: 8px 18px;
-  border-radius: 20px;
+  border-radius: 10px;
   font-weight: 600;
+  transition: background .3s;
+}
+.nav-actions .signup:hover {
+  background: #77901a; /* ✅ hover lebih gelap */
 }
 
-/* HERO SECTION */
-.hero {
+/* HERO SLIDER (utama) */
+.hero-slider {
   width: 100%;
-  height: 100vh;                /* selalu setinggi layar */
-  background: url('/pemandangan.png') center/cover no-repeat;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-slide {
+  width: 100%;
+  height: 100vh;
   position: relative;
   display: flex;
   align-items: center;
   padding-left: 5%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; /* ✅ biar gak ngulang */
 }
-.hero .overlay {
+.hero-slide::before {
+  content: "";
   position: absolute;
-  inset: 0;                     /* top:0; right:0; bottom:0; left:0 */
+  inset: 0;
   background: rgba(0,0,0,0.45);
+  z-index: 1;
 }
+
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   max-width: 550px;
 }
 .hero-content h5 {
-  letter-spacing: 10px;
-  font-weight: 300px;
+  letter-spacing: 8px;  /* ✅ lebih proporsional */
+  font-weight: 300;
   margin-bottom: 10px;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 .hero-content h1 {
-  font-size: clamp(3rem, 5vw, 4rem);
+  font-size: clamp(2.5rem, 5vw, 4rem);
   margin: 0 0 15px 0;
   font-weight: 700;
+  line-height: 1.1;
 }
 .hero-content p {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   line-height: 1.6;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 .hero-content .cta {
   background: #8FA31E;
-  color: #333;
+  color: #fff;
   padding: 12px 24px;
-  border-radius: 25px;
+  border-radius: 10px;
   font-weight: 600;
   text-decoration: none;
+  transition: background .3s;
+}
+.hero-content .cta:hover {
+  background: #77901a;
 }
 
-/* MINI SLIDER */
+/* MINI SLIDER (per slide) */
 .mini-slider {
   position: absolute;
   bottom: 40px;
   right: 5%;
-  z-index: 20;
+  z-index: 5;
 }
-.mini-slider .slide {
-  width: 270px;
-  height: 150px;
-  border-radius: 10px;
-  overflow: hidden;
-}
-.mini-slider .slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform .3s;
-}
-.mini-slider .slide img:hover {
-  transform: scale(1.05);
-}
-
-/* === SWIPER CUSTOM === */
 .mini-slider .swiper {
-  width: 600px;   /* atau sesuai layout */
+  width: min(90vw, 600px);
   height: 150px;
-  position: relative; /* penting biar tombol bisa absolute di dalam */
-  z-index: 10;         /* biar ga ketimpa overlay */
 }
-
-.mini-slider .swiper-wrapper {
-  /* Swiper sudah pakai flex default, ini opsional */
-}
-
 .mini-slider .swiper-slide {
   border-radius: 10px;
   overflow: hidden;
 }
-
 .mini-slider .swiper-slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform .3s;
 }
-
 .mini-slider .swiper-slide img:hover {
   transform: scale(1.05);
 }
 
-/* tombol next/prev */
+/* tombol navigasi */
 .mini-slider .swiper-button-prev,
 .mini-slider .swiper-button-next {
   color: #fff;
   --swiper-navigation-size: 25px;
+  z-index: 10;
 }
 
-/* pagination bullet (kalau dipakai) */
+/* bullet pagination */
 .mini-slider .swiper-pagination-bullet {
   background: #8FA31E;
   opacity: 0.7;
@@ -172,9 +167,12 @@ html, body {
   opacity: 1;
 }
 
-/* RESPONSIVE (opsional) */
+/* RESPONSIVE */
 @media (max-width: 768px) {
-  .navbar ul { gap: 15px; }
-  .hero { padding-left: 20px; }
-  .mini-slider { left: 20px; }
+  .navbar ul { gap: 15px; font-size: 0.9rem; }
+  .hero-slide { padding-left: 20px; }
+  .hero-content h1 { font-size: 2rem; }
+  .hero-content p { font-size: 0.9rem; }
+  .mini-slider { left: 20px; right: auto; bottom: 20px; }
+  .mini-slider .swiper { height: 100px; }
 }
