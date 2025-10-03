@@ -167,66 +167,119 @@ html, body {
   line-height: 1.7;
 }
 
-/* TIMELINE */
+/* ======================
+   TIMELINE
+====================== */
 .timeline {
   position: relative;
   margin: 0 auto;
   padding: 40px 0;
   max-width: 1000px;
 }
+
+/* Vertical line di tengah */
 .timeline::before {
   content: "";
   position: absolute;
   top: 0;
   bottom: 0;
   left: 50%;
+  transform: translateX(-50%);
   width: 4px;
-  margin-left: -2px;
   background: #8FA31E;
   border-radius: 2px;
-  z-index: 1;
 }
-.timeline-item {
-  position: relative;
-  display: flex;
-  justify-content: flex-end;
-  padding: 20px 0;
-  width: 50%;
-  z-index: 2;
-}
-.timeline-item.left { left: 0; }
-.timeline-item.right { left: 50%; }
 
-.timeline-item::before {
-  content: "";
+/* Dot */
+.timeline-dot {
   position: absolute;
   top: 30px;
-  right: -10px;
-  width: 20px;
-  height: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
   background: #8FA31E;
+  border: 4px solid #fff;
   border-radius: 50%;
-  z-index: 3;
+  z-index: 2;
+  box-shadow: 0 0 6px rgba(0,0,0,0.15);
 }
-.timeline-item.right::before { left: -10px; right: auto; }
 
+/* Item */
+.timeline-item {
+  display: flex;
+  position: relative;
+  width: 50%;
+  padding: 20px;
+}
+
+.timeline-item.left {
+  justify-content: flex-end;
+  left: 0;
+  text-align: right;
+}
+
+.timeline-item.right {
+  left: 50%;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+/* Card content */
 .timeline-content {
   background: #fff;
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
   max-width: 90%;
+  position: relative;
 }
-.timeline-content img {
-  max-width: 160px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+
+/* Panah */
+.timeline-item.left .timeline-content::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -10px;
+  transform: translateY(-50%);
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent transparent #fff;
 }
-.timeline-content p {
-  font-size: 0.95rem;
-  color: #555;
-  line-height: 1.6;
+
+.timeline-item.right .timeline-content::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -10px;
+  transform: translateY(-50%);
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent #fff transparent transparent;
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .timeline::before {
+    left: 20px;
+  }
+  .timeline-item,
+  .timeline-item.left,
+  .timeline-item.right {
+    width: 100%;
+    padding-left: 50px;
+    justify-content: flex-start;
+    text-align: left;
+  }
+  .timeline-content {
+    max-width: 100%;
+  }
+  .timeline-dot {
+    left: 20px;
+    transform: translateX(0);
+  }
+}
+
 
 /* ======================
    SECTION KHAS
