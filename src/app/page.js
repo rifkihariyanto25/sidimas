@@ -126,71 +126,57 @@ export default function Home() {
       </Swiper>
 
       {/* ✅ SECTION ABOUT (Timeline) */}
-      <section className="about py-20 bg-white text-black relative">
-        <div className="max-w-6xl mx-auto text-center mb-12">
-          <h3 className="text-gray-600">Alasan</h3>
-          <h2 className="text-3xl md:text-4xl font-bold">
-            Kenapa Kamu Harus Mengetahui Kekayaan <span className="text-lime-700">Banyumas</span>
-          </h2>
-        </div>
+ <section className="about relative py-16">
 
-        <div className="relative max-w-5xl mx-auto">
-          {/* Garis Tengah */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 h-full border-l-4 border-lime-600"></div>
+{/* Background wayang kiri */}
+  <div className="wayang-left">
+    <img src="/ayang.png" alt="Wayang Kiri" />
+  </div>
 
-          {/* Item 1 */}
-          <div className="mb-16 flex justify-between items-center w-full">
-            <div className="w-5/12 text-right pr-8">
-              <p className="text-gray-700">Bahasa Banyumasan itu unik banget dan punya ciri khas sendiri. Tau bahasanya bikin kita lebih dekat sama warga lokal.</p>
-            </div>
-            <div className="z-10">
-              <div className="w-6 h-6 bg-lime-600 rounded-full"></div>
-            </div>
-            <div className="w-5/12 pl-8">
-              <Image src="/foto1.jpg" alt="Budaya Banyumas" width={400} height={300} className="rounded-lg shadow-lg" />
-            </div>
-          </div>
+  {/* Background wayang kanan */}
+  <div className="wayang-right">
+    <img src="/wayang-right.png" alt="Wayang Kanan" />
+  </div>
 
-          {/* Item 2 */}
-          <div className="mb-16 flex justify-between items-center w-full flex-row-reverse">
-            <div className="w-5/12 text-left pl-8">
-              <p className="text-gray-700">Dari wayang kulit sampai upacara adat, Banyumas punya banyak kegiatan seru.</p>
-            </div>
-            <div className="z-10">
-              <div className="w-6 h-6 bg-lime-600 rounded-full"></div>
-            </div>
-            <div className="w-5/12 pr-8">
-              <Image src="/foto2.jpg" alt="Wayang Banyumas" width={400} height={300} className="rounded-lg shadow-lg rotate-6" />
-            </div>
-          </div>
 
-          {/* Item 3 */}
-          <div className="mb-16 flex justify-between items-center w-full">
-            <div className="w-5/12 text-right pr-8">
-              <p className="text-gray-700">Curug, perbukitan, taman kota semua bisa bikin feed IG kamu makin kece.</p>
-            </div>
-            <div className="z-10">
-              <div className="w-6 h-6 bg-lime-600 rounded-full"></div>
-            </div>
-            <div className="w-5/12 pl-8">
-              <Image src="/foto3.jpg" alt="Wisata Banyumas" width={400} height={300} className="rounded-lg shadow-lg" />
-            </div>
-          </div>
 
-          {/* Item 4 */}
-          <div className="mb-16 flex justify-between items-center w-full flex-row-reverse">
-            <div className="w-5/12 text-left pl-8">
-              <p className="text-gray-700">Mendoan krispi, soto hangat, getuk manis... semua bikin lidah happy banget.</p>
-            </div>
-            <div className="z-10">
-              <div className="w-6 h-6 bg-lime-600 rounded-full"></div>
-            </div>
-            <div className="w-5/12 pr-8">
-              <Image src="/foto4.jpg" alt="Kuliner Banyumas" width={400} height={300} className="rounded-lg shadow-lg -rotate-6" />
-            </div>
-          </div>
-        </div>
-      </section>
+  <h2 className="text-center text-3xl font-bold mb-2">Alasan</h2>
+  <p className="text-center mb-12">
+    Kenapa Kamu Harus Mengetahui Kekayaan <span className="text-lime-700 font-semibold">Banyumas</span>
+  </p>
+
+  <div className="timeline relative z-10">
+    {/* Item kiri */}
+    <div className="timeline-item left">
+      <span className="timeline-dot"></span>
+      <div className="timeline-content">
+        <h3>Bahasa Banyumasan</h3>
+        <p>
+          Bahasa Banyumasan itu unik banget dan punya ciri khas sendiri. Tau bahasanya bikin kita lebih dekat sama warga lokal.
+        </p>
+      </div>
+      <div className="timeline-img-side">
+        <img src="/IMG3.png" alt="Bahasa Banyumasan" />
+      </div>
+    </div>
+
+    {/* Item kanan */}
+    <div className="timeline-item right">
+      <span className="timeline-dot"></span>
+      <div className="timeline-img-side">
+        <img src="/jaranan.jpeg" alt="Budaya dan Tradisi" />
+      </div>
+      <div className="timeline-content">
+        <h3>Budaya & Tradisi</h3>
+        <p>
+          Dari wayang kulit sampai upacara adat, Banyumas punya banyak kegiatan seru.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
       {/* ✅ SECTION BERAGAM KHAS */}
       <section className="khas py-20 px-6 md:px-16 bg-gray-50 text-black">

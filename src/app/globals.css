@@ -26,7 +26,7 @@ html, body {
   justify-content: space-between;
   align-items: center;
   z-index: 100;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0, 0, 0, 0);
   backdrop-filter: blur(6px);
 }
 .navbar .logo {
@@ -64,7 +64,7 @@ html, body {
   transition: background .3s;
 }
 .nav-actions .signup:hover {
-  background: #77901a;
+  background: #8FA31E;
 }
 
 /* HERO SLIDER */
@@ -120,7 +120,7 @@ html, body {
   text-decoration: none;
   transition: background .3s;
 }
-.hero-content .cta:hover { background: #77901a; }
+.hero-content .cta:hover { background: #8FA31E; }
 
 /* MINI SLIDER */
 .mini-slider {
@@ -206,24 +206,53 @@ html, body {
 }
 
 /* Item */
+.timeline {
+  position: relative;
+  margin: 50px auto;
+  width: 80%;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 100%;
+  background: #92A437;
+}
+
 .timeline-item {
   display: flex;
-  position: relative;
-  width: 50%;
-  padding: 20px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 40px 0;
 }
 
 .timeline-item.left {
-  justify-content: flex-end;
-  left: 0;
-  text-align: right;
+  flex-direction: row; /* teks kiri, gambar kanan */
 }
 
 .timeline-item.right {
-  left: 50%;
-  justify-content: flex-start;
-  text-align: left;
+  flex-direction: row-reverse; /* teks kanan, gambar kiri */
 }
+
+.timeline-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  width: 45%;
+}
+
+.timeline-img-side img {
+  width: 450px;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
 
 /* Card content */
 .timeline-content {
@@ -340,7 +369,7 @@ html, body {
   position: relative;
   z-index: 2;
 }
-.cta a:hover { background: #77901a; }
+.cta a:hover { background: #8FA31E; }
 
 /* ======================
    FOOTER
