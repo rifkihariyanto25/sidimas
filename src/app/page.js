@@ -18,6 +18,7 @@ export default function Home() {
     { id: 1, img: "/Mendoan.png", alt: "Mendoan" },
     { id: 2, img: "/IMG3.png", alt: "Sroto Sokaraja" },
     { id: 3, img: "/IMG_6806 1.png", alt: "Gethuk Goreng" },
+    { id: 4, img: "/IMG3.png", alt: "Pemandangan" },
   ];
 
   return (
@@ -154,16 +155,14 @@ export default function Home() {
       {/* ✅ SECTION ABOUT (Timeline) */}
  <section className="about relative py-16">
 
-Background wayang kiri
-  {/* <div className="wayang-left">
-    <img src="/ayang.png" alt="Wayang Kiri" />
+  {/* Background wayang/gamelan kiri kanan */}
+  <div className="wayang-left">
+    <img src="/ayang.png" alt="Gamelan Kiri" />
   </div>
 
   <div className="wayang-right">
-    <img src="/wayang-right.png" alt="Wayang Kanan" />
-  </div> */}
-
-
+    <img src="/ayang.png" alt="Gamelan Kanan" />
+  </div>
 
   <h2 className="text-center text-3xl font-bold mb-2">Alasan</h2>
   <p className="text-center mb-12">
@@ -186,7 +185,7 @@ Background wayang kiri
     </div>
 
     {/* Item kanan */}
-    <div className="timeline-item right">
+    <div className="timeline-item left">
       <span className="timeline-dot"></span>
       <div className="timeline-img-side">
         <img src="/jaranan.jpeg" alt="Budaya dan Tradisi" />
@@ -278,7 +277,7 @@ Background wayang kiri
 
       {/* ✅ CTA SECTION */}
       <section className="cta py-20 bg-[url('/Group 3.png')] bg-cover bg-center text-center text-white relative">
-        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10 max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold mb-6">
             Cari tahu kuliner, wisata, dan budaya menarik yang wajib kamu tahu...

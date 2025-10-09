@@ -168,18 +168,62 @@ html, body {
   color: #222;
   padding: 100px 5% 80px;
   text-align: center;
+  overflow: hidden;
+  position: relative;
 }
+
+/* Gambar hiasan gamelan/wayang kiri kanan - stay di section about */
+.wayang-left {
+  position: absolute;
+  top: 80px;
+  left: 20px;
+  width: 220px;
+  opacity: 0.4;
+  z-index: 1;
+  pointer-events: none;
+  filter: contrast(1.2) brightness(0.9);
+}
+
+.wayang-left img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.wayang-right {
+  position: absolute;
+  top: 80px;
+  right: 20px;
+  width: 220px;
+  opacity: 0.4;
+  z-index: 1;
+  transform: scaleX(-1);
+  pointer-events: none;
+  filter: contrast(1.2) brightness(0.9);
+}
+
+.wayang-right img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
 .about h2 {
   font-size: 2.2rem;
   margin-bottom: 20px;
   font-weight: 700;
   color: #333;
+  position: relative;
+  z-index: 2;
 }
+
 .about p {
   max-width: 800px;
   margin: 0 auto 50px;
   color: #555;
   line-height: 1.7;
+  position: relative;
+  z-index: 2;
 }
 
 /* ======================
@@ -744,6 +788,12 @@ html, body {
   .mini-slider { left: 20px; right: auto; bottom: 20px; }
   .mini-slider .swiper { height: 100px; }
   .about, .khas, .cta { padding: 60px 20px; }
+  
+  /* Sembunyikan gambar hiasan di mobile */
+  .wayang-left,
+  .wayang-right {
+    display: none;
+  }
   
   /* Timeline mobile jadi 1 kolom */
   .timeline::before { left: 20px; }
