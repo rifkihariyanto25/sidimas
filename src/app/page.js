@@ -128,15 +128,14 @@ export default function Home() {
       {/* ✅ SECTION ABOUT (Timeline) */}
  <section className="about relative py-16">
 
-{/* Background wayang kiri */}
-  <div className="wayang-left">
+Background wayang kiri
+  {/* <div className="wayang-left">
     <img src="/ayang.png" alt="Wayang Kiri" />
   </div>
 
-  {/* Background wayang kanan */}
   <div className="wayang-right">
     <img src="/wayang-right.png" alt="Wayang Kanan" />
-  </div>
+  </div> */}
 
 
 
@@ -179,21 +178,80 @@ export default function Home() {
 
 
       {/* ✅ SECTION BERAGAM KHAS */}
-      <section className="khas py-20 px-6 md:px-16 bg-gray-50 text-black">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-8">Beragam Khas Banyumas</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <div className="bg-lime-100 p-8 rounded-xl">Gambar 1</div>
-            <div className="bg-lime-100 p-8 rounded-xl">Gambar 2</div>
-            <div className="bg-lime-100 p-8 rounded-xl">Gambar 3</div>
-            <div className="bg-lime-100 p-8 rounded-xl">Gambar 4</div>
-            <div className="bg-lime-100 p-8 rounded-xl col-span-2 md:col-span-2 lg:col-span-4">Gambar besar</div>
-          </div>
-        </div>
-      </section>
+<section className="khas py-20 px-6 md:px-16 bg-gray-50 text-black">
+  <div className="max-w-6xl mx-auto">
+    <div className="text-center mb-4">
+      <h2 className="text-3xl font-bold mb-2">
+        Beragam Khas <span className="text-lime-600">Banyumas</span>
+      </h2>
+      <p className="text-gray-600 mb-6">
+        Lihat beragam ciri khas budaya Banyumas, mulai dari wisata, kuliner dan budaya
+      </p>
+    </div>
+    
+    {/* Tab Navigation */}
+    <div className="tab-buttons">
+      <button className="px-6 py-2 bg-lime-600 text-white rounded-full font-medium">
+        Semua
+      </button>
+      <button className="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-lime-50">
+        Wisata
+      </button>
+      <button className="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-lime-50">
+        Kuliner
+      </button>
+      <button className="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-lime-50">
+        Budaya
+      </button>
+    </div>
+
+    {/* Grid Layout */}
+    <div className="grid">
+      {/* Gambar 1 - Large (2x2) */}
+      <div>
+        <span className="text-gray-600">gambar 1</span>
+      </div>
+      
+      {/* Gambar 2 - Normal */}
+      <div>
+        <span className="text-gray-600">gambar 2</span>
+      </div>
+      
+      {/* Gambar 3 - Normal */}
+      <div>
+        <span className="text-gray-600">gambar 3</span>
+      </div>
+      
+      {/* Gambar 4 - Normal */}
+      <div>
+        <span className="text-gray-600">gambar 4</span>
+      </div>
+      
+      {/* Gambar 5 - Normal */}
+      <div>
+        <span className="text-gray-600">gambar 5</span>
+      </div>
+      
+      {/* Gambar 6 - Wide (2x1) */}
+      <div>
+        <span className="text-gray-600">gambar 6</span>
+      </div>
+      
+      {/* Gambar 7 - Normal */}
+      <div>
+        <span className="text-gray-600">gambar 7</span>
+      </div>
+      
+      {/* Gambar 8 - Extra Large (2x2) */}
+      <div>
+        <span className="text-gray-600">gambar 8</span>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* ✅ CTA SECTION */}
-      <section className="cta py-20 bg-[url('/batik.png')] bg-cover bg-center text-center text-white relative">
+      <section className="cta py-20 bg-[url('/Group 3.png')] bg-cover bg-center text-center text-white relative">
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative z-10 max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold mb-6">
@@ -206,10 +264,74 @@ export default function Home() {
       </section>
 
       {/* ✅ FOOTER */}
-      <footer className="footer py-10 bg-[#26320e] text-white text-center">
-        <div className="max-w-6xl mx-auto">
-          <p className="mb-2 font-bold">✦ Jelajah Banyumas ✦</p>
-          <p className="text-sm">© 2025 Banyumas. All Rights Reserved.</p>
+      <footer className="footer">
+        <div className="footer-top">
+          <div className="footer-container">
+            {/* Hero Section dengan Animasi */}
+            <div className="footer-hero">
+              <div className="footer-character">
+                <Image 
+                  src="/Group 6.png" 
+                  alt="Banyumas Character" 
+                  width={300} 
+                  height={400}
+                  className="character-img"
+                />
+              </div>
+              <div className="footer-hero-text">
+                <h2>
+                  <span className="text-lime-400">Ayo Kunjungi</span><br />
+                  DAN JELAJAHI BANYUMAS
+                </h2>
+                <p>Be an explorer and experience the beauty of diversity in Banyumas.</p>
+              </div>
+            </div>
+
+            {/* Footer Links */}
+            <div className="footer-links">
+              {/* About Sidimas */}
+              <div className="footer-col">
+                <h3>Sidimas</h3>
+                <p>
+                  SIDIMAS hadir sebagai solusi inovatif untuk menjawab kebutuhan masyarakat Banyumas akan layanan informasi yang praktis, mudah diakses, dan mendukung terwujudnya informasi berbasis digital.
+                </p>
+                <div className="social-icons">
+                  <a href="#" aria-label="Facebook"><i className="fab fa-facebook-f"></i>F</a>
+                  <a href="#" aria-label="Instagram"><i className="fab fa-instagram"></i>I</a>
+                  <a href="#" aria-label="YouTube"><i className="fab fa-youtube"></i>Y</a>
+                </div>
+              </div>
+
+              {/* Navigasi */}
+              <div className="footer-col">
+                <h3>Navigasi</h3>
+                <ul>
+                  <li><a href="#">Beranda</a></li>
+                  <li><a href="#">Wisata</a></li>
+                  <li><a href="#">Kuliner</a></li>
+                  <li><a href="#">Budaya</a></li>
+                </ul>
+              </div>
+
+              {/* Hubungi Kami */}
+              <div className="footer-col">
+                <h3>Hubungi Kami</h3>
+                <ul>
+                  <li>
+                    <span>📍</span> Jl. Bojong Lengkong, Kabupaten Tegal, Jawa Tengah
+                  </li>
+                  <li>
+                    <span>📞</span> +6285222555212
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Bottom */}
+        <div className="footer-bottom">
+          <p>© 2025 Azkal Jaya Las. All Rights Reserved.</p>
         </div>
       </footer>
     </main>

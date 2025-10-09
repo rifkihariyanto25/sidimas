@@ -316,31 +316,204 @@ html, body {
 .khas {
   background: #f9fbe7;
   padding: 100px 5%;
-  text-align: center;
-}
-.khas h2 {
-  font-size: 2.2rem;
-  margin-bottom: 40px;
-  font-weight: 700;
-}
-.khas .grid div {
-  background: #dcedc8;
-  border-radius: 14px;
-  padding: 30px;
-  font-weight: 500;
-  transition: transform .3s, box-shadow .3s;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-.khas .grid div:hover { 
-  transform: translateY(-6px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
 
+.khas .text-center {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.khas h2 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+}
+
+.khas h2 span {
+  color: #7cb342;
+}
+
+.khas p {
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Tab Navigation */
+.khas .tab-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.khas button {
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-items: center;
+}
+
+.khas button.active,
+.khas button:first-child {
+  background: #7cb342;
+  color: white;
+}
+
+.khas button:not(.active):not(:first-child) {
+  background: white;
+  color: #555;
+}
+
+.khas button:hover {
+  background: #e8f5e9;
+  color: #7cb342;
+  transform: translateY(-2px);
+}
+
+.khas button:first-child:hover {
+  background: #689f38;
+  color: white;
+}
+
+/* Grid Layout - 3 Kolom */
+.khas .grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 160px;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.khas .grid > div {
+  background: #dcedc8;
+  border-radius: 20px;
+  padding: 40px 30px;
+  font-weight: 500;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.khas .grid > div:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* ROW 1 */
+/* Gambar 1 - Large (2 kolom x 2 baris) */
+.khas .grid > div:nth-child(1) {
+  grid-column: 1 / 3;
+  grid-row: 1 / 3;
+}
+
+/* Gambar 2 - Normal */
+.khas .grid > div:nth-child(2) {
+  grid-column: 3 / 4;
+  grid-row: 1 / 2;
+}
+
+/* Gambar 3 - Normal */
+.khas .grid > div:nth-child(3) {
+  grid-column: 3 / 4;
+  grid-row: 2 / 3;
+}
+
+/* ROW 2 */
+/* Gambar 4 - Normal */
+.khas .grid > div:nth-child(4) {
+  grid-column: 1 / 2;
+  grid-row: 3 / 4;
+}
+
+/* Gambar 5 - Normal */
+.khas .grid > div:nth-child(5) {
+  grid-column: 2 / 3;
+  grid-row: 3 / 4;
+}
+
+/* Gambar 6 - Wide (2 kolom x 1 baris) */
+.khas .grid > div:nth-child(6) {
+  grid-column: 3 / 4;
+  grid-row: 3 / 3;
+}
+
+/* ROW 3 */
+/* Gambar 7 - Normal */
+.khas .grid > div:nth-child(7) {
+  grid-column: 1 / 2;
+  grid-row: 4 / 5;
+}
+
+/* Gambar 8 - Extra Large (2 kolom x 2 baris) */
+.khas .grid > div:nth-child(8) {
+  grid-column: 2 / 4;
+  grid-row: 4 / 6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .khas {
+    padding: 60px 5%;
+  }
+
+  .khas h2 {
+    font-size: 1.8rem;
+  }
+
+  .khas .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .khas .grid > div {
+    padding: 30px 20px;
+    min-height: 120px;
+  }
+
+  .khas .grid > div:nth-child(1),
+  .khas .grid > div:nth-child(8) {
+    min-height: 240px;
+  }
+
+  /* Adjust button styles for mobile */
+  .khas button {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .khas h2 {
+    font-size: 1.5rem;
+  }
+
+  .khas p {
+    font-size: 0.9rem;
+  }
+
+  .khas button {
+    padding: 7px 15px;
+    font-size: 0.8rem;
+  }
+}
 /* ======================
    CTA
 ====================== */
 .cta {
-  background: url('/batik.png') center/cover no-repeat;
+  background: url('/Group 3.png') center/cover no-repeat;
   color: #fff;
   padding: 120px 5%;
   text-align: center;
@@ -357,19 +530,27 @@ html, body {
   margin-bottom: 25px;
   position: relative;
   z-index: 2;
+  color: #fff;
 }
 .cta a {
-  background: #8FA31E;
-  padding: 14px 34px;
-  border-radius: 10px;
-  color: #fff;
+  background: #fff;
+  padding: 12px 32px;
+  border-radius: 50px;
+  color: #7cb342;
   font-weight: 600;
   text-decoration: none;
-  transition: background .3s;
+  transition: all 0.3s ease;
   position: relative;
   z-index: 2;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-.cta a:hover { background: #8FA31E; }
+.cta a:hover { 
+  background: #7cb342;
+  color: #8FA31E;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
 
 /* ======================
    FOOTER
@@ -377,16 +558,155 @@ html, body {
 .footer {
   background: #4A5D23;
   color: #fff;
-  padding: 60px 5% 30px;
-  text-align: center;
 }
-.footer p {
+
+.footer-top {
+  background: #f5f5f5;
+  padding: 60px 5% 40px;
+  color: #333;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Hero Section dengan Character */
+.footer-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 60px;
+  gap: 40px;
+}
+
+.footer-character {
+  flex: 0 0 300px;
+  position: relative;
+}
+
+.character-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.footer-hero-text {
+  flex: 1;
+  text-align: left;
+}
+
+.footer-hero-text h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 15px;
+  color: #000;
+}
+
+.footer-hero-text h2 .text-lime-400 {
+  color: #7cb342;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.footer-hero-text p {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Footer Links Grid */
+.footer-links {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr;
+  gap: 40px;
+  padding-top: 40px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.footer-col h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #000;
+}
+
+.footer-col p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col ul li {
+  margin-bottom: 12px;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.footer-col ul li a {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-col ul li a:hover {
+  color: #7cb342;
+}
+
+.footer-col ul li span {
+  margin-right: 8px;
+}
+
+/* Social Icons */
+.social-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.social-icons a {
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.social-icons a:hover {
+  background: #7cb342;
+  color: #fff;
+  border-color: #7cb342;
+  transform: translateY(-3px);
+}
+
+/* Footer Bottom */
+.footer-bottom {
+  background: #4A5D23;
+  padding: 20px 5%;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-bottom p {
   margin: 0;
   font-size: 0.9rem;
-}
-.footer .brand {
-  font-weight: bold;
-  margin-bottom: 5px;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 /* ======================
@@ -399,7 +719,7 @@ html, body {
   .hero-content p { font-size: 0.9rem; }
   .mini-slider { left: 20px; right: auto; bottom: 20px; }
   .mini-slider .swiper { height: 100px; }
-  .about, .khas, .cta, .footer { padding: 60px 20px; }
+  .about, .khas, .cta { padding: 60px 20px; }
   
   /* Timeline mobile jadi 1 kolom */
   .timeline::before { left: 20px; }
@@ -414,5 +734,28 @@ html, body {
   }
   .timeline-content {
     max-width: 100%;
+  }
+
+  /* Footer Responsive */
+  .footer-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-character {
+    flex: 0 0 auto;
+  }
+
+  .footer-hero-text {
+    text-align: center;
+  }
+
+  .footer-hero-text h2 {
+    font-size: 1.8rem;
+  }
+
+  .footer-links {
+    grid-template-columns: 1fr;
+    gap: 30px;
   }
 }
