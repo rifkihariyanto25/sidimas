@@ -8,16 +8,16 @@ import "swiper/css/effect-fade";
 
 export default function Home() {
   const wisataSlides = [
-    { img: "/IMG_6806 1.png", alt: "Pantai" },
-    { img: "/IMG_5702 2.png", alt: "Gunung" },
-    { img: "/IMG_7236 3.png", alt: "Air Terjun" },
-    { img: "/IMG3.png", alt: "Air Terjun" },
+    { id: 1, img: "/IMG_6806 1.png", alt: "Pantai" },
+    { id: 2, img: "/IMG_5702 2.png", alt: "Gunung" },
+    { id: 3, img: "/IMG_7236 3.png", alt: "Air Terjun" },
+    { id: 4, img: "/IMG3.png", alt: "Pemandangan" },
   ];
 
   const kulinerSlides = [
-    { img: "/mendoan.png", alt: "Mendoan" },
-    { img: "/sroto.png", alt: "Sroto Sokaraja" },
-    { img: "/gethuk.png", alt: "Gethuk Goreng" },
+    { id: 1, img: "/Mendoan.png", alt: "Mendoan" },
+    { id: 2, img: "/IMG3.png", alt: "Sroto Sokaraja" },
+    { id: 3, img: "/IMG_6806 1.png", alt: "Gethuk Goreng" },
   ];
 
   return (
@@ -69,17 +69,30 @@ export default function Home() {
             </div>
 
             {/* MINI SLIDER WISATA */}
-            <div className="mini-slider absolute bottom-10 right-10 w-[350px] z-10">
+            <div className="mini-slider">
               <Swiper
                 modules={[Autoplay]}
-                spaceBetween={15}
+                spaceBetween={12}
                 slidesPerView={3}
                 loop={true}
-                autoplay={{ delay: 2000, disableOnInteraction: false }}
+                loopAdditionalSlides={2}
+                centeredSlides={false}
+                autoplay={{ 
+                  delay: 2500, 
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: true 
+                }}
+                speed={800}
               >
-                {wisataSlides.map((s, i) => (
-                  <SwiperSlide key={i}>
-                    <Image src={s.img} alt={s.alt} width={300} height={200} className="rounded-lg" />
+                {wisataSlides.map((s) => (
+                  <SwiperSlide key={s.id}>
+                    <Image 
+                      src={s.img} 
+                      alt={s.alt} 
+                      width={180} 
+                      height={140} 
+                      style={{ width: '100%', height: '140px', objectFit: 'cover' }}
+                    />
                   </SwiperSlide>
                 ))}
               </Swiper>
@@ -106,17 +119,30 @@ export default function Home() {
             </div>
 
             {/* MINI SLIDER KULINER */}
-            <div className="mini-slider absolute bottom-10 right-10 w-[350px] z-10">
+            <div className="mini-slider">
               <Swiper
                 modules={[Autoplay]}
-                spaceBetween={15}
+                spaceBetween={12}
                 slidesPerView={3}
                 loop={true}
-                autoplay={{ delay: 2000, disableOnInteraction: false }}
+                loopAdditionalSlides={2}
+                centeredSlides={false}
+                autoplay={{ 
+                  delay: 2500, 
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: true 
+                }}
+                speed={800}
               >
-                {kulinerSlides.map((s, i) => (
-                  <SwiperSlide key={i}>
-                    <Image src={s.img} alt={s.alt} width={300} height={200} className="rounded-lg" />
+                {kulinerSlides.map((s) => (
+                  <SwiperSlide key={s.id}>
+                    <Image 
+                      src={s.img} 
+                      alt={s.alt} 
+                      width={180} 
+                      height={140} 
+                      style={{ width: '100%', height: '140px', objectFit: 'cover' }}
+                    />
                   </SwiperSlide>
                 ))}
               </Swiper>
@@ -271,7 +297,7 @@ Background wayang kiri
             <div className="footer-hero">
               <div className="footer-character">
                 <Image 
-                  src="/Group 6.png" 
+                  src="/Group 86.png" 
                   alt="Banyumas Character" 
                   width={300} 
                   height={400}
@@ -286,9 +312,12 @@ Background wayang kiri
                 <p>Be an explorer and experience the beauty of diversity in Banyumas.</p>
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Footer Links */}
-            <div className="footer-links">
+        {/* Footer Links - Full Width Section */}
+        <div className="footer-links">
+          <div className="footer-links-container">
               {/* About Sidimas */}
               <div className="footer-col">
                 <h3>Sidimas</h3>
@@ -314,17 +343,17 @@ Background wayang kiri
               </div>
 
               {/* Hubungi Kami */}
-              <div className="footer-col">
-                <h3>Hubungi Kami</h3>
-                <ul>
-                  <li>
-                    <span>📍</span> Jl. Bojong Lengkong, Kabupaten Tegal, Jawa Tengah
-                  </li>
-                  <li>
-                    <span>📞</span> +6285222555212
-                  </li>
-                </ul>
-              </div>
+            {/* Hubungi Kami */}
+            <div className="footer-col">
+              <h3>Hubungi Kami</h3>
+              <ul>
+                <li>
+                  <span>📍</span> Jl. Bojong Lengkong, Kabupaten Tegal, Jawa Tengah
+                </li>
+                <li>
+                  <span>📞</span> +6285222555212
+                </li>
+              </ul>
             </div>
           </div>
         </div>
