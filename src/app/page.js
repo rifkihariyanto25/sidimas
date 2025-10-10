@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
+import { motion } from "framer-motion";
+import LogoLoop from "./components/LogoLoop";
 import "swiper/css";
 import "swiper/css/effect-fade";
 
@@ -69,34 +71,23 @@ export default function Home() {
               </a>
             </div>
 
-            {/* MINI SLIDER WISATA */}
+            {/* LOGO LOOP WISATA */}
             <div className="mini-slider">
-              <Swiper
-                modules={[Autoplay]}
-                spaceBetween={12}
-                slidesPerView={3}
-                loop={true}
-                loopAdditionalSlides={2}
-                centeredSlides={false}
-                autoplay={{ 
-                  delay: 2500, 
-                  disableOnInteraction: false,
-                  pauseOnMouseEnter: true 
-                }}
-                speed={800}
-              >
-                {wisataSlides.map((s) => (
-                  <SwiperSlide key={s.id}>
-                    <Image 
-                      src={s.img} 
-                      alt={s.alt} 
-                      width={180} 
-                      height={140} 
-                      style={{ width: '100%', height: '140px', objectFit: 'cover' }}
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+              <LogoLoop
+                logos={wisataSlides.map(slide => ({
+                  src: slide.img,
+                  alt: slide.alt,
+                  width: 180,
+                  height: 140
+                }))}
+                speed={80}
+                direction="left"
+                logoHeight={140}
+                gap={16}
+                pauseOnHover={true}
+                scaleOnHover={true}
+                ariaLabel="Wisata Banyumas"
+              />
             </div>
           </section>
         </SwiperSlide>
@@ -119,59 +110,80 @@ export default function Home() {
               </a>
             </div>
 
-            {/* MINI SLIDER KULINER */}
+            {/* LOGO LOOP KULINER */}
             <div className="mini-slider">
-              <Swiper
-                modules={[Autoplay]}
-                spaceBetween={12}
-                slidesPerView={3}
-                loop={true}
-                loopAdditionalSlides={2}
-                centeredSlides={false}
-                autoplay={{ 
-                  delay: 2500, 
-                  disableOnInteraction: false,
-                  pauseOnMouseEnter: true 
-                }}
-                speed={800}
-              >
-                {kulinerSlides.map((s) => (
-                  <SwiperSlide key={s.id}>
-                    <Image 
-                      src={s.img} 
-                      alt={s.alt} 
-                      width={180} 
-                      height={140} 
-                      style={{ width: '100%', height: '140px', objectFit: 'cover' }}
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+              <LogoLoop
+                logos={kulinerSlides.map(slide => ({
+                  src: slide.img,
+                  alt: slide.alt,
+                  width: 180,
+                  height: 140
+                }))}
+                speed={80}
+                direction="left"
+                logoHeight={140}
+                gap={16}
+                pauseOnHover={true}
+                scaleOnHover={true}
+                ariaLabel="Kuliner Banyumas"
+              />
             </div>
           </section>
         </SwiperSlide>
       </Swiper>
 
       {/* ✅ SECTION ABOUT (Timeline) */}
- <section className="about relative py-16">
+ <motion.section 
+   className="about relative py-16"
+   initial={{ opacity: 0, y: 50 }}
+   whileInView={{ opacity: 1, y: 0 }}
+   transition={{ duration: 0.8 }}
+   viewport={{ once: true, margin: "-100px" }}
+ >
 
   {/* Background wayang/gamelan kiri kanan */}
-  <div className="wayang-left">
+  <motion.div 
+    className="wayang-left"
+    initial={{ x: -100, opacity: 0 }}
+    whileInView={{ x: 0, opacity: 0.4 }}
+    transition={{ duration: 1, delay: 0.3 }}
+    viewport={{ once: true }}
+  >
     <img src="/ayang.png" alt="Gamelan Kiri" />
-  </div>
+  </motion.div>
 
-  <div className="wayang-right">
+  <motion.div 
+    className="wayang-right"
+    initial={{ x: 100, opacity: 0 }}
+    whileInView={{ x: 0, opacity: 0.4 }}
+    transition={{ duration: 1, delay: 0.3 }}
+    viewport={{ once: true }}
+  >
     <img src="/ayang.png" alt="Gamelan Kanan" />
-  </div>
+  </motion.div>
 
-  <h2 className="text-center text-3xl font-bold mb-2">Alasan</h2>
+  <motion.h2 
+    className="text-center text-3xl font-bold mb-2"
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, delay: 0.2 }}
+    viewport={{ once: true }}
+  >
+    Alasan
+  </motion.h2>
   <p className="text-center mb-12">
     Kenapa Kamu Harus Mengetahui Kekayaan <span className="text-lime-700 font-semibold">Banyumas</span>
   </p>
 
   <div className="timeline relative z-10">
     {/* Item kiri */}
-    <div className="timeline-item left">
+    <motion.div 
+      className="timeline-item left"
+      initial={{ opacity: 0, x: -50 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      viewport={{ once: true }}
+    >
       <span className="timeline-dot"></span>
       <div className="timeline-content">
         <h3>Bahasa Banyumasan</h3>
@@ -182,10 +194,16 @@ export default function Home() {
       <div className="timeline-img-side">
         <img src="/IMG3.png" alt="Bahasa Banyumasan" />
       </div>
-    </div>
+    </motion.div>
 
     {/* Item kanan */}
-    <div className="timeline-item left">
+    <motion.div 
+      className="timeline-item left"
+      initial={{ opacity: 0, x: 50 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6, delay: 0.4 }}
+      viewport={{ once: true }}
+    >
       <span className="timeline-dot"></span>
       <div className="timeline-img-side">
         <img src="/jaranan.jpeg" alt="Budaya dan Tradisi" />
@@ -196,23 +214,35 @@ export default function Home() {
           Dari wayang kulit sampai upacara adat, Banyumas punya banyak kegiatan seru.
         </p>
       </div>
-    </div>
+    </motion.div>
   </div>
-</section>
+</motion.section>
 
 
 
       {/* ✅ SECTION BERAGAM KHAS */}
-<section className="khas py-20 px-6 md:px-16 bg-gray-50 text-black">
+<motion.section 
+  className="khas py-20 px-6 md:px-16 bg-gray-50 text-black"
+  initial={{ opacity: 0, y: 50 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8 }}
+  viewport={{ once: true, margin: "-100px" }}
+>
   <div className="max-w-6xl mx-auto">
-    <div className="text-center mb-4">
+    <motion.div 
+      className="text-center mb-4"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      viewport={{ once: true }}
+    >
       <h2 className="text-3xl font-bold mb-2">
         Beragam Khas <span className="text-lime-600">Banyumas</span>
       </h2>
       <p className="text-gray-600 mb-6">
         Lihat beragam ciri khas budaya Banyumas, mulai dari wisata, kuliner dan budaya
       </p>
-    </div>
+    </motion.div>
     
     {/* Tab Navigation */}
     <div className="tab-buttons">
@@ -273,7 +303,7 @@ export default function Home() {
       </div>
     </div>
   </div>
-</section>
+</motion.section>
 
       {/* ✅ CTA SECTION */}
       <section className="cta py-20 bg-[url('/Group 3.png')] bg-cover bg-center text-center text-white relative">
