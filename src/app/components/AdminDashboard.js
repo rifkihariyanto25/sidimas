@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
 
 const STORAGE_KEY = 'sidimas_admin_contents'
 const CATEGORIES = [
@@ -33,24 +34,36 @@ export default function AdminDashboard() {
     setAdminEmail(email || '')
   }, [router])
 
+  // Load data from Supabase
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (raw) {
-        setItems(JSON.parse(raw))
-      }
-    } catch (e) {
-      console.error('Gagal membaca localStorage:', e)
-    }
+    loadContents()
   }, [])
 
-  useEffect(() => {
+  async function loadContents() {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
-    } catch (e) {
-      console.error('Gagal menyimpan ke localStorage:', e)
+      const { data, error } = await supabase
+        .from('contents')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+      
+      if (data) {
+        setItems(data)
+      }
+    } catch (error) {
+      console.error('Error loading contents:', error.message)
+      // Fallback ke localStorage jika Supabase gagal
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY)
+        if (raw) {
+          setItems(JSON.parse(raw))
+        }
+      } catch (e) {
+        console.error('Gagal membaca localStorage:', e)
+      }
     }
-  }, [items])
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -58,23 +71,46 @@ export default function AdminDashboard() {
 
     setIsLoading(true)
     
-    // Simulasi loading untuk efek modern
-    await new Promise(resolve => setTimeout(resolve, 300))
+    try {
+      const newItem = {
+        title: title.trim(),
+        category,
+        description: description.trim(),
+      }
 
-    const newItem = {
-      id: Date.now(),
-      title: title.trim(),
-      category,
-      description: description.trim(),
-      createdAt: new Date().toISOString(),
+      const { data, error } = await supabase
+        .from('contents')
+        .insert([newItem])
+        .select()
+
+      if (error) throw error
+
+      if (data && data[0]) {
+        setItems(prev => [data[0], ...prev])
+      }
+
+      // Reset form
+  async function handleDelete(id) {
+    try {
+      const { error } = await supabase
+        .from('contents')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+
+      setItems(prev => prev.filter(item => item.id !== id))
+    } catch (error) {
+      console.error('Error deleting content:', error.message)
+      alert('Gagal menghapus konten: ' + error.message)
     }
-
-    setItems(prev => [newItem, ...prev])
-    
-    setTitle('')
-    setCategory('wisata')
-    setDescription('')
-    setIsLoading(false)
+  }   setDescription('')
+    } catch (error) {
+      console.error('Error adding content:', error.message)
+      alert('Gagal menambahkan konten: ' + error.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   function handleDelete(id) {
