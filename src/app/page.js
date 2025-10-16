@@ -4,6 +4,8 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import { motion } from "framer-motion";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import LogoLoop from "./components/LogoLoop";
 import "swiper/css";
 import "swiper/css/effect-fade";
@@ -33,22 +35,7 @@ export default function Home() {
   return (
     <main>
       {/* ✅ NAVBAR */}
-      <header className="navbar fixed top-0 left-0 w-full flex justify-between items-center px-6 md:px-16 py-4 z-50 bg-black/40 backdrop-blur-md text-white">
-        <div className="logo font-bold text-lg">SIDimas.</div>
-        <nav>
-          <ul className="flex gap-6">
-            <li><a href="#">Beranda</a></li>
-            <li><a href="#">Wisata</a></li>
-            <li><a href="#">Kuliner</a></li>
-            <li><a href="#">Budaya</a></li>
-            <li><a href="#">Kontribusi</a></li>
-          </ul>
-        </nav>
-        <div className="nav-actions flex gap-3">
-          <a href="#" className="login">Log in</a>
-          <a href="#" className="signup bg-lime-600 px-4 py-2 rounded-lg font-semibold hover:bg-lime-700">Sign Up</a>
-        </div>
-      </header>
+      <Navbar />
 
       {/* ✅ HERO SLIDER */}
       <Swiper
@@ -365,79 +352,7 @@ export default function Home() {
       </section>
 
       {/* ✅ FOOTER */}
-      <footer className="footer">
-        <div className="footer-top">
-          <div className="footer-container">
-            {/* Hero Section dengan Animasi */}
-            <div className="footer-hero">
-              <div className="footer-character">
-                <Image 
-                  src="/Group 86.png" 
-                  alt="Banyumas Character" 
-                  width={300} 
-                  height={400}
-                  className="character-img"
-                />
-              </div>
-              <div className="footer-hero-text">
-                <h2>
-                  <span className="text-lime-400">Ayo Kunjungi</span><br />
-                  DAN JELAJAHI BANYUMAS
-                </h2>
-                <p>Be an explorer and experience the beauty of diversity in Banyumas.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer Links - Full Width Section */}
-        <div className="footer-links">
-          <div className="footer-links-container">
-              {/* About Sidimas */}
-              <div className="footer-col">
-                <h3>Sidimas</h3>
-                <p>
-                  SIDIMAS hadir sebagai solusi inovatif untuk menjawab kebutuhan masyarakat Banyumas akan layanan informasi yang praktis, mudah diakses, dan mendukung terwujudnya informasi berbasis digital.
-                </p>
-                <div className="social-icons">
-                  <a href="#" aria-label="Facebook"><i className="fab fa-facebook-f"></i>F</a>
-                  <a href="#" aria-label="Instagram"><i className="fab fa-instagram"></i>I</a>
-                  <a href="#" aria-label="YouTube"><i className="fab fa-youtube"></i>Y</a>
-                </div>
-              </div>
-
-              {/* Navigasi */}
-              <div className="footer-col">
-                <h3>Navigasi</h3>
-                <ul>
-                  <li><a href="#">Beranda</a></li>
-                  <li><a href="#">Wisata</a></li>
-                  <li><a href="#">Kuliner</a></li>
-                  <li><a href="#">Budaya</a></li>
-                </ul>
-              </div>
-
-              {/* Hubungi Kami */}
-            {/* Hubungi Kami */}
-            <div className="footer-col">
-              <h3>Hubungi Kami</h3>
-              <ul>
-                <li>
-                  <span>📍</span> Jl. Bojong Lengkong, Kabupaten Tegal, Jawa Tengah
-                </li>
-                <li>
-                  <span>📞</span> +6285222555212
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer Bottom */}
-        <div className="footer-bottom">
-          <p>© 2025 Azkal Jaya Las. All Rights Reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </main>
   );
 }
