@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 const STORAGE_KEY = 'sidimas_admin_contents'
 const CATEGORIES = [
@@ -10,12 +11,27 @@ const CATEGORIES = [
 ]
 
 export default function AdminDashboard() {
+  const router = useRouter()
   const [items, setItems] = useState([])
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('wisata')
   const [description, setDescription] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [filterCategory, setFilterCategory] = useState('all')
+  const [adminEmail, setAdminEmail] = useState('')
+
+  // Check if user is logged in
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('sidimas_admin_logged_in')
+    const email = localStorage.getItem('sidimas_admin_email')
+    
+    if (!isLoggedIn) {
+      router.push('/admin/login')
+      return
+    }
+    
+    setAdminEmail(email || '')
+  }, [router])
 
   useEffect(() => {
     try {
@@ -78,6 +94,14 @@ export default function AdminDashboard() {
     count: items.filter(item => item.category === cat.value).length
   }))
 
+  function handleLogout() {
+    if (confirm('Yakin ingin logout?')) {
+      localStorage.removeItem('sidimas_admin_logged_in')
+      localStorage.removeItem('sidimas_admin_email')
+      router.push('/admin/login')
+    }
+  }
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -89,8 +113,56 @@ export default function AdminDashboard() {
         <div style={{ 
           textAlign: 'center', 
           marginBottom: '40px',
-          color: 'white'
+          color: 'white',
+          position: 'relative'
         }}>
+          {/* Logout Button */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+            gap: '8px'
+          }}>
+            <div style={{
+              background: 'rgba(255,255,255,0.2)',
+              padding: '8px 16px',
+              borderRadius: '20px',
+              fontSize: '13px',
+              fontWeight: '600',
+              backdropFilter: 'blur(10px)'
+            }}>
+              👤 {adminEmail}
+            </div>
+            <button
+              onClick={handleLogout}
+              style={{
+                background: 'rgba(255,255,255,0.2)',
+                border: '2px solid rgba(255,255,255,0.3)',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '12px',
+                fontSize: '14px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                backdropFilter: 'blur(10px)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'rgba(255,255,255,0.3)'
+                e.target.style.borderColor = 'rgba(255,255,255,0.5)'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'rgba(255,255,255,0.2)'
+                e.target.style.borderColor = 'rgba(255,255,255,0.3)'
+              }}
+            >
+              🚪 Logout
+            </button>
+          </div>
+
           <h1 style={{ 
             fontSize: '48px', 
             fontWeight: '800',
