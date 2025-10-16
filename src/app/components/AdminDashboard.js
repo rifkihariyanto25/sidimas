@@ -20,6 +20,8 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(false)
   const [filterCategory, setFilterCategory] = useState('all')
   const [adminEmail, setAdminEmail] = useState('')
+  const [imageFile, setImageFile] = useState(null)
+  const [imagePreview, setImagePreview] = useState('')
 
   // Check if user is logged in
   useEffect(() => {
@@ -42,7 +44,7 @@ export default function AdminDashboard() {
   async function loadContents() {
     try {
       const { data, error } = await supabase
-        .from('contents')
+        .from('konten')
         .select('*')
         .order('created_at', { ascending: false })
 
@@ -53,16 +55,25 @@ export default function AdminDashboard() {
       }
     } catch (error) {
       console.error('Error loading contents:', error.message)
-      // Fallback ke localStorage jika Supabase gagal
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY)
-        if (raw) {
-          setItems(JSON.parse(raw))
-        }
-      } catch (e) {
-        console.error('Gagal membaca localStorage:', e)
-      }
     }
+  }
+
+  function handleImageChange(e) {
+    const file = e.target.files[0]
+    if (file) {
+      setImageFile(file)
+      // Create preview
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  function clearImage() {
+    setImageFile(null)
+    setImagePreview('')
   }
 
   async function handleSubmit(e) {
@@ -72,14 +83,38 @@ export default function AdminDashboard() {
     setIsLoading(true)
     
     try {
+      let gambarUrl = ''
+
+      // Upload image to Supabase Storage jika ada
+      if (imageFile) {
+        const fileExt = imageFile.name.split('.').pop()
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`
+        const filePath = `konten/${fileName}`
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('images')
+          .upload(filePath, imageFile)
+
+        if (uploadError) throw uploadError
+
+        // Get public URL
+        const { data: urlData } = supabase.storage
+          .from('images')
+          .getPublicUrl(filePath)
+
+        gambarUrl = urlData.publicUrl
+      }
+
+      // Insert data ke tabel konten
       const newItem = {
-        title: title.trim(),
-        category,
-        description: description.trim(),
+        nama: title.trim(),
+        kategori: category,
+        deskripsi: description.trim(),
+        gambar_url: gambarUrl,
       }
 
       const { data, error } = await supabase
-        .from('contents')
+        .from('konten')
         .insert([newItem])
         .select()
 
@@ -90,31 +125,23 @@ export default function AdminDashboard() {
       }
 
       // Reset form
-  async function handleDelete(id) {
-    try {
-      const { error } = await supabase
-        .from('contents')
-        .delete()
-        .eq('id', id)
-
-      if (error) throw error
-
-      setItems(prev => prev.filter(item => item.id !== id))
-    } catch (error) {
-      console.error('Error deleting content:', error.message)
-      alert('Gagal menghapus konten: ' + error.message)
-    }
-  }   setDescription('')
+      setTitle('')
+      setCategory('wisata')
+      setDescription('')
+      clearImage()
+      
+      alert('✅ Konten berhasil ditambahkan!')
     } catch (error) {
       console.error('Error adding content:', error.message)
-      alert('Gagal menambahkan konten: ' + error.message)
+      alert('❌ Gagal menambahkan konten: ' + error.message)
     } finally {
       setIsLoading(false)
     }
   }
 
-  function handleDelete(id) {
-    setItems(prev => prev.filter(item => item.id !== id))
+  async function handleDelete(id) {
+    // Fungsi delete akan dibuat nanti
+    alert('Fitur hapus belum diaktifkan')
   }
 
   const getCategoryData = (cat) => {
@@ -123,11 +150,11 @@ export default function AdminDashboard() {
 
   const filteredItems = filterCategory === 'all' 
     ? items 
-    : items.filter(item => item.category === filterCategory)
+    : items.filter(item => item.kategori === filterCategory)
 
   const stats = CATEGORIES.map(cat => ({
     ...cat,
-    count: items.filter(item => item.category === cat.value).length
+    count: items.filter(item => item.kategori === cat.value).length
   }))
 
   function handleLogout() {
@@ -399,9 +426,98 @@ export default function AdminDashboard() {
                     transition: 'all 0.2s',
                     outline: 'none'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                  onFocus={(e) => e.target.style.borderColor = '#65a30d'}
                   onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
                 />
+              </div>
+
+              {/* Upload Gambar */}
+              <div>
+                <label style={{ 
+                  display: 'block', 
+                  fontWeight: '600', 
+                  marginBottom: '8px',
+                  color: '#374151',
+                  fontSize: '14px'
+                }}>
+                  Gambar
+                </label>
+                
+                {imagePreview ? (
+                  <div style={{ position: 'relative' }}>
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      style={{
+                        width: '100%',
+                        height: '200px',
+                        objectFit: 'cover',
+                        borderRadius: '12px',
+                        border: '2px solid #e5e7eb'
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={clearImage}
+                      style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        background: '#dc2626',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '32px',
+                        height: '32px',
+                        cursor: 'pointer',
+                        fontSize: '16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                      }}
+                      title="Hapus gambar"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <label style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    height: '150px',
+                    border: '2px dashed #d1d5db',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    background: '#f9fafb'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#65a30d'
+                    e.currentTarget.style.background = '#f0fdf4'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#d1d5db'
+                    e.currentTarget.style.background = '#f9fafb'
+                  }}>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      style={{ display: 'none' }}
+                    />
+                    <div style={{ fontSize: '48px', marginBottom: '8px' }}>📷</div>
+                    <div style={{ fontSize: '14px', color: '#6b7280', fontWeight: '600' }}>
+                      Klik untuk upload gambar
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '4px' }}>
+                      PNG, JPG, JPEG (Max 5MB)
+                    </div>
+                  </label>
+                )}
               </div>
 
               <button
@@ -508,7 +624,7 @@ export default function AdminDashboard() {
             ) : (
               <div style={{ display: 'grid', gap: '16px', maxHeight: '700px', overflowY: 'auto', paddingRight: '8px' }}>
                 {filteredItems.map(item => {
-                  const catData = getCategoryData(item.category)
+                  const catData = getCategoryData(item.kategori)
                   return (
                     <div
                       key={item.id}
@@ -532,6 +648,19 @@ export default function AdminDashboard() {
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: '16px' }}>
+                        {item.gambar_url && (
+                          <img 
+                            src={item.gambar_url} 
+                            alt={item.nama}
+                            style={{
+                              width: '120px',
+                              height: '120px',
+                              objectFit: 'cover',
+                              borderRadius: '12px',
+                              flexShrink: 0
+                            }}
+                          />
+                        )}
                         <div style={{ flex: 1 }}>
                           <div style={{ marginBottom: '12px' }}>
                             <span style={{
@@ -554,16 +683,16 @@ export default function AdminDashboard() {
                             fontWeight: '700',
                             color: '#1f2937'
                           }}>
-                            {item.title}
+                            {item.nama}
                           </h3>
-                          {item.description && (
+                          {item.deskripsi && (
                             <p style={{ 
                               margin: 0, 
                               color: '#6b7280', 
                               fontSize: '14px', 
                               lineHeight: '1.6'
                             }}>
-                              {item.description}
+                              {item.deskripsi}
                             </p>
                           )}
                         </div>
@@ -578,7 +707,8 @@ export default function AdminDashboard() {
                             fontSize: '18px',
                             cursor: 'pointer',
                             transition: 'all 0.2s',
-                            lineHeight: 1
+                            lineHeight: 1,
+                            flexShrink: 0
                           }}
                           onMouseEnter={(e) => {
                             e.target.style.background = '#dc2626'
