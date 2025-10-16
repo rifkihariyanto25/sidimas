@@ -23,6 +23,13 @@ export default function Home() {
     { id: 4, img: "/IMG3.png", alt: "Pemandangan" },
   ];
 
+  const budayaSlides = [
+    { id: 1, img: "/jaranan.jpeg", alt: "Jaranan" },
+    { id: 2, img: "/ayang.png", alt: "Wayang Kulit" },
+    { id: 3, img: "/IMG3.png", alt: "Kesenian Tradisional" },
+    { id: 4, img: "/pemandangan.png", alt: "Upacara Adat" },
+  ];
+
   return (
     <main>
       {/* ✅ NAVBAR */}
@@ -80,10 +87,10 @@ export default function Home() {
                   width: 180,
                   height: 140
                 }))}
-                speed={80}
+                speed={60}
                 direction="left"
                 logoHeight={140}
-                gap={16}
+                gap={12}
                 pauseOnHover={true}
                 scaleOnHover={true}
                 ariaLabel="Wisata Banyumas"
@@ -119,13 +126,52 @@ export default function Home() {
                   width: 180,
                   height: 140
                 }))}
-                speed={80}
+                speed={60}
                 direction="left"
                 logoHeight={140}
-                gap={16}
+                gap={12}
                 pauseOnHover={true}
                 scaleOnHover={true}
                 ariaLabel="Kuliner Banyumas"
+              />
+            </div>
+          </section>
+        </SwiperSlide>
+
+        {/* SLIDE 3: BUDAYA */}
+        <SwiperSlide>
+          <section
+            className="hero-slide h-screen flex items-center relative text-white bg-cover bg-center"
+            style={{ backgroundImage: "url('/jaranan.jpeg')" }}
+          >
+            <div className="absolute inset-0 bg-black/40"></div>
+            <div className="hero-content relative z-10 px-6 md:px-16">
+              <p className="tracking-widest mb-2 uppercase text-sm">Mari Lestarikan</p>
+              <h1 className="text-4xl md:text-6xl font-bold mb-4">Budaya Banyumas.</h1>
+              <p className="max-w-lg mb-6">
+                Dari wayang kulit, jaranan, hingga kesenian tradisional yang memikat hati
+              </p>
+              <a href="#" className="cta bg-lime-600 px-6 py-3 rounded-lg font-semibold hover:bg-lime-700">
+                Kenali Budaya
+              </a>
+            </div>
+
+            {/* LOGO LOOP BUDAYA */}
+            <div className="mini-slider">
+              <LogoLoop
+                logos={budayaSlides.map(slide => ({
+                  src: slide.img,
+                  alt: slide.alt,
+                  width: 180,
+                  height: 140
+                }))}
+                speed={60}
+                direction="left"
+                logoHeight={140}
+                gap={12}
+                pauseOnHover={true}
+                scaleOnHover={true}
+                ariaLabel="Budaya Banyumas"
               />
             </div>
           </section>
@@ -264,42 +310,42 @@ export default function Home() {
     <div className="grid">
       {/* Gambar 1 - Large (2x2) */}
       <div>
-        <span className="text-gray-600">gambar 1</span>
+        <span className="text-gray-600"></span>
       </div>
       
       {/* Gambar 2 - Normal */}
       <div>
-        <span className="text-gray-600">gambar 2</span>
+        <span className="text-gray-600"></span>
       </div>
       
       {/* Gambar 3 - Normal */}
       <div>
-        <span className="text-gray-600">gambar 3</span>
+        <span className="text-gray-600"></span>
       </div>
       
       {/* Gambar 4 - Normal */}
       <div>
-        <span className="text-gray-600">gambar 4</span>
+        <span className="text-gray-600"></span>
       </div>
       
       {/* Gambar 5 - Normal */}
       <div>
-        <span className="text-gray-600">gambar 5</span>
+        <span className="text-gray-600"></span>
       </div>
       
       {/* Gambar 6 - Wide (2x1) */}
       <div>
-        <span className="text-gray-600">gambar 6</span>
+        <span className="text-gray-600"></span>
       </div>
       
       {/* Gambar 7 - Normal */}
       <div>
-        <span className="text-gray-600">gambar 7</span>
+        <span className="text-gray-600"></span>
       </div>
       
       {/* Gambar 8 - Extra Large (2x2) */}
       <div>
-        <span className="text-gray-600">gambar 8</span>
+        <span className="text-gray-600"></span>
       </div>
     </div>
   </div>
