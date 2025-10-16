@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation'
 
 const STORAGE_KEY = 'sidimas_admin_contents'
 const CATEGORIES = [
-  { value: 'wisata', label: '🏞️ Wisata', icon: '🏞️', color: '#6366f1', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
-  { value: 'kuliner', label: '🍜 Kuliner', icon: '🍜', color: '#f43f5e', gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
-  { value: 'budaya', label: '🎭 Budaya', icon: '🎭', color: '#f59e0b', gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' },
+  { value: 'wisata', label: '🏞️ Wisata', icon: '🏞️', color: '#65a30d', gradient: 'linear-gradient(135deg, #84cc16 0%, #65a30d 100%)' },
+  { value: 'kuliner', label: '🍜 Kuliner', icon: '🍜', color: '#16a34a', gradient: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' },
+  { value: 'budaya', label: '🎭 Budaya', icon: '🎭', color: '#15803d', gradient: 'linear-gradient(135deg, #4ade80 0%, #15803d 100%)' },
 ]
 
 export default function AdminDashboard() {
@@ -105,7 +105,7 @@ export default function AdminDashboard() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: 'linear-gradient(135deg, #65a30d 0%, #15803d 100%)',
       padding: '40px 20px'
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
@@ -423,7 +423,7 @@ export default function AdminDashboard() {
                     padding: '6px 14px',
                     borderRadius: '20px',
                     border: 'none',
-                    background: filterCategory === 'all' ? '#667eea' : '#e5e7eb',
+                    background: filterCategory === 'all' ? '#65a30d' : '#e5e7eb',
                     color: filterCategory === 'all' ? 'white' : '#6b7280',
                     fontSize: '13px',
                     fontWeight: '600',

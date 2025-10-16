@@ -39,7 +39,7 @@ export default function LoginPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: 'linear-gradient(135deg, #65a30d 0%, #15803d 100%)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -66,7 +66,7 @@ export default function LoginPage() {
             margin: '0 0 8px 0', 
             fontSize: '32px', 
             fontWeight: '800',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: 'linear-gradient(135deg, #84cc16 0%, #65a30d 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text'
@@ -120,7 +120,7 @@ export default function LoginPage() {
                   transition: 'all 0.2s',
                   outline: 'none'
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                onFocus={(e) => e.target.style.borderColor = '#65a30d'}
                 onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
                 required
               />
@@ -163,7 +163,7 @@ export default function LoginPage() {
                   transition: 'all 0.2s',
                   outline: 'none'
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#667eea'}
+                onFocus={(e) => e.target.style.borderColor = '#65a30d'}
                 onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
                 required
               />
@@ -211,7 +211,7 @@ export default function LoginPage() {
             type="submit"
             disabled={isLoading}
             style={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: 'linear-gradient(135deg, #84cc16 0%, #65a30d 100%)',
               color: 'white',
               border: 'none',
               padding: '16px',
@@ -220,17 +220,17 @@ export default function LoginPage() {
               fontWeight: '700',
               cursor: isLoading ? 'not-allowed' : 'pointer',
               transition: 'transform 0.2s, box-shadow 0.2s',
-              boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+              boxShadow: '0 4px 15px rgba(101, 163, 13, 0.4)',
               opacity: isLoading ? 0.7 : 1,
               marginTop: '8px'
             }}
             onMouseEnter={(e) => !isLoading && (
               e.target.style.transform = 'translateY(-2px)',
-              e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.5)'
+              e.target.style.boxShadow = '0 6px 20px rgba(101, 163, 13, 0.5)'
             )}
             onMouseLeave={(e) => !isLoading && (
               e.target.style.transform = 'translateY(0)',
-              e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)'
+              e.target.style.boxShadow = '0 4px 15px rgba(101, 163, 13, 0.4)'
             )}
           >
             {isLoading ? '🔄 Memproses...' : '🚀 Login'}
