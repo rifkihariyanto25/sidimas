@@ -22,6 +22,8 @@ export default function AdminDashboard() {
   const [adminEmail, setAdminEmail] = useState('')
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState('')
+  const [editingId, setEditingId] = useState(null)
+  const [isEditMode, setIsEditMode] = useState(false)
 
   // Check if user is logged in
   useEffect(() => {
@@ -76,6 +78,26 @@ export default function AdminDashboard() {
     setImagePreview('')
   }
 
+  function handleEdit(item) {
+    setIsEditMode(true)
+    setEditingId(item.id)
+    setTitle(item.nama)
+    setCategory(item.kategori)
+    setDescription(item.deskripsi || '')
+    setImagePreview(item.gambar_url || '')
+    // Scroll ke form
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function cancelEdit() {
+    setIsEditMode(false)
+    setEditingId(null)
+    setTitle('')
+    setCategory('wisata')
+    setDescription('')
+    clearImage()
+  }
+
   async function handleSubmit(e) {
     e.preventDefault()
     if (!title.trim()) return
@@ -83,9 +105,9 @@ export default function AdminDashboard() {
     setIsLoading(true)
     
     try {
-      let gambarUrl = ''
+      let gambarUrl = isEditMode ? imagePreview : ''
 
-      // Upload image to Supabase Storage jika ada
+      // Upload image to Supabase Storage jika ada file baru
       if (imageFile) {
         const fileExt = imageFile.name.split('.').pop()
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`
@@ -105,35 +127,62 @@ export default function AdminDashboard() {
         gambarUrl = urlData.publicUrl
       }
 
-      // Insert data ke tabel konten
-      const newItem = {
-        nama: title.trim(),
-        kategori: category,
-        deskripsi: description.trim(),
-        gambar_url: gambarUrl,
+      if (isEditMode) {
+        // UPDATE mode
+        const updateData = {
+          nama: title.trim(),
+          kategori: category,
+          deskripsi: description.trim(),
+          gambar_url: gambarUrl,
+        }
+
+        const { data, error } = await supabase
+          .from('konten')
+          .update(updateData)
+          .eq('id', editingId)
+          .select()
+
+        if (error) throw error
+
+        if (data && data[0]) {
+          setItems(prev => prev.map(item => 
+            item.id === editingId ? data[0] : item
+          ))
+        }
+
+        alert('✅ Konten berhasil diupdate!')
+        cancelEdit()
+      } else {
+        // INSERT mode
+        const newItem = {
+          nama: title.trim(),
+          kategori: category,
+          deskripsi: description.trim(),
+          gambar_url: gambarUrl,
+        }
+
+        const { data, error } = await supabase
+          .from('konten')
+          .insert([newItem])
+          .select()
+
+        if (error) throw error
+
+        if (data && data[0]) {
+          setItems(prev => [data[0], ...prev])
+        }
+
+        alert('✅ Konten berhasil ditambahkan!')
+        
+        // Reset form
+        setTitle('')
+        setCategory('wisata')
+        setDescription('')
+        clearImage()
       }
-
-      const { data, error } = await supabase
-        .from('konten')
-        .insert([newItem])
-        .select()
-
-      if (error) throw error
-
-      if (data && data[0]) {
-        setItems(prev => [data[0], ...prev])
-      }
-
-      // Reset form
-      setTitle('')
-      setCategory('wisata')
-      setDescription('')
-      clearImage()
-      
-      alert('✅ Konten berhasil ditambahkan!')
     } catch (error) {
-      console.error('Error adding content:', error.message)
-      alert('❌ Gagal menambahkan konten: ' + error.message)
+      console.error('Error saving content:', error.message)
+      alert('❌ Gagal menyimpan konten: ' + error.message)
     } finally {
       setIsLoading(false)
     }
@@ -309,17 +358,45 @@ export default function AdminDashboard() {
             padding: '32px',
             boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
           }}>
-            <h2 style={{ 
-              margin: '0 0 24px 0',
-              fontSize: '24px',
-              fontWeight: '700',
-              color: '#1f2937',
+            <div style={{ 
               display: 'flex',
+              justifyContent: 'space-between',
               alignItems: 'center',
-              gap: '8px'
+              marginBottom: '24px'
             }}>
-              ✨ Tambah Konten Baru
-            </h2>
+              <h2 style={{ 
+                margin: 0,
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#1f2937',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                {isEditMode ? '✏️ Edit Konten' : '✨ Tambah Konten Baru'}
+              </h2>
+              {isEditMode && (
+                <button
+                  type="button"
+                  onClick={cancelEdit}
+                  style={{
+                    background: '#6b7280',
+                    color: 'white',
+                    border: 'none',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'background 0.2s'
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = '#4b5563'}
+                  onMouseLeave={(e) => e.target.style.background = '#6b7280'}
+                >
+                  ✕ Batal Edit
+                </button>
+              )}
+            </div>
             
             <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '20px' }}>
               <div>
@@ -524,7 +601,7 @@ export default function AdminDashboard() {
                 type="submit"
                 disabled={isLoading}
                 style={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  background: 'linear-gradient(135deg, #84cc16 0%, #65a30d 100%)',
                   color: 'white',
                   border: 'none',
                   padding: '16px',
@@ -533,13 +610,13 @@ export default function AdminDashboard() {
                   fontWeight: '700',
                   cursor: isLoading ? 'not-allowed' : 'pointer',
                   transition: 'transform 0.2s, box-shadow 0.2s',
-                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+                  boxShadow: '0 4px 15px rgba(101, 163, 13, 0.4)',
                   opacity: isLoading ? 0.7 : 1
                 }}
-                onMouseEnter={(e) => !isLoading && (e.target.style.transform = 'translateY(-2px)', e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.5)')}
-                onMouseLeave={(e) => !isLoading && (e.target.style.transform = 'translateY(0)', e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)')}
+                onMouseEnter={(e) => !isLoading && (e.target.style.transform = 'translateY(-2px)', e.target.style.boxShadow = '0 6px 20px rgba(101, 163, 13, 0.5)')}
+                onMouseLeave={(e) => !isLoading && (e.target.style.transform = 'translateY(0)', e.target.style.boxShadow = '0 4px 15px rgba(101, 163, 13, 0.4)')}
               >
-                {isLoading ? '⏳ Menambahkan...' : '✨ Tambah Konten'}
+                {isLoading ? '⏳ Menyimpan...' : (isEditMode ? '💾 Update Konten' : '✨ Tambah Konten')}
               </button>
             </form>
           </div>
@@ -696,34 +773,62 @@ export default function AdminDashboard() {
                             </p>
                           )}
                         </div>
-                        <button
-                          onClick={() => handleDelete(item.id)}
-                          style={{
-                            background: '#fee2e2',
-                            border: 'none',
-                            color: '#dc2626',
-                            padding: '10px',
-                            borderRadius: '10px',
-                            fontSize: '18px',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s',
-                            lineHeight: 1,
-                            flexShrink: 0
-                          }}
-                          onMouseEnter={(e) => {
-                            e.target.style.background = '#dc2626'
-                            e.target.style.color = 'white'
-                            e.target.style.transform = 'scale(1.1)'
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.background = '#fee2e2'
-                            e.target.style.color = '#dc2626'
-                            e.target.style.transform = 'scale(1)'
-                          }}
-                          title="Hapus konten"
-                        >
-                          🗑️
-                        </button>
+                        <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                          <button
+                            onClick={() => handleEdit(item)}
+                            style={{
+                              background: '#dbeafe',
+                              border: 'none',
+                              color: '#2563eb',
+                              padding: '10px',
+                              borderRadius: '10px',
+                              fontSize: '18px',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s',
+                              lineHeight: 1
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.background = '#2563eb'
+                              e.target.style.color = 'white'
+                              e.target.style.transform = 'scale(1.1)'
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.background = '#dbeafe'
+                              e.target.style.color = '#2563eb'
+                              e.target.style.transform = 'scale(1)'
+                            }}
+                            title="Edit konten"
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            style={{
+                              background: '#fee2e2',
+                              border: 'none',
+                              color: '#dc2626',
+                              padding: '10px',
+                              borderRadius: '10px',
+                              fontSize: '18px',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s',
+                              lineHeight: 1
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.background = '#dc2626'
+                              e.target.style.color = 'white'
+                              e.target.style.transform = 'scale(1.1)'
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.background = '#fee2e2'
+                              e.target.style.color = '#dc2626'
+                              e.target.style.transform = 'scale(1)'
+                            }}
+                            title="Hapus konten"
+                          >
+                            🗑️
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )
