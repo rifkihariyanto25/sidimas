@@ -87,7 +87,7 @@ html, body {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0,0,0,0.25);
   z-index: 1;
 }
 .hero-content {
@@ -112,15 +112,18 @@ html, body {
   line-height: 1.6;
 }
 .hero-content .cta {
-  background: #8FA31E;
+  background: #cae33e !important;
   color: #fff;
   padding: 12px 24px;
   border-radius: 10px;
   font-weight: 600;
   text-decoration: none;
   transition: background .3s;
+  position: relative;
+  z-index: 10;
+  display: inline-block;
 }
-.hero-content .cta:hover { background: #8FA31E; }
+.hero-content .cta:hover { background: #dbf15e !important; }
 
 /* MINI SLIDER */
 .mini-slider {
@@ -142,7 +145,11 @@ html, body {
 
 .mini-slider .logoloop__item {
   width: 180px;
+  min-width: 180px;
+  max-width: 180px;
   height: 140px;
+  min-height: 140px;
+  max-height: 140px;
   flex-shrink: 0;
   border-radius: 12px;
   overflow: hidden;
@@ -150,11 +157,12 @@ html, body {
 }
 
 .mini-slider .logoloop__item img {
-  width: 100%;
-  height: 100%;
+  width: 180px;
+  height: 140px;
   object-fit: cover;
   border-radius: 12px;
   transition: transform 0.3s ease;
+  display: block;
 }
 
 .mini-slider .logoloop__item:hover img {

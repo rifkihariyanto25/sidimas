@@ -1,0 +1,271 @@
+/* Wisata Page Styles */
+.wisata-page {
+  min-height: 100vh;
+  background: #fff;
+}
+
+/* Hero Section */
+.hero-wisata {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-wisata > * {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-wisata h1 {
+  font-size: 5rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.8);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.hero-wisata p {
+  font-size: 1.125rem;
+  color: white;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+  line-height: 1.8;
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+/* Eksplorasi Section */
+.eksplorasi-section {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+}
+
+.eksplorasi-section h2 {
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.eksplorasi-section p {
+  color: #4b5563;
+  line-height: 1.8;
+}
+
+/* Rekomendasi Section */
+.rekomendasi-section {
+  background: white;
+}
+
+.map-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.map-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Info Cards */
+.info-card {
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.info-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #84cc16 0%, #65a30d 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.info-card:hover::before {
+  opacity: 1;
+}
+
+.info-card .number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(132, 204, 22, 0.2);
+  color: #65a30d;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.info-card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.info-card p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+/* Pin Markers */
+.pin-marker {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: #fbbf24;
+  border: 3px solid white;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  animation: bounce 2s ease-in-out infinite;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.pin-marker:hover {
+  transform: scale(1.2);
+  background: #f59e0b;
+}
+
+.pin-marker::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Itinerary Section */
+.itinerary-section {
+  background: white;
+}
+
+.itinerary-section h2 {
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.itinerary-section p {
+  color: #4b5563;
+  line-height: 1.8;
+}
+
+.itinerary-section .font-semibold {
+  color: #84cc16;
+  font-size: 1.1rem;
+}
+
+/* Footer */
+.footer-wisata {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  color: white;
+}
+
+.footer-wisata a {
+  color: #d1d5db;
+  transition: color 0.3s ease;
+}
+
+.footer-wisata a:hover {
+  color: #84cc16;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .hero-wisata h1 {
+    font-size: 3rem;
+  }
+  
+  .hero-wisata p {
+    font-size: 1.125rem;
+  }
+  
+  .info-card {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-wisata {
+    height: 100vh;
+  }
+  
+  .hero-wisata h1 {
+    font-size: 3rem;
+  }
+  
+  .hero-wisata p {
+    font-size: 1rem;
+  }
+  
+  .map-container {
+    margin: 2rem 0;
+  }
+  
+  .info-card {
+    padding: 1.25rem;
+  }
+  
+  .info-card h3 {
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-wisata {
+    height: 100vh;
+  }
+  
+  .hero-wisata h1 {
+    font-size: 2.25rem;
+  }
+  
+  .hero-wisata p {
+    font-size: 0.95rem;
+  }
+}

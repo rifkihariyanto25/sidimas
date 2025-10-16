@@ -37,10 +37,10 @@ export default function Home() {
         <div className="logo font-bold text-lg">SIDimas.</div>
         <nav>
           <ul className="flex gap-6">
-            <li><a href="#">Beranda</a></li>
-            <li><a href="#">Wisata</a></li>
-            <li><a href="#">Kuliner</a></li>
-            <li><a href="#">Budaya</a></li>
+            <li><a href="/">Beranda</a></li>
+            <li><a href="/wisata">Wisata</a></li>
+            <li><a href="/kuliner">Kuliner</a></li>
+            <li><a href="/budaya">Budaya</a></li>
             <li><a href="#">Kontribusi</a></li>
           </ul>
         </nav>
@@ -66,7 +66,7 @@ export default function Home() {
             className="hero-slide h-screen flex items-center relative text-white bg-cover bg-center"
             style={{ backgroundImage: "url('/pemandangan.png')" }}
           >
-            <div className="absolute inset-0 bg-black/40"></div>
+            <div className="absolute inset-0 bg-black/25"></div>
             <div className="hero-content relative z-10 px-6 md:px-16">
               <p className="tracking-widest mb-2 uppercase text-sm">Ayo Jelajahi</p>
               <h1 className="text-4xl md:text-6xl font-bold mb-4">Wisata Banyumas.</h1>
@@ -105,7 +105,7 @@ export default function Home() {
             className="hero-slide h-screen flex items-center relative text-white bg-cover bg-center"
             style={{ backgroundImage: "url('/Mendoan.png')" }}
           >
-            <div className="absolute inset-0 bg-black/40"></div>
+            <div className="absolute inset-0 bg-black/25"></div>
             <div className="hero-content relative z-10 px-6 md:px-16">
               <p className="tracking-widest mb-2 uppercase text-sm">Coba Nikmati</p>
               <h1 className="text-4xl md:text-6xl font-bold mb-4">Kuliner Banyumas.</h1>
@@ -144,7 +144,7 @@ export default function Home() {
             className="hero-slide h-screen flex items-center relative text-white bg-cover bg-center"
             style={{ backgroundImage: "url('/jaranan.jpeg')" }}
           >
-            <div className="absolute inset-0 bg-black/40"></div>
+            <div className="absolute inset-0 bg-black/25"></div>
             <div className="hero-content relative z-10 px-6 md:px-16">
               <p className="tracking-widest mb-2 uppercase text-sm">Mari Lestarikan</p>
               <h1 className="text-4xl md:text-6xl font-bold mb-4">Budaya Banyumas.</h1>
