@@ -189,8 +189,22 @@ export default function AdminDashboard() {
   }
 
   async function handleDelete(id) {
-    // Fungsi delete akan dibuat nanti
-    alert('Fitur hapus belum diaktifkan')
+    if (!confirm('⚠️ Yakin ingin menghapus konten ini?')) return
+
+    try {
+      const { error } = await supabase
+        .from('konten')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+
+      setItems(prev => prev.filter(item => item.id !== id))
+      alert('✅ Konten berhasil dihapus!')
+    } catch (error) {
+      console.error('Error deleting content:', error.message)
+      alert('❌ Gagal menghapus konten: ' + error.message)
+    }
   }
 
   const getCategoryData = (cat) => {
