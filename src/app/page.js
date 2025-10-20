@@ -7,12 +7,13 @@ import { motion } from "framer-motion";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import LogoLoop from "./components/LogoLoop";
+// import { LogoLoop } from "react-bits";
 import "swiper/css";
 import "swiper/css/effect-fade";
 
 export default function Home() {
   const wisataSlides = [
-    { id: 1, img: "/IMG_6806 1.png", alt: "Pantai" },
+    // { id: 1, img: "/IMG_6806 1.png", alt: "Pantai" },
     { id: 2, img: "/IMG_5702 2.png", alt: "Gunung" },
     { id: 3, img: "/IMG_7236 3.png", alt: "Air Terjun" },
     { id: 4, img: "/IMG3.png", alt: "Pemandangan" },
@@ -22,12 +23,12 @@ export default function Home() {
     { id: 1, img: "/Mendoan.png", alt: "Mendoan" },
     { id: 2, img: "/IMG3.png", alt: "Sroto Sokaraja" },
     { id: 3, img: "/IMG_6806 1.png", alt: "Gethuk Goreng" },
-    { id: 4, img: "/IMG3.png", alt: "Pemandangan" },
+    // { id: 4, img: "/IMG3.png", alt: "Pemandangan" },
   ];
 
   const budayaSlides = [
     { id: 1, img: "/jaranan.jpeg", alt: "Jaranan" },
-    { id: 2, img: "/ayang.png", alt: "Wayang Kulit" },
+    // { id: 2, img: "/ayang.png", alt: "Wayang Kulit" },
     { id: 3, img: "/IMG3.png", alt: "Kesenian Tradisional" },
     { id: 4, img: "/pemandangan.png", alt: "Upacara Adat" },
   ];
@@ -35,22 +36,7 @@ export default function Home() {
   return (
     <main>
       {/* ✅ NAVBAR */}
-      <header className="navbar fixed top-0 left-0 w-full flex justify-between items-center px-6 md:px-16 py-4 z-50 bg-black/40 backdrop-blur-md text-white">
-        <div className="logo font-bold text-lg">SIDimas.</div>
-        <nav>
-          <ul className="flex gap-6">
-            <li><a href="#">Beranda</a></li>
-            <li><a href="#">Wisata</a></li>
-            <li><a href="#">Kuliner</a></li>
-            <li><a href="#">Budaya</a></li>
-            <li><a href="#">Kontribusi</a></li>
-          </ul>
-        </nav>
-        <div className="nav-actions flex gap-3">
-          <a href="#" className="login">Log in</a>
-          <a href="#" className="signup bg-lime-600 px-4 py-2 rounded-lg font-semibold hover:bg-lime-700">Sign Up</a>
-        </div>
-      </header>
+      <Navbar />
 
       {/* ✅ HERO SLIDER */}
       <Swiper
@@ -81,23 +67,23 @@ export default function Home() {
             </div>
 
             {/* LOGO LOOP WISATA */}
-            <div className="mini-slider">
-              <LogoLoop
-                logos={wisataSlides.map(slide => ({
-                  src: slide.img,
-                  alt: slide.alt,
-                  width: 180,
-                  height: 140
-                }))}
-                speed={60}
-                direction="left"
-                logoHeight={140}
-                gap={12}
-                pauseOnHover={true}
-                scaleOnHover={true}
-                ariaLabel="Wisata Banyumas"
-              />
-            </div>
+           <div className="mini-slider">
+            <LogoLoop
+              logos={wisataSlides.map(slide => ({
+                src: slide.img,
+                alt: slide.alt,
+                width: 120,
+                height: 90
+              }))}
+              speed={60}           // Kecepatan scroll
+              direction="left"     // 'left' atau 'right'
+              logoHeight={90}      // Tinggi logo
+              gap={24}             // Jarak antar logo (diperbesar)
+              pauseOnHover={true}  // Pause ketika hover
+              scaleOnHover={true}  // Zoom ketika hover
+              ariaLabel="Wisata Banyumas"
+            />
+          </div>
           </section>
         </SwiperSlide>
 
@@ -125,13 +111,13 @@ export default function Home() {
                 logos={kulinerSlides.map(slide => ({
                   src: slide.img,
                   alt: slide.alt,
-                  width: 180,
-                  height: 140
+                  width: 120,
+                  height: 90
                 }))}
                 speed={60}
                 direction="left"
-                logoHeight={140}
-                gap={12}
+                logoHeight={90}
+                gap={24}
                 pauseOnHover={true}
                 scaleOnHover={true}
                 ariaLabel="Kuliner Banyumas"
@@ -164,13 +150,13 @@ export default function Home() {
                 logos={budayaSlides.map(slide => ({
                   src: slide.img,
                   alt: slide.alt,
-                  width: 180,
-                  height: 140
+                  width: 120,
+                  height: 90
                 }))}
                 speed={60}
                 direction="left"
-                logoHeight={140}
-                gap={12}
+                logoHeight={90}
+                gap={24}
                 pauseOnHover={true}
                 scaleOnHover={true}
                 ariaLabel="Budaya Banyumas"
