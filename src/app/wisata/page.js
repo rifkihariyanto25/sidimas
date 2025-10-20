@@ -26,21 +26,20 @@ export default function WisataPage() {
       </header>
 
       {/* HERO SECTION */}
-      <section className="hero-wisata relative h-screen flex items-center justify-center text-white">
-        <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/pemandangan.png')" }}
-        ></div>
-        <div className="absolute inset-0 bg-black/40"></div>
+      <section 
+        className="hero-slide h-screen flex items-center relative text-white bg-cover bg-center"
+        style={{ backgroundImage: "url('/pemandangan.png')" }}
+      >
+        <div className="absolute inset-0 bg-black/25"></div>
         
-        <div className="relative z-10 text-center px-6 max-w-4xl">
-          <p className="text-base md:text-lg italic mb-4 font-light tracking-wide">
+        <div className="hero-content relative z-10 px-6 md:px-16 max-w-3xl">
+          <p className="text-base md:text-lg italic mb-1 font-light tracking-wide">
             Nikmati pengalaman tak terlupakan,
           </p>
           <p className="text-base md:text-lg italic mb-8 font-light tracking-wide">
             jelajahi setiap keindahan yang memanjakan mata
           </p>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight">
+          <h1 className="text-5xl md:text-7xl font-bold mb-4 leading-tight">
             Wisata Banyumas.
           </h1>
         </div>
