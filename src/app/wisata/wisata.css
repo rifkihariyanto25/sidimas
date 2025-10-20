@@ -5,44 +5,75 @@
 }
 
 /* Hero Section */
-.hero-wisata {
+.hero-wisata,
+.hero-slide {
   position: relative;
   height: 100vh;
   overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
-.hero-wisata > * {
+.hero-wisata > *,
+.hero-slide > * {
   position: relative;
   z-index: 2;
 }
 
-.hero-wisata .hero-title {
-  font-size: 6rem;
+.hero-content {
+  text-align: left !important;
+}
+
+.hero-wisata .hero-title,
+.hero-slide h1 {
+  font-size: 4.5rem;
   font-weight: 900;
   color: white;
   text-shadow: 
-    4px 4px 0px rgba(0, 0, 0, 0.8),
-    8px 8px 20px rgba(0, 0, 0, 0.9),
-    -2px -2px 0px rgba(255, 255, 255, 0.1);
+    3px 3px 0px rgba(0, 0, 0, 0.7),
+    6px 6px 15px rgba(0, 0, 0, 0.8),
+    -1px -1px 0px rgba(255, 255, 255, 0.1);
   line-height: 1.1;
   letter-spacing: -0.02em;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+  margin-bottom: 0 !important;
 }
 
-.hero-wisata p {
-  font-size: 1.25rem;
+.hero-wisata p,
+.hero-slide p,
+.hero-content p {
+  font-size: 0.675rem !important;
   color: white;
   text-shadow: 
-    2px 2px 8px rgba(0, 0, 0, 0.9),
-    4px 4px 12px rgba(0, 0, 0, 0.8),
-    -1px -1px 0px rgba(0, 0, 0, 0.5);
-  line-height: 1.8;
+    2px 2px 6px rgba(0, 0, 0, 0.9),
+    3px 3px 10px rgba(0, 0, 0, 0.8);
+  line-height: 1.4 !important;
   font-style: italic;
-  font-weight: 300;
-  letter-spacing: 0.03em;
+  font-weight: 250;
+  letter-spacing: 0.02rem;
+  margin-bottom: 0.105rem !important;
+}
+
+.hero-wisata p:last-of-type,
+.hero-slide p:last-of-type,
+.hero-content p:last-of-type {
+  margin-bottom: 1.5rem !important;
+}
+
+@media (min-width: 768px) {
+  .hero-slide h1 {
+    font-size: 5.5rem;
+  }
+  
+  .hero-content p {
+    font-size: 1rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-slide h1 {
+    font-size: 6.5rem;
+  }
 }
 
 .text-shadow-lg {
@@ -51,24 +82,339 @@
     4px 4px 12px rgba(0, 0, 0, 0.8);
 }
 
-/* Eksplorasi Section */
-.eksplorasi-section {
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+/* Eksplor Section */
+.eksplor-section {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
-.eksplorasi-section h2 {
-  color: #1f2937;
-  font-weight: 700;
+.divider-custom {
+  background: linear-gradient(90deg, transparent, #8B7355, transparent);
 }
 
-.eksplorasi-section p {
-  color: #4b5563;
-  line-height: 1.8;
+/* Map Section Styles */
+.map-wrapper {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+  min-height: 100vh;
 }
 
-/* Rekomendasi Section */
-.rekomendasi-section {
+.map-container-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
   background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.map-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.map-header h1 {
+  font-size: 2.5em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.map-header .highlight {
+  color: #8B7355;
+}
+
+.map-header h2 {
+  font-size: 1.5em;
+  color: #555;
+  font-weight: 500;
+}
+
+.map-divider {
+  width: 200px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8B7355, transparent);
+  margin: 20px auto;
+}
+
+.map-intro-text {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  line-height: 1.8;
+  color: #666;
+  font-size: 0.95em;
+}
+
+.map-section-title {
+  text-align: center;
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 40px;
+}
+
+.map-section {
+  position: relative;
+  width: 100%;
+  max-width: 1200px; 
+  margin: 0 auto;
+  padding: 60px 250px 200px 250px; /* Top, Right, Bottom, Left - ruang untuk cards */
+  min-height: 800px; /* Tinggi cukup untuk card bawah */
+}
+
+.map-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.4;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  border: 3px solid #8B4513;
+}
+
+.capital-marker {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 15px;
+  height: 15px;
+  background: #0066CC;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.map-marker {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background: #FFD700;
+  border: 3px solid #FFA500;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  z-index: 10;
+}
+
+.map-marker:hover {
+  transform: scale(1.2);
+}
+
+.marker-1 { top: 15%; right: 25%; }
+.marker-2 { top: 35%; left: 30%; }
+.marker-3 { top: 55%; left: 35%; }
+.marker-4 { top: 45%; right: 20%; }
+.marker-5 { bottom: 20%; left: 45%; }
+
+.wave-decoration {
+  position: absolute;
+  opacity: 0.1;
+}
+
+.wave-left { left: 0; top: 30%; }
+.wave-right { right: 0; top: 40%; }
+.wave-bottom { bottom: 10%; left: 20%; }
+
+/* Desktop Cards - Proper positioning */
+.desktop-cards {
+  position: relative;
+  width: 100%;
+  height: 0; /* Tidak ambil space */
+}
+
+.info-card {
+  position: absolute;
+  background: linear-gradient(135deg, #C5D86D 0%, #B8CC52 100%);
+  border-radius: 15px;
+  width: 400px;
+  padding: 45px 25px 25px 25px; /* Top padding besar buat lingkaran */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  max-width: 220px; /* Sedikit lebih lebar */
+  border: 2px solid #8B7355;
+  z-index: 20;
+  min-height: 200px; /* Tinggi minimum card */
+}
+
+.info-card-number {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  top: 0; /* Geser ke bawah supaya nggak kepotong */
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden; /* Potong gambar sesuai lingkaran */
+  color: transparent; /* Hilangin angka */
+  font-size: 0; /* Hilangin angka */
+}
+
+/* Background images per nomor card */
+.card-1 .info-card-number {
+  background-image: url('/ayang.png');
+}
+
+.card-2 .info-card-number {
+  background-image: url('/Suasana sepi disaat Ramadhan tapi tetap cantik dan magical banget 🌳✨📍 Curug Jenggala, Kalipagu__#curugjenggala #kalipagu #baturraden #purwokerto.jpg');
+}
+
+.card-3 .info-card-number {
+  background-image: url('/IMG3.png');
+}
+
+.card-4 .info-card-number {
+  background-image: url('/IMG_5702 2.png');
+}
+
+.card-5 .info-card-number {
+  background-image: url('/IMG_6806 1.png');
+}
+
+/* Overlay untuk tetap keliatan nomor */
+.info-card-number::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent; /* Semi-transparent overlay */
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.info-card-number::after {
+  content: attr(data-number);
+  position: relative;
+  z-index: 2;
+}
+
+.info-card h3 {
+  text-align: center;
+  color: #333;
+  margin: 35px 0 0;
+  font-size: 1.2em;
+  padding-top: 3px;
+  font-weight: bold;
+}
+
+.info-card p {
+  font-size: 0.85em;
+  line-height: 1.6;
+  color: #444;
+  text-align: justify;
+}
+
+/* Positioning cards - EXACT layout dari foto */
+.card-1 { 
+  top: -450px; 
+  left: -230px; /* Lebih deket ke peta */
+
+}
+
+.card-2 { 
+  top: -400px; 
+  left: -230px; /* Posisi bawah kiri */
+}
+
+.card-3 { 
+  top: -910px; 
+  right: -630px; /* Kanan atas */
+}
+
+.card-4 { 
+  top: -830px; 
+  right: -630px; /* Kanan bawah */
+}
+
+.card-5 { 
+  top: -850px; 
+  left: 50%; 
+  transform: translateX(-50%); 
+}
+
+/* .mobile-card {
+  position: relative;
+  background: linear-gradient(135deg, #C5D86D 0%, #B8CC52 100%);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  max-width: 300px;
+  margin: 20px auto;
+  border: 2px solid #8B7355;
+} */
+
+/* .mobile-card-number {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: #8B7355;
+  border-radius: 50%;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 1.1em;
+} */
+
+.mobile-card h3 {
+  text-align: center;
+  color: #333;
+  margin: 25px 0 10px;
+  font-size: 1.1em;
+}
+
+.mobile-card p {
+  font-size: 0.85em;
+  line-height: 1.6;
+  color: #444;
+  text-align: justify;
+}
+
+@media (max-width: 1024px) {
+  .info-card {
+    position: static;
+    margin: 20px auto;
+    transform: none !important;
+  }
+
+  .map-section {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .map-container-wrapper {
+    padding: 20px;
+  }
+
+  .map-header h1 {
+    font-size: 1.8em;
+  }
+
+  .map-header h2 {
+    font-size: 1.2em;
+  }
+
+  .map-section-title {
+    font-size: 1.5em;
+  }
 }
 
 .map-container {
