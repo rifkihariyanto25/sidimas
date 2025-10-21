@@ -94,17 +94,17 @@
 /* Map Section Styles */
 .map-wrapper {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding: 20px;
+  padding: 0;
   min-height: 100vh;
 }
 
 .map-container-wrapper {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   background: white;
-  border-radius: 20px;
+  border-radius: 0;
   padding: 40px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  box-shadow: none;
 }
 
 .map-header {
@@ -167,9 +167,9 @@
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-  border: 3px solid #8B4513;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
 }
 
 .capital-marker {
@@ -206,11 +206,11 @@
   transform: scale(1.2);
 }
 
-.marker-1 { top: 15%; right: 25%; }
+.marker-1 { top: 13%; right: 40%; }
 .marker-2 { top: 35%; left: 30%; }
-.marker-3 { top: 55%; left: 35%; }
-.marker-4 { top: 45%; right: 20%; }
-.marker-5 { bottom: 20%; left: 45%; }
+.marker-3 { top: 40%; left: 45%; }
+.marker-4 { top: 62%; right: 43%; }
+.marker-5 { bottom: 30%; left: 70%; }
 
 .wave-decoration {
   position: absolute;
@@ -261,11 +261,11 @@
 
 /* Background images per nomor card */
 .card-1 .info-card-number {
-  background-image: url('/ayang.png');
+  background-image: url('/pemandangan.png');
 }
 
 .card-2 .info-card-number {
-  background-image: url('/Suasana sepi disaat Ramadhan tapi tetap cantik dan magical banget 🌳✨📍 Curug Jenggala, Kalipagu__#curugjenggala #kalipagu #baturraden #purwokerto.jpg');
+  background-image: url('/manggala_ranch.jpg');
 }
 
 .card-3 .info-card-number {
@@ -317,28 +317,28 @@
 
 /* Positioning cards - EXACT layout dari foto */
 .card-1 { 
-  top: -450px; 
+  top: -520px; 
   left: -230px; /* Lebih deket ke peta */
 
 }
 
 .card-2 { 
-  top: -400px; 
+  top: -450px; 
   left: -230px; /* Posisi bawah kiri */
 }
 
 .card-3 { 
-  top: -910px; 
-  right: -630px; /* Kanan atas */
+  top: -980px; 
+  right: -710px; /* Kanan atas */
 }
 
 .card-4 { 
-  top: -830px; 
-  right: -630px; /* Kanan bawah */
+  top: -890px; 
+  right: -710px; /* Kanan bawah */
 }
 
 .card-5 { 
-  top: -850px; 
+  top: -880px; 
   left: 50%; 
   transform: translateX(-50%); 
 }
@@ -421,7 +421,7 @@
   position: relative;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); */
 }
 
 .map-container img {

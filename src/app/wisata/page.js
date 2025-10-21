@@ -110,28 +110,28 @@ export default function WisataPage() {
               {/* Card 2 */}
               <div className="info-card card-2">
                 <div className="info-card-number" data-number="2">2</div>
-                <h3>Curug Cipendok</h3>
+                <h3>Manggala Ranch</h3>
                 <p>Air terjun eksotis yang tersembunyi di tengah hutan dengan keindahan alam yang memukau</p>
               </div>
 
               {/* Card 3 */}
               <div className="info-card card-3">
                 <div className="info-card-number" data-number="3">3</div>
-                <h3>Telaga Sunyi</h3>
+                <h3>Menara Teratai</h3>
                 <p>Danau tenang dengan suasana damai dan pemandangan asri yang menyejukkan hati</p>
               </div>
 
               {/* Card 4 */}
               <div className="info-card card-4">
                 <div className="info-card-number" data-number="4">4</div>
-                <h3>Purwokerto</h3>
+                <h3>Cafe Serayu</h3>
                 <p>Pusat kota dengan berbagai destinasi wisata menarik dan kuliner khas yang wajib dicoba</p>
               </div>
 
               {/* Card 5 */}
               <div className="info-card card-5">
                 <div className="info-card-number" data-number="5">5</div>
-                <h3>Patikraja</h3>
+                <h3>Kota Tua</h3>
                 <p>Kota kecil dengan wisata alam yang mempesona dan udara sejuk pegunungan</p>
               </div>
             </div>
