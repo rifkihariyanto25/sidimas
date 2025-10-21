@@ -95,7 +95,7 @@
 .map-wrapper {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 0;
-  min-height: 100vh;
+  min-height: 70vh;
 }
 
 .map-container-wrapper {
@@ -103,7 +103,7 @@
   margin: 0 auto;
   background: white;
   border-radius: 0;
-  padding: 40px;
+  padding: 40px 0 60px 40px;
   box-shadow: none;
 }
 
@@ -116,6 +116,7 @@
   font-size: 2.5em;
   color: #333;
   margin-bottom: 10px;
+  margin-left: -200px;
 }
 
 .map-header .highlight {
@@ -123,9 +124,10 @@
 }
 
 .map-header h2 {
-  font-size: 1.5em;
+  font-size: 1.8em;
   color: #555;
   font-weight: 500;
+  margin-left: 320px;
 }
 
 .map-divider {
@@ -136,12 +138,13 @@
 }
 
 .map-intro-text {
-  text-align: center;
-  max-width: 800px;
+  text-align: left;
+  max-width: 600px;
   margin: 0 auto 40px;
   line-height: 1.8;
   color: #666;
   font-size: 0.95em;
+  margin-left: 300px;
 }
 
 .map-section-title {
@@ -156,8 +159,8 @@
   width: 100%;
   max-width: 1200px; 
   margin: 0 auto;
-  padding: 60px 250px 200px 250px; /* Top, Right, Bottom, Left - ruang untuk cards */
-  min-height: 800px; /* Tinggi cukup untuk card bawah */
+  padding: 60px 250px 20px 250px; /* Top, Right, Bottom, Left - ruang untuk cards */
+  min-height: 0; /* Tidak ada min height */
 }
 
 .map-container {
@@ -233,12 +236,26 @@
   background: linear-gradient(135deg, #C5D86D 0%, #B8CC52 100%);
   border-radius: 15px;
   width: 400px;
-  padding: 45px 25px 25px 25px; /* Top padding besar buat lingkaran */
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-  max-width: 220px; /* Sedikit lebih lebar */
-  border: 2px solid #8B7355;
+  padding: 55px 15px 20px 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  max-width: 220px;
+  border: 8px solid #A8B96E; /* Border luar lebih tebal */
   z-index: 20;
-  min-height: 200px; /* Tinggi minimum card */
+  min-height: 180px;
+  position: relative;
+}
+
+/* Border dalam untuk styling dekoratif */
+.info-card::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border: 2px solid #3d4d2d;
+  border-radius: 8px;
+  pointer-events: none;
 }
 
 .info-card-number {
@@ -246,7 +263,7 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  top: 0; /* Geser ke bawah supaya nggak kepotong */
+  top: 15px; /* Geser ke bawah supaya nggak kepotong */
   left: 50%;
   transform: translateX(-50%);
   border: 4px solid white;
@@ -301,18 +318,19 @@
 
 .info-card h3 {
   text-align: center;
-  color: #333;
-  margin: 35px 0 0;
-  font-size: 1.2em;
-  padding-top: 3px;
+  color: #2d3e1f;
+  margin: 35px 5px 5px;
+  font-size: 1.1em;
+  padding-top: 15px;
   font-weight: bold;
 }
 
 .info-card p {
-  font-size: 0.85em;
-  line-height: 1.6;
-  color: #444;
-  text-align: justify;
+  font-size: 0.8em;
+  line-height: 1.5;
+  color: #3d4d2d;
+  text-align: center;
+  padding: 0 10px;
 }
 
 /* Positioning cards - EXACT layout dari foto */
@@ -328,19 +346,43 @@
 }
 
 .card-3 { 
-  top: -980px; 
+  top: -1120px; 
   right: -710px; /* Kanan atas */
 }
 
 .card-4 { 
-  top: -890px; 
+  top: -1070px; 
   right: -710px; /* Kanan bawah */
 }
 
 .card-5 { 
-  top: -880px; 
-  left: 50%; 
-  transform: translateX(-50%); 
+  top: -990px; 
+  left: 260px; 
+  /* transform: translateX(-50%);  */
+}
+
+/* Active state untuk card yang dipilih */
+.info-card.active {
+  background: linear-gradient(135deg, #4a5d23 0%, #3d4d1c 100%) !important;
+  transform: scale(1.05);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3) !important;
+  transition: all 0.3s ease;
+}
+
+.info-card.active h3,
+.info-card.active p {
+  color: white !important;
+}
+
+/* Hover effect untuk marker */
+.map-marker {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.map-marker:hover {
+  transform: scale(1.3) !important;
+  background: #FFA500;
 }
 
 /* .mobile-card {
@@ -373,7 +415,7 @@
   font-size: 1.1em;
 } */
 
-.mobile-card h3 {
+/* .mobile-card h3 {
   text-align: center;
   color: #333;
   margin: 25px 0 10px;
@@ -385,7 +427,7 @@
   line-height: 1.6;
   color: #444;
   text-align: justify;
-}
+} */
 
 @media (max-width: 1024px) {
   .info-card {
@@ -441,26 +483,7 @@
   overflow: hidden;
 }
 
-.info-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.info-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(180deg, #84cc16 0%, #65a30d 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.info-card:hover::before {
-  opacity: 1;
-}
+/* Hover effect dihapus - card hanya interaktif via marker di peta */
 
 .info-card .number {
   display: inline-flex;
@@ -557,6 +580,213 @@
 .itinerary-section .font-semibold {
   color: #84cc16;
   font-size: 1.1rem;
+}
+
+/* Description Section */
+.description-container {
+  max-width: 800px;
+  margin-top: -1020px;
+  margin-left: auto;
+  margin-right: 0;
+  text-align: center
+  ;
+  padding: 0 30px 0 0;
+}
+
+.description-divider {
+  width: 800px;
+  height: 3px;
+  align-items: center;
+  background: linear-gradient(90deg, transparent, #8B7355, transparent);
+  margin: 0 0 20px 0;
+}
+
+.description-title {
+  font-size: 1.8em;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.description-text {
+  font-size: 0.95em;
+  line-height: 1.8;
+  color: #666;
+  text-align: justify;
+  padding: 0 30px;
+}
+
+@media (max-width: 768px) {
+  .description-container {
+    margin: 40px auto 0;
+    padding: 0 20px;
+  }
+  
+  .description-title {
+    font-size: 1.4em;
+  }
+  
+  .description-text {
+    font-size: 0.9em;
+    padding: 0 10px;
+  }
+}
+
+/* Slider Section */
+.slider-section {
+  background: #FFFEF0;
+  padding: 80px 20px;
+  position: relative;
+}
+
+.slider-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.slide-number {
+  font-size: 4em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.slide-header {
+  margin-bottom: 40px;
+}
+
+.slide-header h2 {
+  font-size: 2.5em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.slide-header .highlight-text {
+  color: #8B7355;
+}
+
+.slide-header h3 {
+  font-size: 1.5em;
+  color: #666;
+  font-weight: 400;
+}
+
+/* Frame untuk gambar - 1 container dengan 2 bagian */
+.slider-frame {
+  display: flex;
+  gap: 15px;
+  height: 500px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Gambar utama - 80% */
+.main-image-container {
+  flex: 8;
+  height: 100%;
+  overflow: hidden;
+}
+
+.main-slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.5s ease;
+}
+
+/* Container thumbnails - 20% */
+.thumbnails-container {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Setiap thumbnail */
+.thumbnail-item {
+  height: calc(20% - 8px);
+  min-height: 90px;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 3px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.thumbnail-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.thumbnail-item:hover img {
+  transform: scale(1.1);
+}
+
+/* Thumbnail yang aktif */
+.thumbnail-item.active {
+  border-color: #8B7355;
+  box-shadow: 0 4px 15px rgba(139, 115, 85, 0.4);
+}
+
+/* Scrollbar styling untuk thumbnails */
+.thumbnails-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.thumbnails-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.thumbnails-container::-webkit-scrollbar-thumb {
+  background: #8B7355;
+  border-radius: 10px;
+}
+
+.thumbnails-container::-webkit-scrollbar-thumb:hover {
+  background: #6d5942;
+}
+
+@media (max-width: 768px) {
+  .slider-frame {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .main-image-container {
+    height: 300px;
+  }
+  
+  .thumbnails-container {
+    flex-direction: row;
+    height: 100px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  
+  .thumbnail-item {
+    min-width: 80px;
+    height: 100%;
+  }
+  
+  .slide-number {
+    font-size: 2.5em;
+  }
+  
+  .slide-header h2 {
+    font-size: 1.8em;
+  }
+  
+  .slide-header h3 {
+    font-size: 1.2em;
+  }
 }
 
 /* Footer */

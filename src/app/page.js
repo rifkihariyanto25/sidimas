@@ -4,34 +4,78 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import LogoLoop from "./components/LogoLoop";
+import { supabase } from "@/lib/supabase";
 // import { LogoLoop } from "react-bits";
 import "swiper/css";
 import "swiper/css/effect-fade";
 
 export default function Home() {
-  const wisataSlides = [
-    // { id: 1, img: "/IMG_6806 1.png", alt: "Pantai" },
-    { id: 2, img: "/IMG_5702 2.png", alt: "Gunung" },
-    { id: 3, img: "/IMG_7236 3.png", alt: "Air Terjun" },
-    { id: 4, img: "/IMG3.png", alt: "Pemandangan" },
-  ];
+  const [wisataSlides, setWisataSlides] = useState([]);
+  const [kulinerSlides, setKulinerSlides] = useState([]);
+  const [budayaSlides, setBudayaSlides] = useState([]);
 
-  const kulinerSlides = [
-    { id: 1, img: "/Mendoan.png", alt: "Mendoan" },
-    { id: 2, img: "/IMG3.png", alt: "Sroto Sokaraja" },
-    { id: 3, img: "/IMG_6806 1.png", alt: "Gethuk Goreng" },
-    // { id: 4, img: "/IMG3.png", alt: "Pemandangan" },
-  ];
+  // Fetch data dari Supabase berdasarkan kategori
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch wisata - 4 terakhir berdasarkan kategori 'wisata'
+        const { data: wisataData, error: wisataError } = await supabase
+          .from('konten')
+          .select('id, nama, gambar_url')
+          .eq('kategori', 'wisata')
+          .order('created_at', { ascending: false })
+          .limit(4);
 
-  const budayaSlides = [
-    { id: 1, img: "/jaranan.jpeg", alt: "Jaranan" },
-    // { id: 2, img: "/ayang.png", alt: "Wayang Kulit" },
-    { id: 3, img: "/IMG3.png", alt: "Kesenian Tradisional" },
-    { id: 4, img: "/pemandangan.png", alt: "Upacara Adat" },
-  ];
+        if (wisataData && !wisataError && wisataData.length > 0) {
+          setWisataSlides(wisataData.map(item => ({
+            id: item.id,
+            img: item.gambar_url,
+            alt: item.nama
+          })));
+        }
+
+        // Fetch kuliner - 4 terakhir berdasarkan kategori 'kuliner'
+        const { data: kulinerData, error: kulinerError } = await supabase
+          .from('konten')
+          .select('id, nama, gambar_url')
+          .eq('kategori', 'kuliner')
+          .order('created_at', { ascending: false })
+          .limit(4);
+
+        if (kulinerData && !kulinerError && kulinerData.length > 0) {
+          setKulinerSlides(kulinerData.map(item => ({
+            id: item.id,
+            img: item.gambar_url,
+            alt: item.nama
+          })));
+        }
+
+        // Fetch budaya - 4 terakhir berdasarkan kategori 'budaya'
+        const { data: budayaData, error: budayaError } = await supabase
+          .from('konten')
+          .select('id, nama, gambar_url')
+          .eq('kategori', 'budaya')
+          .order('created_at', { ascending: false })
+          .limit(4);
+
+        if (budayaData && !budayaError && budayaData.length > 0) {
+          setBudayaSlides(budayaData.map(item => ({
+            id: item.id,
+            img: item.gambar_url,
+            alt: item.nama
+          })));
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <main>
@@ -61,7 +105,7 @@ export default function Home() {
               <p className="max-w-lg mb-6">
                 Eksplorasi Keindahan Bumi Ngapak dari Lereng Gunung hingga Kota
               </p>
-              <a href="#" className="cta bg-lime-600 px-6 py-3 rounded-lg font-semibold hover:bg-lime-700">
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
                 Mulai Jelajahi
               </a>
             </div>
@@ -100,7 +144,7 @@ export default function Home() {
               <p className="max-w-lg mb-6">
                 Mendoan hangat, sroto Sokaraja, hingga gethuk goreng yang bikin kangen!
               </p>
-              <a href="#" className="cta bg-lime-600 px-6 py-3 rounded-lg font-semibold hover:bg-lime-700">
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
                 Jelajahi Kuliner
               </a>
             </div>
@@ -139,7 +183,7 @@ export default function Home() {
               <p className="max-w-lg mb-6">
                 Dari wayang kulit, jaranan, hingga kesenian tradisional yang memikat hati
               </p>
-              <a href="#" className="cta bg-lime-600 px-6 py-3 rounded-lg font-semibold hover:bg-lime-700">
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
                 Kenali Budaya
               </a>
             </div>
@@ -346,7 +390,7 @@ export default function Home() {
           <h2 className="text-3xl font-bold mb-6">
             Cari tahu kuliner, wisata, dan budaya menarik yang wajib kamu tahu...
           </h2>
-          <a href="#" className="px-6 py-3 bg-lime-600 rounded-lg font-semibold hover:bg-lime-700 transition">
+          <a href="#" className="px-6 py-3 bg-lime-500 rounded-lg font-semibold hover:bg-lime-600 transition">
             Mulai Jelajahi
           </a>
         </div>
