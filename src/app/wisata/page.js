@@ -2,9 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import "./wisata.css";
 
 export default function WisataPage() {
+  const [activeCard, setActiveCard] = useState(null);
+
+  const handleMarkerClick = (cardNumber) => {
+    setActiveCard(cardNumber);
+  };
+
   return (
     <main className="wisata-page">
       {/* NAVBAR */}
@@ -78,11 +85,11 @@ export default function WisataPage() {
               <div className="capital-marker" title="Banyumas Regency"></div>
 
               {/* Map Markers */}
-              <div className="map-marker marker-1">1</div>
-              <div className="map-marker marker-2">2</div>
-              <div className="map-marker marker-3">3</div>
-              <div className="map-marker marker-4">4</div>
-              <div className="map-marker marker-5">5</div>
+              <div className="map-marker marker-1" onMouseEnter={() => handleMarkerClick(1)} onMouseLeave={() => setActiveCard(null)}>1</div>
+              <div className="map-marker marker-2" onMouseEnter={() => handleMarkerClick(2)} onMouseLeave={() => setActiveCard(null)}>2</div>
+              <div className="map-marker marker-3" onMouseEnter={() => handleMarkerClick(3)} onMouseLeave={() => setActiveCard(null)}>3</div>
+              <div className="map-marker marker-4" onMouseEnter={() => handleMarkerClick(4)} onMouseLeave={() => setActiveCard(null)}>4</div>
+              <div className="map-marker marker-5" onMouseEnter={() => handleMarkerClick(5)} onMouseLeave={() => setActiveCard(null)}>5</div>
 
               {/* Wave decorations */}
               <svg className="wave-decoration wave-left" width="60" height="30" viewBox="0 0 60 30">
@@ -101,58 +108,51 @@ export default function WisataPage() {
             {/* Info Cards - Desktop Layout */}
             <div className="hidden xl:block">
               {/* Card 1 */}
-              <div className="info-card card-1">
+              <div className={`info-card card-1 ${activeCard === 1 ? 'active' : ''}`}>
                 <div className="info-card-number" data-number="1">1</div>
                 <h3>Baturraden</h3>
                 <p>Destinasi wisata alam di kaki Gunung Slamet yang menawarkan kesejukan dan keindahan alam.</p>
               </div>
 
               {/* Card 2 */}
-              <div className="info-card card-2">
+              <div className={`info-card card-2 ${activeCard === 2 ? 'active' : ''}`}>
                 <div className="info-card-number" data-number="2">2</div>
                 <h3>Manggala Ranch</h3>
                 <p>Air terjun eksotis yang tersembunyi di tengah hutan dengan keindahan alam yang memukau</p>
               </div>
 
               {/* Card 3 */}
-              <div className="info-card card-3">
+              <div className={`info-card card-3 ${activeCard === 3 ? 'active' : ''}`}>
                 <div className="info-card-number" data-number="3">3</div>
                 <h3>Menara Teratai</h3>
                 <p>Danau tenang dengan suasana damai dan pemandangan asri yang menyejukkan hati</p>
               </div>
 
               {/* Card 4 */}
-              <div className="info-card card-4">
+              <div className={`info-card card-4 ${activeCard === 4 ? 'active' : ''}`}>
                 <div className="info-card-number" data-number="4">4</div>
                 <h3>Cafe Serayu</h3>
                 <p>Pusat kota dengan berbagai destinasi wisata menarik dan kuliner khas yang wajib dicoba</p>
               </div>
 
               {/* Card 5 */}
-              <div className="info-card card-5">
+              <div className={`info-card card-5 ${activeCard === 5 ? 'active' : ''}`}>
                 <div className="info-card-number" data-number="5">5</div>
                 <h3>Kota Tua</h3>
                 <p>Kota kecil dengan wisata alam yang mempesona dan udara sejuk pegunungan</p>
               </div>
             </div>
-
-            {/* Mobile Cards */}
-            <div className="xl:hidden mt-8 space-y-6">
-              {/* {[
-                { id: 1, name: "Baturraden", desc: "Destinasi wisata alam di kaki Gunung Slamet yang menawarkan kesejukan dan keindahan alam. Nikmati udara segar, pemandangan hijau, dan cuaca pegunungan yang menyegarkan." },
-                { id: 2, name: "Curug Cipendok", desc: "Air terjun eksotis yang tersembunyi di tengah hutan dengan keindahan alam yang memukau" },
-                { id: 3, name: "Telaga Sunyi", desc: "Danau tenang dengan suasana damai dan pemandangan asri yang menyejukkan hati" },
-                { id: 4, name: "Purwokerto", desc: "Pusat kota dengan berbagai destinasi wisata menarik dan kuliner khas yang wajib dicoba" },
-                { id: 5, name: "Patikraja", desc: "Kota kecil dengan wisata alam yang mempesona dan udara sejuk pegunungan" }
-              ].map((item) => (
-                <div key={item.id} className="mobile-card">
-                  <div className="mobile-card-number">{item.id}</div>
-                  <h3>{item.name}</h3>
-                  <p>{item.desc}</p>
-                </div>
-              ))} */}
-            </div>
           </div>
+
+        </div>
+
+        {/* DESCRIPTION SECTION - Keluar dari map-container-wrapper agar bisa mepet kanan */}
+        <div className="description-container">
+          <div className="description-divider"></div>
+          <h2 className="description-title">Kunjungi Setiap Destinasi di Banyumas</h2>
+          <p className="description-text">
+            Mulai dari kesejukan pegunungan Baturraden, kejerniham air terjun alami, hingga keunikan tradisi dan kuliner lokal yang menggugah selera. Tak hanya keindahan alamnya, keramahan masyarakat dan kekayaan budaya yang masih terjaga menjadikan Banyumas tempat yang istimewa untuk dijelajahi. Baik untuk liburan keluarga, petualangan alam, maupun wisata sejarah, Banyumas selalu punya cerita menarik di setiap perjalanannya.
+          </p>
         </div>
       </section>
 
