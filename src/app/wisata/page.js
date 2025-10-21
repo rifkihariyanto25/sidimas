@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import "./wisata.css";
 
 export default function WisataPage() {
@@ -27,27 +29,11 @@ export default function WisataPage() {
   };
 
   return (
-    <main className="wisata-page">
-      {/* NAVBAR */}
-      <header className="navbar fixed top-0 left-0 w-full flex justify-between items-center px-6 md:px-16 py-4 z-50 bg-black/40 backdrop-blur-md text-white">
-        <Link href="/" className="logo font-bold text-lg">SIDimas.</Link>
-        <nav>
-          <ul className="flex gap-6">
-            <li><Link href="/">Beranda</Link></li>
-            <li><Link href="/wisata" className="text-lime-400">Wisata</Link></li>
-            <li><Link href="/kuliner">Kuliner</Link></li>
-            <li><Link href="/budaya">Budaya</Link></li>
-            <li><Link href="#">Kontribusi</Link></li>
-          </ul>
-        </nav>
-        <div className="nav-actions flex gap-3">
-          <Link href="#" className="login">Log in</Link>
-          <Link href="#" className="signup bg-[#8FA31E] px-4 py-2 rounded-lg font-semibold hover:bg-[#7a8c1a]">Sign Up</Link>
-        </div>
-      </header>
-
-      {/* HERO SECTION */}
-      <section 
+    <>
+      <Navbar />
+      <main className="wisata-page">
+        {/* HERO SECTION */}
+        <section 
         className="hero-slide h-screen flex items-center justify-start relative text-white bg-cover bg-center"
         style={{ backgroundImage: "url('/pemandangan.png')" }}
       >
@@ -209,13 +195,8 @@ export default function WisataPage() {
           </div>
         </div>
       </section>
-
-      {/* FOOTER */}
-      <footer className="bg-[#5a6b3a] text-white py-12 px-6 md:px-16">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-sm">© 2025 SIDimas. All Rights Reserved.</p>
-        </div>
-      </footer>
-    </main>
+      </main>
+      <Footer />
+    </>
   );
 }
