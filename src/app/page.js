@@ -61,7 +61,7 @@ export default function Home() {
               <p className="max-w-lg mb-6">
                 Eksplorasi Keindahan Bumi Ngapak dari Lereng Gunung hingga Kota
               </p>
-              <a href="#" className="cta bg-lime-600 px-6 py-3 rounded-lg font-semibold hover:bg-lime-700">
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
                 Mulai Jelajahi
               </a>
             </div>
@@ -100,7 +100,7 @@ export default function Home() {
               <p className="max-w-lg mb-6">
                 Mendoan hangat, sroto Sokaraja, hingga gethuk goreng yang bikin kangen!
               </p>
-              <a href="#" className="cta bg-lime-600 px-6 py-3 rounded-lg font-semibold hover:bg-lime-700">
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
                 Jelajahi Kuliner
               </a>
             </div>
@@ -139,7 +139,7 @@ export default function Home() {
               <p className="max-w-lg mb-6">
                 Dari wayang kulit, jaranan, hingga kesenian tradisional yang memikat hati
               </p>
-              <a href="#" className="cta bg-lime-600 px-6 py-3 rounded-lg font-semibold hover:bg-lime-700">
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
                 Kenali Budaya
               </a>
             </div>
@@ -346,7 +346,7 @@ export default function Home() {
           <h2 className="text-3xl font-bold mb-6">
             Cari tahu kuliner, wisata, dan budaya menarik yang wajib kamu tahu...
           </h2>
-          <a href="#" className="px-6 py-3 bg-lime-600 rounded-lg font-semibold hover:bg-lime-700 transition">
+          <a href="#" className="px-6 py-3 bg-lime-500 rounded-lg font-semibold hover:bg-lime-600 transition">
             Mulai Jelajahi
           </a>
         </div>

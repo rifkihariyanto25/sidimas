@@ -26,13 +26,13 @@ html, body {
   justify-content: space-between;
   align-items: center;
   z-index: 100;
-  background: rgba(0, 0, 0, 0);
-  backdrop-filter: blur(6px);
+  /* Background akan di-override oleh inline style dari component */
+  transition: all 0.3s ease;
 }
 .navbar .logo {
   font-weight: 700;
   font-size: 1.4rem;
-  color: #fff;
+  /* Color akan di-override oleh Tailwind class dari component */
 }
 .navbar ul {
   list-style: none;
@@ -41,19 +41,17 @@ html, body {
 }
 .navbar a {
   text-decoration: none;
-  color: #fff;
   font-weight: 500;
-  transition: color .3s;
+  /* Color akan di-override oleh Tailwind class dari component */
 }
-.navbar a:hover { color: #a7ff8f; }
 
 .nav-actions {
   display: flex;
   gap: 15px;
 }
 .nav-actions .login {
-  color: #fff;
   padding: 8px 18px;
+  /* Color akan di-override oleh Tailwind class dari component */
 }
 .nav-actions .signup {
   background: #8FA31E;
@@ -64,7 +62,7 @@ html, body {
   transition: background .3s;
 }
 .nav-actions .signup:hover {
-  background: #8FA31E;
+  background: #7a8c1a;
 }
 
 /* HERO SLIDER */
@@ -92,7 +90,7 @@ html, body {
 }
 .hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 10;
   max-width: 600px;
   color: #fff;
 }
@@ -112,7 +110,7 @@ html, body {
   line-height: 1.6;
 }
 .hero-content .cta {
-  background: #cae33e !important;
+  background: #8FA31E !important;
   color: #fff;
   padding: 12px 24px;
   border-radius: 10px;
@@ -120,10 +118,10 @@ html, body {
   text-decoration: none;
   transition: background .3s;
   position: relative;
-  z-index: 10;
+  z-index: 50;
   display: inline-block;
 }
-.hero-content .cta:hover { background: #dbf15e !important; }
+.hero-content .cta:hover { background: #7a8c1a !important; }
 
 /* MINI SLIDER */
 .mini-slider {
