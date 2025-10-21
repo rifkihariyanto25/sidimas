@@ -7,9 +7,23 @@ import "./wisata.css";
 
 export default function WisataPage() {
   const [activeCard, setActiveCard] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleMarkerClick = (cardNumber) => {
     setActiveCard(cardNumber);
+  };
+
+  // Data untuk slider wisata - semua gambar dalam satu array
+  const wisataImages = [
+    { id: 1, src: "/pemandangan.png", title: "Baturraden", subtitle: "Surga di Kaki Gunung Slamet" },
+    { id: 2, src: "/manggala_ranch.jpg", title: "Manggala Ranch", subtitle: "Keindahan Alam yang Memukau" },
+    { id: 3, src: "/IMG3.png", title: "Menara Teratai", subtitle: "Panorama Indah Banyumas" },
+    { id: 4, src: "/IMG_5702 2.png", title: "Cafe Serayu", subtitle: "Tempat Bersantai di Tepi Sungai" },
+    { id: 5, src: "/IMG_6806 1.png", title: "Kota Tua", subtitle: "Wisata Sejarah Banyumas" }
+  ];
+
+  const handleImageClick = (index) => {
+    setCurrentImageIndex(index);
   };
 
   return (
@@ -153,6 +167,46 @@ export default function WisataPage() {
           <p className="description-text">
             Mulai dari kesejukan pegunungan Baturraden, kejerniham air terjun alami, hingga keunikan tradisi dan kuliner lokal yang menggugah selera. Tak hanya keindahan alamnya, keramahan masyarakat dan kekayaan budaya yang masih terjaga menjadikan Banyumas tempat yang istimewa untuk dijelajahi. Baik untuk liburan keluarga, petualangan alam, maupun wisata sejarah, Banyumas selalu punya cerita menarik di setiap perjalanannya.
           </p>
+        </div>
+      </section>
+
+      {/* SLIDER SECTION */}
+      <section className="slider-section">
+        <div className="slider-container">
+          {/* Nomor dan Judul */}
+          <div className="slide-number">
+            #{String(currentImageIndex + 1).padStart(2, '0')}
+          </div>
+
+          <div className="slide-header">
+            <h2>Eksplor <span className="highlight-text">{wisataImages[currentImageIndex].title}:</span></h2>
+            <h3>{wisataImages[currentImageIndex].subtitle}</h3>
+          </div>
+
+          {/* Frame dengan Gambar Utama (80%) dan Thumbnails (20%) */}
+          <div className="slider-frame">
+            {/* Gambar Utama (80%) */}
+            <div className="main-image-container">
+              <img 
+                src={wisataImages[currentImageIndex].src} 
+                alt={wisataImages[currentImageIndex].title}
+                className="main-slide-image"
+              />
+            </div>
+
+            {/* Thumbnails Preview (20%) */}
+            <div className="thumbnails-container">
+              {wisataImages.map((image, index) => (
+                <div
+                  key={image.id}
+                  className={`thumbnail-item ${currentImageIndex === index ? 'active' : ''}`}
+                  onClick={() => handleImageClick(index)}
+                >
+                  <img src={image.src} alt={image.title} />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

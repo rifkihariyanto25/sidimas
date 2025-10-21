@@ -633,6 +633,162 @@
   }
 }
 
+/* Slider Section */
+.slider-section {
+  background: #FFFEF0;
+  padding: 80px 20px;
+  position: relative;
+}
+
+.slider-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.slide-number {
+  font-size: 4em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.slide-header {
+  margin-bottom: 40px;
+}
+
+.slide-header h2 {
+  font-size: 2.5em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.slide-header .highlight-text {
+  color: #8B7355;
+}
+
+.slide-header h3 {
+  font-size: 1.5em;
+  color: #666;
+  font-weight: 400;
+}
+
+/* Frame untuk gambar - 1 container dengan 2 bagian */
+.slider-frame {
+  display: flex;
+  gap: 15px;
+  height: 500px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Gambar utama - 80% */
+.main-image-container {
+  flex: 8;
+  height: 100%;
+  overflow: hidden;
+}
+
+.main-slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.5s ease;
+}
+
+/* Container thumbnails - 20% */
+.thumbnails-container {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Setiap thumbnail */
+.thumbnail-item {
+  height: calc(20% - 8px);
+  min-height: 90px;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 3px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.thumbnail-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.thumbnail-item:hover img {
+  transform: scale(1.1);
+}
+
+/* Thumbnail yang aktif */
+.thumbnail-item.active {
+  border-color: #8B7355;
+  box-shadow: 0 4px 15px rgba(139, 115, 85, 0.4);
+}
+
+/* Scrollbar styling untuk thumbnails */
+.thumbnails-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.thumbnails-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.thumbnails-container::-webkit-scrollbar-thumb {
+  background: #8B7355;
+  border-radius: 10px;
+}
+
+.thumbnails-container::-webkit-scrollbar-thumb:hover {
+  background: #6d5942;
+}
+
+@media (max-width: 768px) {
+  .slider-frame {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .main-image-container {
+    height: 300px;
+  }
+  
+  .thumbnails-container {
+    flex-direction: row;
+    height: 100px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  
+  .thumbnail-item {
+    min-width: 80px;
+    height: 100%;
+  }
+  
+  .slide-number {
+    font-size: 2.5em;
+  }
+  
+  .slide-header h2 {
+    font-size: 1.8em;
+  }
+  
+  .slide-header h3 {
+    font-size: 1.2em;
+  }
+}
+
 /* Footer */
 .footer-wisata {
   background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
