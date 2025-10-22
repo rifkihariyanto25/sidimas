@@ -2,138 +2,275 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Link from "next/link";
 import "./budaya.css";
+import "./new-layout.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import budayaData from "./budayaData";
 
-// Komponen Section untuk menghindari error hooks
-function BudayaSection({
-  budaya,
-  index,
-  currentSection,
-  sectionsRef,
-  activeSlide,
-  setActiveSlide,
-}) {
+gsap.registerPlugin(ScrollTrigger);
+
+// Component for individual Budaya Section with new layout
+function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
   const sectionRef = useRef(null);
+  const diamondRef = useRef(null);
+  const sliderRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
+
+  // Slider state
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  // Auto-advance slider
+  useEffect(() => {
+    if (!budaya.sliderImages || budaya.sliderImages.length === 0) return;
+
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % budaya.sliderImages.length);
+    }, 4000); // Change slide every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [budaya.sliderImages]);
+
+  // Sync slider scroll with active slide
+  useEffect(() => {
+    if (!sliderRef.current) return;
+    const slideWidth = sliderRef.current.offsetWidth;
+    sliderRef.current.scrollTo({
+      left: activeSlide * slideWidth,
+      behavior: "smooth",
+    });
+  }, [activeSlide]);
+
+  // Mouse drag handlers
+  const handleMouseDown = (e) => {
+    if (!sliderRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - sliderRef.current.offsetLeft);
+    setScrollLeft(sliderRef.current.scrollLeft);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging || !sliderRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - sliderRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    sliderRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    // Snap to nearest slide
+    if (!sliderRef.current) return;
+    const slideWidth = sliderRef.current.offsetWidth;
+    const newIndex = Math.round(sliderRef.current.scrollLeft / slideWidth);
+    setActiveSlide(newIndex);
+  };
+
+  // Diamond hover scale animation
+  useEffect(() => {
+    if (!diamondRef.current) return;
+
+    try {
+      const ctx = gsap.context(() => {
+        gsap.to(diamondRef.current, {
+          scale: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: diamondRef.current,
+            start: "top 80%",
+            end: "bottom 20%",
+            scrub: 1,
+          },
+        });
+      }, sectionRef);
+
+      return () => ctx.revert();
+    } catch (error) {
+      console.error("GSAP animation error:", error);
+    }
+  }, []);
 
   return (
     <motion.section
       ref={(el) => {
         sectionsRef.current[index] = el;
       }}
-      className="ayana-budaya-section-new"
+      className="budaya-section-new"
       initial={{ opacity: 0 }}
       animate={isInView ? { opacity: 1 } : { opacity: 0 }}
       transition={{ duration: 0.8 }}
     >
-      <div className="ayana-section-container" ref={sectionRef}>
+      <div className="budaya-container" ref={sectionRef}>
         {/* Header: Number + Title */}
         <motion.div
-          className="ayana-header"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          className="budaya-header"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <div className="ayana-number-inline">#{budaya.number}</div>
-          <div className="ayana-title-group">
-            <h2 className="ayana-main-title">
-              Eksplor <span className="highlight">{budaya.title}:</span>
-            </h2>
-            <p className="ayana-main-subtitle">{budaya.subtitle}</p>
-          </div>
+          <h3 className="budaya-number">#{budaya.number}</h3>
+          <h2 className="budaya-title">
+            Eksplor{" "}
+            <span className="budaya-title-highlight">{budaya.title}</span>:
+          </h2>
+          <p className="budaya-subtitle">{budaya.subtitle}</p>
         </motion.div>
 
-        {/* Image Slider */}
-        <motion.div
-          className="ayana-slider-container"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={
-            isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }
-          }
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          <div className="ayana-slider">
-            {budaya.images.map((img, imgIdx) => (
-              <div
-                key={imgIdx}
-                className={`ayana-slide ${
-                  activeSlide === imgIdx ? "active" : ""
-                }`}
-              >
-                <img src={img} alt={`${budaya.title} ${imgIdx + 1}`} />
+        {/* Ayana-Style Image Slider */}
+        {budaya.sliderImages && budaya.sliderImages.length > 0 && (
+          <motion.div
+            className="budaya-slider-wrapper"
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <div
+              className="budaya-slider-container"
+              ref={sliderRef}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              style={{ cursor: isDragging ? "grabbing" : "grab" }}
+            >
+              <div className="budaya-slider-track">
+                {budaya.sliderImages.map((img, imgIdx) => (
+                  <div
+                    key={imgIdx}
+                    className={`budaya-slider-slide ${
+                      activeSlide === imgIdx ? "active" : ""
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${budaya.title} slider ${imgIdx + 1}`}
+                      draggable="false"
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
 
-          {/* Slider Dots */}
-          <div className="ayana-slider-dots">
-            {budaya.images.map((_, dotIdx) => (
-              <button
-                key={dotIdx}
-                className={`slider-dot ${
-                  activeSlide === dotIdx ? "active" : ""
-                }`}
-                onClick={() => setActiveSlide(dotIdx)}
-                aria-label={`Image ${dotIdx + 1}`}
-              />
-            ))}
-          </div>
-        </motion.div>
+            {/* Slider Dots */}
+            <div className="budaya-slider-dots">
+              {budaya.sliderImages.map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  className={`budaya-slider-dot ${
+                    activeSlide === dotIdx ? "active" : ""
+                  }`}
+                  onClick={() => setActiveSlide(dotIdx)}
+                  aria-label={`Slide ${dotIdx + 1}`}
+                />
+              ))}
+            </div>
 
-        {/* Content Grid: Description + Diamond + CTA */}
-        <div className="ayana-content-grid">
-          {/* Left: Description */}
-          <motion.div
-            className="ayana-description-box"
-            initial={{ opacity: 0, x: -30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
-            <p className="ayana-description-text">{budaya.description}</p>
-          </motion.div>
-
-          {/* Right: Diamond Image */}
-          <motion.div
-            className="ayana-right-section"
-            initial={{ opacity: 0, x: 30 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-          >
-            <div className="ayana-diamond-image">
-              <img src={budaya.images[2]} alt={`${budaya.title} diamond`} />
+            {/* Custom Cursor for Slider */}
+            <div className="budaya-slider-cursor">
+              <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 0L64 31.0588V32.9412L0 3.76471L1 0Z"></path>
+                <path d="M1 64L64 32.9412V31.0588L0 60.2353L1 64Z"></path>
+              </svg>
             </div>
           </motion.div>
-        </div>
+        )}
 
-        {/* Bottom: CTA Section */}
+        {/* Image Gallery Grid */}
         <motion.div
-          className="ayana-cta-section"
+          className="budaya-gallery-grid"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6, delay: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <div className="ayana-cta-image">
-            <img src={budaya.ctaImage} alt={budaya.ctaTitle} />
-          </div>
-          <div className="ayana-cta-content">
-            <div className="ayana-tagline-box">
-              <p className="ayana-tagline-text">{budaya.tagline}</p>
+          {/* Main Large Image */}
+          <motion.div
+            className="gallery-main-image"
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+          >
+            <img src={budaya.images.main} alt={`${budaya.title} main`} />
+          </motion.div>
+
+          {/* Secondary Vertical Image */}
+          <motion.div
+            className="gallery-secondary-image"
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+          >
+            <img
+              src={budaya.images.secondary}
+              alt={`${budaya.title} secondary`}
+            />
+          </motion.div>
+
+          {/* Diamond Shape Image */}
+          <motion.div
+            className="gallery-diamond-image"
+            ref={diamondRef}
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ duration: 0.4 }}
+          >
+            <div className="diamond-shape">
+              <img
+                src={budaya.images.diamond}
+                alt={`${budaya.title} diamond`}
+              />
             </div>
-            <motion.div className="ayana-cta-text" whileHover={{ scale: 1.02 }}>
-              <h3>{budaya.ctaTitle}</h3>
-              <p>{budaya.ctaSubtitle}</p>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href="#" className="ayana-cta-button">
-                <span className="cta-icon">◉</span>
-                <span>Eksplor Sekarang</span>
-              </Link>
-            </motion.div>
-          </div>
+          </motion.div>
         </motion.div>
+
+        {/* Description Text */}
+        <motion.div
+          className="budaya-description"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <p>{budaya.description}</p>
+        </motion.div>
+
+        {/* CTA Section */}
+        <motion.div
+          className="budaya-cta"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
+          {/* CTA Image */}
+          <motion.div
+            className="cta-image"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          >
+            <img src={budaya.images.cta} alt={`${budaya.title} CTA`} />
+          </motion.div>
+
+          {/* CTA Content */}
+          <div className="cta-content">
+            <h4 className="cta-title">{budaya.ctaTitle}</h4>
+            <p className="cta-description">{budaya.ctaDescription}</p>
+          </div>
+
+          {/* CTA Button */}
+          <motion.a
+            href={budaya.link}
+            className="cta-button"
+            whileHover={{ scale: 1.05, x: 5 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <span className="cta-icon">◉</span>
+            <span>{budaya.ctaButton}</span>
+          </motion.a>
+        </motion.div>
+
+        {/* Bottom Border Line */}
+        <div className="budaya-divider"></div>
       </div>
     </motion.section>
   );
@@ -142,248 +279,79 @@ function BudayaSection({
 export default function BudayaPage() {
   const sectionsRef = useRef([]);
   const [currentSection, setCurrentSection] = useState(0);
-  const [activeSlides, setActiveSlides] = useState(Array(10).fill(0));
+  const [isClient, setIsClient] = useState(false);
+
+  // Ensure client-side rendering
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
+    if (!isClient) return;
+
     const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
+      try {
+        const scrollPosition = window.scrollY;
+        const windowHeight = window.innerHeight;
 
-      sectionsRef.current.forEach((section, index) => {
-        if (section) {
-          const rect = section.getBoundingClientRect();
-          const sectionTop = rect.top;
-          const sectionMiddle = sectionTop + rect.height / 2;
+        sectionsRef.current.forEach((section, index) => {
+          if (section) {
+            const rect = section.getBoundingClientRect();
+            const sectionTop = rect.top;
+            const sectionMiddle = sectionTop + rect.height / 2;
 
-          if (sectionMiddle >= 0 && sectionMiddle <= windowHeight) {
-            setCurrentSection(index);
+            if (sectionMiddle >= 0 && sectionMiddle <= windowHeight) {
+              setCurrentSection(index);
+            }
           }
-        }
-      });
+        });
+      } catch (error) {
+        console.error("Scroll handler error:", error);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isClient]);
 
-  // Auto slider for images
-  useEffect(() => {
-    const intervals = budayaData.map((_, index) => {
-      return setInterval(() => {
-        setActiveSlides((prev) => {
-          const newSlides = [...prev];
-          newSlides[index] = (newSlides[index] + 1) % 5;
-          return newSlides;
-        });
-      }, 3000);
-    });
-
-    return () => intervals.forEach(clearInterval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const budayaData = [
-    {
-      id: 1,
-      number: "01",
-      title: "Lengger",
-      subtitle: "Tarian Tradisional Penuh Pesona",
-      description:
-        "Lengger adalah tarian tradisional khas Banyumas yang menampilkan penari laki-laki berdandan seperti perempuan dengan gerakan gemulai dan memukau. Dikenal dengan kostum warna-warni dan makeup yang mencolok, Lengger menjadi ikon seni pertunjukan Banyumas yang telah diwariskan secara turun-temurun. Setiap gerakan dalam tarian ini sarat akan makna filosofis yang mendalam, menggambarkan nilai-nilai kehidupan masyarakat Banyumas.",
-      tagline:
-        "Yuk, rasakan sendiri pesona Lengger! Liburanmu di Banyumas belum lengkap tanpa menikmati pertunjukan seni tradisional yang memukau ini",
-      images: [
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-      ],
-      ctaImage: "/pemandangan.png",
-      ctaTitle: "Saksikan Lengger Live",
-      ctaSubtitle: "Pertunjukan yang akan membawamu ke dunia seni tradisional",
-    },
-    {
-      id: 2,
-      number: "02",
-      title: "Wayang Banyumasan",
-      subtitle: "Seni Pewayangan Ngapak",
-      description:
-        "Wayang Kulit Banyumasan menggunakan bahasa Ngapak dan memiliki ciri khas tersendiri. Dalang menampilkan lakon dengan humor khas Banyumas yang menghibur sekaligus sarat makna filosofis. Pewayangan ini bukan sekadar hiburan, namun juga media pendidikan moral dan nilai-nilai luhur bagi masyarakat.",
-      tagline:
-        "Nikmati pertunjukan Wayang Banyumasan! Pewayangan yang unik dengan bahasa Ngapak yang kocak dan penuh makna kehidupan",
-      images: [
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-      ],
-      ctaImage: "/pemandangan.png",
-      ctaTitle: "Jelajahi Wayang",
-      ctaSubtitle: "Temukan filosofi di balik setiap lakon",
-    },
-    {
-      id: 3,
-      number: "03",
-      title: "Calung",
-      subtitle: "Musik Bambu yang Merdu",
-      description:
-        "Calung adalah alat musik tradisional dari bambu yang menghasilkan nada merdu khas Banyumas. Dimainkan secara berkelompok, Calung mengiringi berbagai acara adat dan pertunjukan seni. Setiap tabung bambu menghasilkan nada yang berbeda, dan ketika dimainkan bersama menciptakan harmoni yang indah.",
-      tagline:
-        "Dengarkan alunan merdu Calung! Musik tradisional yang menenangkan dan membawa kedamaian bagi siapa saja yang mendengarnya",
-      images: [
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-      ],
-      ctaImage: "/pemandangan.png",
-      ctaTitle: "Dengar Musik Calung",
-      ctaSubtitle: "Harmoni bambu yang menenangkan jiwa",
-    },
-    {
-      id: 4,
-      number: "04",
-      title: "Begalan",
-      subtitle: "Tradisi Sakral Pernikahan",
-      description:
-        "Begalan adalah tradisi penyambutan pengantin dalam pernikahan adat Banyumas yang penuh makna filosofis. Prosesi ini menampilkan pertunjukan seni dengan dialog jenaka namun sarat pesan moral tentang kehidupan berumah tangga. Setiap adegan dalam Begalan mengandung nasihat dan doa untuk pengantin.",
-      tagline:
-        "Saksikan keunikan Begalan! Tradisi pernikahan yang kaya akan nilai-nilai luhur dan filosofi kehidupan berumah tangga",
-      images: [
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-      ],
-      ctaImage: "/pemandangan.png",
-      ctaTitle: "Lihat Tradisi Begalan",
-      ctaSubtitle: "Prosesi sakral penuh makna",
-    },
-    {
-      id: 5,
-      number: "05",
-      title: "Dialek Ngapak",
-      subtitle: "Bahasa Khas yang Kocak",
-      description:
-        "Dialek Ngapak adalah cara berbicara khas masyarakat Banyumas yang terdengar lucu dan bersahabat. Penggunaan bahasa Ngapak mencerminkan karakter masyarakat Banyumas yang terbuka dan jujur. Bahasa ini menjadi identitas dan kebanggaan tersendiri bagi masyarakat Banyumas.",
-      tagline:
-        "Rasakan keunikan Dialek Ngapak! Bahasa yang mencerminkan karakter dan jati diri masyarakat Banyumas yang hangat dan bersahabat",
-      images: [
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-      ],
-      ctaImage: "/pemandangan.png",
-      ctaTitle: "Pelajari Ngapak",
-      ctaSubtitle: "Bahasa yang penuh kehangatan",
-    },
-    {
-      id: 6,
-      number: "06",
-      title: "Batik Banyumasan",
-      subtitle: "Motif Penuh Filosofi",
-      description:
-        "Batik Banyumasan memiliki ciri khas motif dan warna yang berbeda dari batik daerah lain. Motif batik sering menggambarkan alam dan kehidupan masyarakat dengan filosofi mendalam. Setiap goresan dan warna dalam batik Banyumasan memiliki makna dan cerita tersendiri.",
-      tagline:
-        "Kenakan Batik Banyumasan! Karya seni tekstil yang indah dengan filosofi budaya yang kaya akan makna dan nilai luhur",
-      images: [
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-      ],
-      ctaImage: "/pemandangan.png",
-      ctaTitle: "Koleksi Batik",
-      ctaSubtitle: "Seni tekstil dengan filosofi mendalam",
-    },
-    {
-      id: 7,
-      number: "07",
-      title: "Kuliner Tradisional",
-      subtitle: "Cita Rasa Khas Banyumas",
-      description:
-        "Kuliner Banyumas terkenal dengan cita rasa khas seperti Mendoan, Nopia, Getuk Goreng, dan Soto Sokaraja. Setiap hidangan memiliki cerita dan filosofi yang mencerminkan kearifan lokal. Kuliner ini telah menjadi bagian tak terpisahkan dari kehidupan masyarakat Banyumas.",
-      tagline:
-        "Cicip kuliner Banyumas! Cita rasa autentik yang memanjakan lidah dengan kelezatan tradisional yang tak terlupakan",
-      images: [
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-      ],
-      ctaImage: "/pemandangan.png",
-      ctaTitle: "Cicipi Kuliner",
-      ctaSubtitle: "Kelezatan tradisional yang autentik",
-    },
-    {
-      id: 8,
-      number: "08",
-      title: "Angklung Banyumasan",
-      subtitle: "Harmoni Bambu yang Indah",
-      description:
-        "Angklung Banyumasan adalah alat musik tradisional yang dimainkan dengan cara digoyangkan. Menghasilkan bunyi yang khas dan merdu, sering dimainkan dalam berbagai pertunjukan dan upacara adat. Setiap angklung memiliki nada tertentu yang jika dimainkan bersama menciptakan melodi harmonis.",
-      tagline:
-        "Dengarkan Angklung Banyumasan! Musik bambu yang harmonis dan memukau dengan alunan nada yang menenangkan jiwa",
-      images: [
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-      ],
-      ctaImage: "/pemandangan.png",
-      ctaTitle: "Main Angklung",
-      ctaSubtitle: "Ciptakan harmoni dari bambu",
-    },
-    {
-      id: 9,
-      number: "09",
-      title: "Kerajinan Tradisional",
-      subtitle: "Karya Tangan Penuh Makna",
-      description:
-        "Kerajinan tangan khas Banyumas meliputi anyaman bambu, ukiran kayu, dan keramik. Setiap kerajinan dibuat dengan teliti dan penuh kesabaran, mencerminkan keterampilan turun-temurun. Kerajinan ini bukan hanya bernilai estetis, tetapi juga fungsional dalam kehidupan sehari-hari.",
-      tagline:
-        "Koleksi kerajinan Banyumas! Karya seni tangan yang indah dengan nilai budaya dan estetika yang tinggi",
-      images: [
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-      ],
-      ctaImage: "/pemandangan.png",
-      ctaTitle: "Lihat Kerajinan",
-      ctaSubtitle: "Karya tangan penuh kesabaran",
-    },
-    {
-      id: 10,
-      number: "10",
-      title: "Ebeg",
-      subtitle: "Tarian Mistis Kuda Kepang",
-      description:
-        "Ebeg adalah tarian tradisional khas Banyumas yang menampilkan atraksi mistis dengan menunggangi kuda kepang. Pertunjukan ini menggabungkan seni tari, musik, dan unsur spiritual yang kental. Penari Ebeg sering kali mengalami trance saat pertunjukan, menambah daya tarik mistis dari kesenian ini.",
-      tagline:
-        "Saksikan kekuatan Ebeg! Tarian mistis yang memukau dengan atraksi yang mendebarkan",
-      images: [
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-        "/pemandangan.png",
-      ],
-      ctaImage: "/pemandangan.png",
-      ctaTitle: "Tonton Ebeg",
-      ctaSubtitle: "Atraksi mistis yang mendebarkan",
-    },
-  ];
+  // Loading state
+  if (!isClient) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#fdfcf8",
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <div
+            style={{
+              width: "60px",
+              height: "60px",
+              border: "4px solid #f3f3f3",
+              borderTop: "4px solid #8b7355",
+              borderRadius: "50%",
+              animation: "spin 1s linear infinite",
+              margin: "0 auto",
+            }}
+          ></div>
+          <p
+            style={{
+              marginTop: "1.5rem",
+              color: "#8b7355",
+              fontSize: "1.1rem",
+              fontWeight: "500",
+            }}
+          >
+            Memuat Halaman Budaya...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="budaya-page">
@@ -589,41 +557,37 @@ export default function BudayaPage() {
       {/* BUDAYA SECTIONS - AYANA STYLE WITH NEW LAYOUT */}
       <div className="ayana-budaya-wrapper">
         {/* Dots Navigation - Fixed Right */}
-        <div className="ayana-dots-nav">
-          {budayaData.map((_, dotIdx) => (
-            <button
-              key={dotIdx}
-              className={`ayana-dot ${
-                currentSection === dotIdx ? "active" : ""
-              }`}
-              onClick={() => {
-                sectionsRef.current[dotIdx]?.scrollIntoView({
-                  behavior: "smooth",
-                  block: "start",
-                });
-              }}
-              aria-label={`Go to section ${dotIdx + 1}`}
+        {isClient && budayaData && budayaData.length > 0 && (
+          <div className="ayana-dots-nav">
+            {budayaData.map((_, dotIdx) => (
+              <button
+                key={dotIdx}
+                className={`ayana-dot ${
+                  currentSection === dotIdx ? "active" : ""
+                }`}
+                onClick={() => {
+                  sectionsRef.current[dotIdx]?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+                }}
+                aria-label={`Go to section ${dotIdx + 1}`}
+              />
+            ))}
+          </div>
+        )}
+
+        {isClient &&
+          budayaData &&
+          budayaData.map((budaya, index) => (
+            <BudayaSection
+              key={budaya.id}
+              budaya={budaya}
+              index={index}
+              currentSection={currentSection}
+              sectionsRef={sectionsRef}
             />
           ))}
-        </div>
-
-        {budayaData.map((budaya, index) => (
-          <BudayaSection
-            key={budaya.id}
-            budaya={budaya}
-            index={index}
-            currentSection={currentSection}
-            sectionsRef={sectionsRef}
-            activeSlide={activeSlides[index]}
-            setActiveSlide={(slideIdx) => {
-              setActiveSlides((prev) => {
-                const newSlides = [...prev];
-                newSlides[index] = slideIdx;
-                return newSlides;
-              });
-            }}
-          />
-        ))}
       </div>
 
       <Footer />

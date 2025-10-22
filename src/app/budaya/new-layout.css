@@ -1,0 +1,493 @@
+/* ======================================
+   NEW BUDAYA LAYOUT - BASED ON DESIGN
+   Background: #FBFFE6
+   ====================================== */
+
+/* Wrapper for all budaya sections */
+.ayana-budaya-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Individual Budaya Section */
+.budaya-section-new {
+  background-color: #fbffe6;
+  padding: 80px 40px;
+  margin-bottom: 0;
+  position: relative;
+}
+
+.budaya-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header Section */
+.budaya-header {
+  margin-bottom: 40px;
+}
+
+.budaya-number {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.budaya-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.budaya-title-highlight {
+  color: #7a8450; /* Olive green matching design */
+}
+
+.budaya-subtitle {
+  font-size: 1.5rem;
+  color: #000;
+  font-weight: 400;
+}
+
+/* Image Gallery Grid */
+.budaya-gallery-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 16px;
+  margin-bottom: 40px;
+  height: 600px;
+}
+
+.gallery-main-image {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.gallery-main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gallery-secondary-image {
+  grid-column: 2;
+  grid-row: 1;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.gallery-secondary-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gallery-diamond-image {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.diamond-shape {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 1;
+  transform: rotate(45deg);
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s ease;
+}
+
+.diamond-shape img {
+  width: 141.42%; /* √2 to cover rotated square */
+  height: 141.42%;
+  object-fit: cover;
+  transform: rotate(-45deg) scale(1.42);
+  transform-origin: center;
+}
+
+/* ======================================
+   AYANA-STYLE SLIDER
+   ====================================== */
+
+.budaya-slider-wrapper {
+  width: 100%;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.budaya-slider-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  position: relative;
+  user-select: none;
+}
+
+.budaya-slider-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.budaya-slider-track {
+  display: flex;
+  gap: 2px; /* White border between slides (2px like Figma design) */
+  width: fit-content;
+}
+
+.budaya-slider-slide {
+  flex-shrink: 0;
+  width: 100vw;
+  max-width: 1400px;
+  height: 600px;
+  position: relative;
+  overflow: hidden;
+  background-color: #000;
+}
+
+.budaya-slider-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+
+.budaya-slider-slide.active img {
+  transform: scale(1);
+}
+
+.budaya-slider-slide:not(.active) img {
+  transform: scale(1.05);
+}
+
+/* Slider Dots */
+.budaya-slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 0 20px;
+}
+
+.budaya-slider-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #d0d0d0;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  position: relative;
+}
+
+.budaya-slider-dot::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(122, 132, 80, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.budaya-slider-dot:hover::before,
+.budaya-slider-dot.active::before {
+  opacity: 1;
+}
+
+.budaya-slider-dot.active {
+  background-color: #7a8450;
+  transform: scale(1.3);
+}
+
+.budaya-slider-dot:hover {
+  background-color: #7a8450;
+  transform: scale(1.15);
+}
+
+/* Custom Cursor for Slider (Ayana-style arrows) */
+.budaya-slider-cursor {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+.budaya-slider-container:hover .budaya-slider-cursor {
+  opacity: 0.6;
+}
+
+.budaya-slider-cursor svg {
+  width: 100%;
+  height: 100%;
+  fill: white;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* Description */
+.budaya-description {
+  max-width: 900px;
+  margin-bottom: 40px;
+}
+
+.budaya-description p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #333;
+}
+
+/* CTA Section */
+.budaya-cta {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 32px 0;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.cta-image {
+  flex-shrink: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cta-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cta-content {
+  flex: 1;
+}
+
+.cta-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.cta-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 28px;
+  background-color: #7a8450; /* Olive green */
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.cta-button:hover {
+  background-color: #6a7440;
+  transform: translateX(5px);
+}
+
+.cta-icon {
+  font-size: 1.2rem;
+}
+
+/* Dots Navigation - Fixed Right Side */
+.ayana-dots-nav {
+  position: fixed;
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ayana-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #d0d0d0;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.ayana-dot.active {
+  background-color: #7a8450;
+  transform: scale(1.4);
+}
+
+.ayana-dot:hover {
+  background-color: #7a8450;
+  transform: scale(1.2);
+}
+
+/* Bottom Divider */
+.budaya-divider {
+  height: 2px;
+  background-color: #e0e0e0;
+  margin-top: 40px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .budaya-gallery-grid {
+    height: 500px;
+    gap: 12px;
+  }
+
+  .budaya-slider-slide {
+    height: 500px;
+  }
+
+  .budaya-section-new {
+    padding: 60px 32px;
+  }
+
+  .budaya-title {
+    font-size: 2rem;
+  }
+
+  .budaya-subtitle {
+    font-size: 1.25rem;
+  }
+
+  .ayana-dots-nav {
+    right: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .budaya-gallery-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    height: auto;
+  }
+
+  .budaya-slider-slide {
+    height: 400px;
+  }
+
+  .budaya-slider-cursor {
+    display: none; /* Hide custom cursor on mobile */
+  }
+
+  .gallery-main-image {
+    grid-column: 1;
+    grid-row: 1;
+    height: 300px;
+  }
+
+  .gallery-secondary-image {
+    grid-column: 1;
+    grid-row: 2;
+    height: 250px;
+  }
+
+  .gallery-diamond-image {
+    grid-column: 1;
+    grid-row: 3;
+    height: auto;
+  }
+
+  .budaya-cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cta-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .budaya-section-new {
+    padding: 40px 20px;
+  }
+
+  .budaya-title {
+    font-size: 1.75rem;
+  }
+
+  .budaya-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .budaya-description p {
+    font-size: 1rem;
+  }
+
+  .ayana-dots-nav {
+    display: none; /* Hide dots on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .budaya-number {
+    font-size: 1rem;
+  }
+
+  .budaya-title {
+    font-size: 1.5rem;
+  }
+
+  .budaya-subtitle {
+    font-size: 1rem;
+  }
+
+  .budaya-slider-slide {
+    height: 300px;
+  }
+
+  .gallery-main-image {
+    height: 250px;
+  }
+
+  .gallery-secondary-image {
+    height: 200px;
+  }
+
+  .diamond-shape {
+    max-width: 200px;
+  }
+
+  .cta-title {
+    font-size: 1.25rem;
+  }
+}
