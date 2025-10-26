@@ -520,8 +520,8 @@ export default function WisataPage() {
               </motion.svg>
             </motion.div>
 
-            {/* Info Cards - Desktop Layout */}
-            <div className="hidden xl:block">
+            {/* Info Cards */}
+            <div className="info-cards-container">
               {/* Card 1 */}
               <motion.div 
                 className={`info-card card-1 ${activeCard === 1 ? 'active' : ''}`}

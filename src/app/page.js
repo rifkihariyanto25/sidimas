@@ -115,7 +115,7 @@ export default function Home() {
               <p className="max-w-lg mb-6">
                 Eksplorasi Keindahan Bumi Ngapak dari Lereng Gunung hingga Kota
               </p>
-              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 shadow-xl relative z-50 inline-block" style={{ filter: 'brightness(1.2) contrast(1.1)' }}>
                 Mulai Jelajahi
               </a>
             </div>
@@ -159,7 +159,7 @@ export default function Home() {
                 Mendoan hangat, sroto Sokaraja, hingga gethuk goreng yang bikin
                 kangen!
               </p>
-              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 shadow-xl relative z-50 inline-block" style={{ filter: 'brightness(1.2) contrast(1.1)' }}>
                 Jelajahi Kuliner
               </a>
             </div>
@@ -203,7 +203,7 @@ export default function Home() {
                 Dari wayang kulit, jaranan, hingga kesenian tradisional yang
                 memikat hati
               </p>
-              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 shadow-xl relative z-50 inline-block" style={{ filter: 'brightness(1.2) contrast(1.1)' }}>
                 Kenali Budaya
               </a>
             </div>

@@ -394,6 +394,20 @@
   .map-section {
     padding: 20px;
   }
+  
+  .desktop-cards .info-card {
+    position: static !important;
+    margin: 20px auto !important;
+    transform: none !important;
+    max-width: 100%;
+  }
+  
+  .info-card-number {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 @media (max-width: 768px) {
@@ -403,14 +417,42 @@
 
   .map-header h1 {
     font-size: 1.8em;
+    margin-left: 0;
   }
 
   .map-header h2 {
     font-size: 1.2em;
+    margin-left: 0;
   }
 
   .map-section-title {
     font-size: 1.5em;
+  }
+  
+  .desktop-cards {
+    display: block !important;
+    height: auto;
+  }
+  
+  .info-card {
+    position: relative !important;
+    margin: 20px auto !important;
+    max-width: 90% !important;
+    width: auto !important;
+    padding: 55px 15px 20px 15px !important;
+    transform: none !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+  
+  .info-card-number {
+    position: absolute !important;
+    top: 15px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 60px;
+    height: 60px;
   }
 }
 
@@ -747,20 +789,77 @@
   
   .info-card {
     margin-bottom: 1rem;
+    position: static !important;
+    margin: 20px auto !important;
+    transform: none !important;
+  }
+
+  .map-section {
+    padding: 20px;
+  }
+  
+  .kuliner-slider-slide {
+    height: 500px;
+  }
+
+  .kuliner-section-new {
+    padding: 60px 40px;
+  }
+
+  .kuliner-container {
+    padding: 0 30px;
+    max-width: 1000px;
+  }
+
+  .kuliner-title {
+    font-size: 2rem;
+  }
+
+  .kuliner-subtitle {
+    font-size: 1.25rem;
+  }
+
+  .ayana-dots-nav {
+    right: 16px;
+  }
+
+  .kuliner-content-section {
+    gap: 40px;
+  }
+
+  .content-diamond-image {
+    width: 200px;
+  }
+
+  .content-description p {
+    font-size: 1rem;
+  }
+  
+  .map-header h1,
+  .map-header h2 {
+    margin-left: 0;
+    text-align: center;
+  }
+  
+  .map-intro-text {
+    margin-left: 0;
+    text-align: center;
   }
 }
 
 @media (max-width: 768px) {
   .hero-kuliner {
     height: 100vh;
+    padding: 0 20px;
   }
   
   .hero-kuliner .hero-title {
-    font-size: 3.5rem;
+    font-size: 2.5rem !important;
   }
   
-  .hero-kuliner p {
-    font-size: 1rem;
+  .hero-kuliner p,
+  .hero-content p {
+    font-size: 0.85rem !important;
   }
   
   .map-container {
@@ -769,10 +868,126 @@
   
   .info-card {
     padding: 1.25rem;
+    position: static !important;
+    margin: 20px auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
   }
   
   .info-card h3 {
     font-size: 1.125rem;
+  }
+  
+  .desktop-cards {
+    display: block;
+    height: auto;
+  }
+  
+  .kuliner-slider-slide {
+    height: 400px;
+  }
+
+  .kuliner-slider-cursor {
+    display: none;
+  }
+
+  .kuliner-section-new {
+    padding: 40px 20px;
+  }
+
+  .kuliner-container {
+    padding: 0 20px;
+  }
+
+  .kuliner-content-section {
+    flex-direction: column;
+    gap: 30px;
+    align-items: flex-start;
+  }
+
+  .content-description {
+    padding-right: 0;
+    width: 100%;
+  }
+
+  .content-diamond-image {
+    width: 180px;
+    align-self: center;
+  }
+
+  .dashed-line-decoration-horizontal {
+    width: 60%;
+  }
+
+  .dashed-line-decoration-vertical {
+    left: -20px;
+  }
+
+  .content-description p {
+    font-size: 1rem;
+  }
+
+  .kuliner-cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .kuliner-cta .cta-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .kuliner-title {
+    font-size: 1.75rem;
+  }
+
+  .kuliner-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .ayana-dots-nav {
+    display: none;
+  }
+  
+  .map-container-wrapper {
+    padding: 20px;
+  }
+
+  .map-header h1 {
+    font-size: 1.8em;
+    margin-left: 0;
+  }
+
+  .map-header h2 {
+    font-size: 1.2em;
+    margin-left: 0;
+  }
+
+  .map-section-title {
+    font-size: 1.5em;
+  }
+  
+  .description-container {
+    margin: 40px auto 0;
+    padding: 0 20px;
+  }
+  
+  .description-title {
+    font-size: 1.4em;
+  }
+  
+  .description-text {
+    font-size: 0.9em;
+    padding: 0 10px;
+  }
+  
+  .description-divider {
+    width: 100%;
+  }
+  
+  .dashed-line-decoration-horizontal,
+  .dashed-line-decoration-vertical {
+    display: none;
   }
 }
 
@@ -782,11 +997,55 @@
   }
   
   .hero-kuliner .hero-title {
-    font-size: 2.75rem;
+    font-size: 2rem !important;
   }
   
   .hero-kuliner p {
+    font-size: 0.8rem !important;
+  }
+  
+  .kuliner-section-new {
+    padding: 40px 16px;
+  }
+
+  .kuliner-container {
+    padding: 0 16px;
+  }
+
+  .kuliner-number {
+    font-size: 1rem;
+  }
+
+  .kuliner-title {
+    font-size: 1.5rem;
+  }
+
+  .kuliner-subtitle {
+    font-size: 1rem;
+  }
+
+  .kuliner-slider-slide {
+    height: 300px;
+  }
+
+  .content-diamond-image {
+    width: 160px;
+  }
+
+  .content-description p {
     font-size: 0.95rem;
+  }
+
+  .kuliner-cta .cta-title {
+    font-size: 1.25rem;
+  }
+  
+  .map-header h1 {
+    font-size: 1.5em;
+  }
+  
+  .map-header h2 {
+    font-size: 1em;
   }
 }
 

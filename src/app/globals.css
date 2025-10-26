@@ -813,12 +813,74 @@ html, body {
 ====================== */
 @media (max-width: 768px) {
   .navbar ul { gap: 15px; font-size: 0.9rem; }
-  .hero-slide { padding-left: 20px; }
-  .hero-content h1 { font-size: 2rem; }
-  .hero-content p { font-size: 0.9rem; }
-  .mini-slider { left: 20px; right: auto; bottom: 20px; }
-  .mini-slider .swiper { height: 100px; }
-  .about, .khas, .cta { padding: 60px 20px; }
+  
+  /* Hide menu on mobile, show hamburger */
+  .navbar ul {
+    display: none;
+  }
+  
+  .hero-slide { 
+    padding-left: 20px; 
+    padding-right: 20px;
+  }
+  
+  .hero-content {
+    padding: 0 !important;
+  }
+  
+  .hero-content h1 { 
+    font-size: 2rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .hero-content p { 
+    font-size: 0.9rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .hero-content .cta {
+    padding: 10px 20px !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .mini-slider { 
+    left: 50%;
+    right: auto;
+    bottom: 20px;
+    transform: translateX(-50%);
+    width: 90vw;
+  }
+  
+  .mini-slider .logoloop {
+    height: 100px;
+    --logoloop-logoHeight: 100px;
+  }
+  
+  .mini-slider .logoloop__item {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+    height: 100px;
+    min-height: 100px;
+    max-height: 100px;
+  }
+  
+  .mini-slider .logoloop__item img {
+    width: 120px;
+    height: 100px;
+  }
+  
+  .about, .khas, .cta { 
+    padding: 60px 20px; 
+  }
+  
+  .about h2 {
+    font-size: 1.8rem;
+  }
+  
+  .about p {
+    font-size: 0.9rem;
+  }
   
   /* Sembunyikan gambar hiasan di mobile */
   .wayang-left,
@@ -827,28 +889,55 @@ html, body {
   }
   
   /* Timeline mobile jadi 1 kolom */
-  .timeline::before { left: 20px; }
-  .timeline-item, .timeline-item.left, .timeline-item.right {
+  .timeline::before { 
+    left: 20px; 
+  }
+  
+  .timeline-item, 
+  .timeline-item.left, 
+  .timeline-item.right {
     width: 100%;
     padding-left: 50px;
+    flex-direction: column !important;
+    align-items: flex-start !important;
   }
-  .timeline-item::before,
-  .timeline-item.right::before {
-    left: 10px;
-    right: auto;
-  }
+  
   .timeline-content {
     max-width: 100%;
+    width: 100% !important;
+    margin-bottom: 20px;
+  }
+  
+  .timeline-img-side {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  .timeline-img-side img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 200px !important;
+  }
+  
+  .timeline-dot {
+    left: 20px;
+    transform: translateX(0);
   }
 
   /* Footer Responsive */
   .footer-hero {
     flex-direction: column;
     text-align: center;
+    gap: 20px;
   }
 
   .footer-character {
     flex: 0 0 auto;
+  }
+  
+  .character-img {
+    width: 200px !important;
+    height: auto !important;
   }
 
   .footer-hero-text {
@@ -858,9 +947,54 @@ html, body {
   .footer-hero-text h2 {
     font-size: 1.8rem;
   }
+  
+  .footer-hero-text p {
+    font-size: 0.9rem;
+  }
 
-  .footer-links {
+  .footer-links-container {
     grid-template-columns: 1fr;
     gap: 30px;
+  }
+  
+  .nav-actions {
+    gap: 10px;
+  }
+  
+  .nav-actions .login,
+  .nav-actions .signup {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 1.75rem !important;
+  }
+  
+  .hero-content p {
+    font-size: 0.85rem !important;
+  }
+  
+  .about h2,
+  .khas h2 {
+    font-size: 1.5rem;
+  }
+  
+  .footer-hero-text h2 {
+    font-size: 1.5rem;
+  }
+  
+  .cta h2 {
+    font-size: 1.5rem;
+  }
+  
+  .timeline-content h3 {
+    font-size: 1.1rem;
+  }
+  
+  .timeline-content p {
+    font-size: 0.9rem;
   }
 }
