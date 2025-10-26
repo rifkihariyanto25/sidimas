@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import "../wisata/wisata.css"; // IMPORT WISATA CSS UNTUK MAP SECTION
 import "./budaya.css";
@@ -352,7 +352,7 @@ export default function BudayaPage() {
 
   // Track section changes with IntersectionObserver
   useEffect(() => {
-    if (!isClient || sectionsRef.current.length === 0) return;
+    if (!isClient || sectionsRef.current.length === 0 || budayaData.length === 0) return;
 
     const observerOptions = {
       root: null,
@@ -387,11 +387,11 @@ export default function BudayaPage() {
     return () => {
       observer.disconnect();
     };
-  }, [isClient]);
+  }, [isClient, budayaData.length]);
 
   // Track if we're in budaya wrapper area (show/hide dots)
   useEffect(() => {
-    if (!isClient || !budayaWrapperRef.current) return;
+    if (!isClient || !budayaWrapperRef.current || budayaData.length === 0) return;
 
     const wrapperElement = budayaWrapperRef.current;
 
@@ -401,21 +401,16 @@ export default function BudayaPage() {
       },
       {
         root: null,
-        threshold: 0.1,
+        threshold: 0.01,
       }
     );
 
     observer.observe(wrapperElement);
 
-    // Initial check
-    const rect = wrapperElement.getBoundingClientRect();
-    const isInitiallyVisible = rect.top < window.innerHeight && rect.bottom > 0;
-    setShowDots(isInitiallyVisible);
-
     return () => {
       observer.disconnect();
     };
-  }, [isClient]);
+  }, [isClient, budayaData.length]);
 
   // Loading state
   if (!isClient || loading) {
@@ -464,7 +459,7 @@ export default function BudayaPage() {
       {/* HERO SECTION */}
       <section
         className="hero-slide h-screen flex items-center justify-start relative text-white bg-cover bg-center"
-        style={{ backgroundImage: "url('/pemandangan.png')" }}
+        style={{ backgroundImage: "url('/jaranan.jpeg')" }}
       >
         <div className="absolute inset-0 bg-black/25"></div>
 
@@ -482,252 +477,290 @@ export default function BudayaPage() {
       </section>
 
       {/* CONTAINER SECTION - Menggunakan CSS Classes */}
-      <section className="map-wrapper">
+      <motion.section 
+        className="map-wrapper"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: false, margin: "-100px" }}
+      >
         <div className="map-container-wrapper">
           {/* Header */}
-          <div className="map-header">
+          <motion.div 
+            className="map-header"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: false }}
+          >
             <h1>
-              Eksplor Berbagai Wisata{" "}
+              Eksplor Kekayaan Budaya{" "}
               <span className="highlight">Banyumas</span>,
             </h1>
-            <h2>Curug dan Keindahan Lainnya</h2>
-          </div>
+            <h2>Tradisi dan Warisan yang Memukau</h2>
+          </motion.div>
 
           {/* Divider */}
-          <div className="map-divider"></div>
+          <motion.div 
+            className="map-divider"
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: false }}
+          ></motion.div>
 
           {/* Intro Text */}
-          <div className="map-intro-text">
+          <motion.div 
+            className="map-intro-text"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            viewport={{ once: false }}
+          >
             <p>
-              Banyumas menyimpan pesona alam dan budaya yang memikat hati. Dari
-              deretan air terjun yang menyegarkan hingga panorama hijau yang
-              menenangkan, setiap sudut menawarkan pengalaman wisata yang unik.
-              Nikmati keindahan alamnya, jelajahi kawasan alam yang masih asri,
-              dan temukan berbagai destinasi menarik lainnya mulai dari wisata
-              keluarga, petualangan alam, hingga tempat-tempat bersejarah yang
-              sarat cerita.
+              Banyumas kaya akan warisan budaya yang unik dan memikat. Dari seni tari tradisional yang anggun hingga kerajinan tangan yang penuh makna, setiap aspek budaya menawarkan cerita dan filosofi mendalam. Jelajahi kesenian lokal yang masih lestari, kenali tradisi yang diwariskan turun-temurun, serta rasakan keramahan masyarakat yang menjaga nilai-nilai budaya dengan penuh kebanggaan.
             </p>
-          </div>
+          </motion.div>
 
           {/* Section Title */}
-          <h2 className="map-section-title">Rekomendasi Wisata</h2>
+          <motion.h2 
+            className="map-section-title"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            viewport={{ once: false }}
+          >Rekomendasi Budaya</motion.h2>
 
           {/* Map Section */}
           <div className="map-section">
             {/* Map Container */}
-            <div
-              className="map-container"
+            <motion.div 
+              className="map-container" 
               style={{ backgroundImage: "url('/peta.png')" }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              viewport={{ once: false }}
             >
               {/* Capital Marker */}
-              <div className="capital-marker" title="Banyumas Regency"></div>
+              <motion.div 
+                className="capital-marker" 
+                title="Banyumas Regency"
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                transition={{ duration: 0.5, delay: 1, type: "spring", stiffness: 200 }}
+                viewport={{ once: false }}
+              ></motion.div>
 
               {/* Map Markers */}
-              <div
-                className="map-marker marker-1"
-                onMouseEnter={() => handleMarkerClick(1)}
+              <motion.div 
+                className="map-marker marker-1" 
+                onMouseEnter={() => handleMarkerClick(1)} 
                 onMouseLeave={() => setActiveCard(null)}
-              >
-                1
-              </div>
-              <div
-                className="map-marker marker-2"
-                onMouseEnter={() => handleMarkerClick(2)}
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4, delay: 1.1, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.2 }}
+                viewport={{ once: false }}
+              >1</motion.div>
+              <motion.div 
+                className="map-marker marker-2" 
+                onMouseEnter={() => handleMarkerClick(2)} 
                 onMouseLeave={() => setActiveCard(null)}
-              >
-                2
-              </div>
-              <div
-                className="map-marker marker-3"
-                onMouseEnter={() => handleMarkerClick(3)}
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4, delay: 1.2, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.2 }}
+                viewport={{ once: false }}
+              >2</motion.div>
+              <motion.div 
+                className="map-marker marker-3" 
+                onMouseEnter={() => handleMarkerClick(3)} 
                 onMouseLeave={() => setActiveCard(null)}
-              >
-                3
-              </div>
-              <div
-                className="map-marker marker-4"
-                onMouseEnter={() => handleMarkerClick(4)}
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4, delay: 1.3, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.2 }}
+                viewport={{ once: false }}
+              >3</motion.div>
+              <motion.div 
+                className="map-marker marker-4" 
+                onMouseEnter={() => handleMarkerClick(4)} 
                 onMouseLeave={() => setActiveCard(null)}
-              >
-                4
-              </div>
-              <div
-                className="map-marker marker-5"
-                onMouseEnter={() => handleMarkerClick(5)}
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4, delay: 1.4, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.2 }}
+                viewport={{ once: false }}
+              >4</motion.div>
+              <motion.div 
+                className="map-marker marker-5" 
+                onMouseEnter={() => handleMarkerClick(5)} 
                 onMouseLeave={() => setActiveCard(null)}
-              >
-                5
-              </div>
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4, delay: 1.5, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.2 }}
+                viewport={{ once: false }}
+              >5</motion.div>
 
               {/* Wave decorations */}
-              <svg
-                className="wave-decoration wave-left"
-                width="60"
-                height="30"
+              <motion.svg 
+                className="wave-decoration wave-left" 
+                width="60" 
+                height="30" 
                 viewBox="0 0 60 30"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 1.6 }}
+                viewport={{ once: false }}
               >
-                <path
-                  d="M0,15 Q15,5 30,15 T60,15"
-                  stroke="#fff"
-                  fill="none"
-                  strokeWidth="2"
-                />
-              </svg>
-
-              <svg
-                className="wave-decoration wave-right"
-                width="60"
-                height="30"
+                <path d="M0,15 Q15,5 30,15 T60,15" stroke="#fff" fill="none" strokeWidth="2"/>
+              </motion.svg>
+              
+              <motion.svg 
+                className="wave-decoration wave-right" 
+                width="60" 
+                height="30" 
                 viewBox="0 0 60 30"
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 1.7 }}
+                viewport={{ once: false }}
               >
-                <path
-                  d="M0,15 Q15,5 30,15 T60,15"
-                  stroke="#fff"
-                  fill="none"
-                  strokeWidth="2"
-                />
-              </svg>
-
-              <svg
-                className="wave-decoration wave-bottom"
-                width="60"
-                height="30"
+                <path d="M0,15 Q15,5 30,15 T60,15" stroke="#fff" fill="none" strokeWidth="2"/>
+              </motion.svg>
+              
+              <motion.svg 
+                className="wave-decoration wave-bottom" 
+                width="60" 
+                height="30" 
                 viewBox="0 0 60 30"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.8 }}
+                viewport={{ once: false }}
               >
-                <path
-                  d="M0,15 Q15,5 30,15 T60,15"
-                  stroke="#fff"
-                  fill="none"
-                  strokeWidth="2"
-                />
-              </svg>
-            </div>
+                <path d="M0,15 Q15,5 30,15 T60,15" stroke="#fff" fill="none" strokeWidth="2"/>
+              </motion.svg>
+            </motion.div>
 
-            {/* Info Cards - Desktop Layout */}
-            <div className="hidden xl:block">
+            {/* Info Cards */}
+            <div className="info-cards-container">
               {/* Card 1 */}
-              <div
-                className={`info-card card-1 ${
-                  activeCard === 1 ? "active" : ""
-                }`}
+              <motion.div 
+                className={`info-card card-1 ${activeCard === 1 ? 'active' : ''}`}
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 1.9 }}
+                viewport={{ once: false }}
               >
-                <div className="info-card-number" data-number="1">
-                  1
-                </div>
-                <h3>Baturraden</h3>
-                <p>
-                  Destinasi wisata alam di kaki Gunung Slamet yang menawarkan
-                  kesejukan dan keindahan alam.
-                </p>
-              </div>
+                <div className="info-card-number" data-number="1">1</div>
+                <h3>Lengger Banyumasan</h3>
+                <p>Tarian tradisional khas Banyumas yang memadukan gerakan anggun dengan iringan gamelan yang merdu.</p>
+              </motion.div>
 
               {/* Card 2 */}
-              <div
-                className={`info-card card-2 ${
-                  activeCard === 2 ? "active" : ""
-                }`}
+              <motion.div 
+                className={`info-card card-2 ${activeCard === 2 ? 'active' : ''}`}
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 2.0 }}
+                viewport={{ once: false }}
               >
-                <div className="info-card-number" data-number="2">
-                  2
-                </div>
-                <h3>Manggala Ranch</h3>
-                <p>
-                  Air terjun eksotis yang tersembunyi di tengah hutan dengan
-                  keindahan alam yang memukau
-                </p>
-              </div>
+                <div className="info-card-number" data-number="2">2</div>
+                <h3>Calung Banyumasan</h3>
+                <p>Alat musik bambu tradisional yang menghasilkan nada-nada merdu khas Banyumas.</p>
+              </motion.div>
 
               {/* Card 3 */}
-              <div
-                className={`info-card card-3 ${
-                  activeCard === 3 ? "active" : ""
-                }`}
+              <motion.div 
+                className={`info-card card-3 ${activeCard === 3 ? 'active' : ''}`}
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 2.1 }}
+                viewport={{ once: false }}
               >
-                <div className="info-card-number" data-number="3">
-                  3
-                </div>
-                <h3>Menara Teratai</h3>
-                <p>
-                  Danau tenang dengan suasana damai dan pemandangan asri yang
-                  menyejukkan hati
-                </p>
-              </div>
+                <div className="info-card-number" data-number="3">3</div>
+                <h3>Begalan</h3>
+                <p>Tradisi penyambutan pengantin dengan pertunjukan seni dan filosofi kehidupan yang mendalam.</p>
+              </motion.div>
 
               {/* Card 4 */}
-              <div
-                className={`info-card card-4 ${
-                  activeCard === 4 ? "active" : ""
-                }`}
+              <motion.div 
+                className={`info-card card-4 ${activeCard === 4 ? 'active' : ''}`}
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 2.2 }}
+                viewport={{ once: false }}
               >
-                <div className="info-card-number" data-number="4">
-                  4
-                </div>
-                <h3>Cafe Serayu</h3>
-                <p>
-                  Pusat kota dengan berbagai destinasi wisata menarik dan
-                  kuliner khas yang wajib dicoba
-                </p>
-              </div>
+                <div className="info-card-number" data-number="4">4</div>
+                <h3>Ebeg Banyumasan</h3>
+                <p>Kesenian kuda lumping yang menampilkan tarian energik dengan unsur mistis dan spiritual.</p>
+              </motion.div>
 
               {/* Card 5 */}
-              <div
-                className={`info-card card-5 ${
-                  activeCard === 5 ? "active" : ""
-                }`}
+              <motion.div 
+                className={`info-card card-5 ${activeCard === 5 ? 'active' : ''}`}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 2.3 }}
+                viewport={{ once: false }}
               >
-                <div className="info-card-number" data-number="5">
-                  5
-                </div>
-                <h3>Kota Tua</h3>
-                <p>
-                  Kota kecil dengan wisata alam yang mempesona dan udara sejuk
-                  pegunungan
-                </p>
-              </div>
+                <div className="info-card-number" data-number="5">5</div>
+                <h3>Wayang Kulit Gagrag Banyumasan</h3>
+                <p>Pertunjukan wayang kulit dengan gaya khas Banyumas yang sarat nilai filosofis.</p>
+              </motion.div>
             </div>
           </div>
         </div>
 
         {/* DESCRIPTION SECTION - Keluar dari map-container-wrapper agar bisa mepet kanan */}
-        <div className="description-container">
+        <motion.div 
+          className="description-container"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          viewport={{ once: false }}
+        >
           <div className="description-divider"></div>
-          <h2 className="description-title">
-            Kunjungi Setiap Destinasi di Banyumas
-          </h2>
+          <h2 className="description-title">Lestarikan Budaya Banyumas</h2>
           <p className="description-text">
-            Mulai dari kesejukan pegunungan Baturraden, kejerniham air terjun
-            alami, hingga keunikan tradisi dan kuliner lokal yang menggugah
-            selera. Tak hanya keindahan alamnya, keramahan masyarakat dan
-            kekayaan budaya yang masih terjaga menjadikan Banyumas tempat yang
-            istimewa untuk dijelajahi. Baik untuk liburan keluarga, petualangan
-            alam, maupun wisata sejarah, Banyumas selalu punya cerita menarik di
-            setiap perjalanannya.
+            Mulai dari kesenian tradisional yang memukau, filosofi hidup yang mendalam, hingga ritual adat yang penuh makna. Setiap aspek budaya Banyumas mencerminkan kearifan lokal yang diwariskan turun-temurun. Keunikan dialek ngapak, keramahan masyarakat, dan nilai-nilai gotong royong menjadikan Banyumas tempat yang istimewa untuk mengenal Indonesia lebih dalam. Mari bersama melestarikan dan menghargai warisan budaya yang tak ternilai ini.
           </p>
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
       {/* BUDAYA SECTIONS - AYANA STYLE WITH NEW LAYOUT */}
       <div className="ayana-budaya-wrapper" ref={budayaWrapperRef}>
         {/* Dots Navigation - Fixed Right */}
-        {isClient && budayaData && budayaData.length > 0 && showDots && (
-          <div className="ayana-dots-nav">
-            {budayaData.map((_, dotIdx) => (
-              <button
-                key={dotIdx}
-                className={`ayana-dot ${
-                  currentSection === dotIdx ? "active" : ""
-                }`}
-                onClick={() => {
-                  sectionsRef.current[dotIdx]?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                  });
-                }}
-                aria-label={`Go to section ${dotIdx + 1}`}
-              />
-            ))}
-          </div>
-        )}
+        <AnimatePresence>
+          {isClient && budayaData && budayaData.length > 0 && showDots && (
+            <motion.div 
+              className="ayana-dots-nav"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              {budayaData.map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  className={`ayana-dot ${
+                    currentSection === dotIdx ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    sectionsRef.current[dotIdx]?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                  }}
+                  aria-label={`Go to section ${dotIdx + 1}`}
+                />
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Show message if no data */}
         {isClient && budayaData && budayaData.length === 0 && (
