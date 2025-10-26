@@ -944,14 +944,17 @@ export default function AdminDashboard() {
                 
                 {/* Preview Grid */}
                 {imagePreviews.length > 0 && (
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))',
-                    gap: '12px',
-                    marginBottom: '12px'
-                  }}>
+                  <div 
+                    key={`preview-grid-${activePage}`}
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))',
+                      gap: '12px',
+                      marginBottom: '12px'
+                    }}
+                  >
                     {imagePreviews.map((preview, index) => (
-                      <div key={index} style={{ 
+                      <div key={`${activePage}-preview-${index}`} style={{ 
                         position: 'relative',
                         aspectRatio: '1',
                         borderRadius: '12px',
@@ -1021,28 +1024,31 @@ export default function AdminDashboard() {
                 
                 {/* Upload Button (muncul jika belum 5 gambar) */}
                 {imagePreviews.length < 5 && (
-                  <label style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '100%',
-                    height: '130px',
-                    border: '2px dashed #d1d5db',
-                    borderRadius: '12px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    background: '#f9fafb'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#65a30d'
-                    e.currentTarget.style.background = '#f0fdf4'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#d1d5db'
-                    e.currentTarget.style.background = '#f9fafb'
-                  }}>
+                  <label 
+                    key={`upload-label-${activePage}`}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '100%',
+                      height: '130px',
+                      border: '2px dashed #d1d5db',
+                      borderRadius: '12px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      background: '#f9fafb'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#65a30d'
+                      e.currentTarget.style.background = '#f0fdf4'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = '#d1d5db'
+                      e.currentTarget.style.background = '#f9fafb'
+                    }}>
                     <input
+                      key={`upload-input-${activePage}`}
                       type="file"
                       accept="image/*"
                       multiple
