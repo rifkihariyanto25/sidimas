@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
@@ -18,6 +18,7 @@ export default function AdminDashboard() {
   const [subtitle, setSubtitle] = useState('')
   const [category, setCategory] = useState('wisata')
   const [description, setDescription] = useState('')
+  const [funfact, setFunfact] = useState('') // Tambahan: untuk fun fact
   const [isLoading, setIsLoading] = useState(false)
   const [filterCategory, setFilterCategory] = useState('all')
   const [adminEmail, setAdminEmail] = useState('')
@@ -27,6 +28,7 @@ export default function AdminDashboard() {
   const [isEditMode, setIsEditMode] = useState(false)
   const [activePage, setActivePage] = useState('wisata') // New: untuk sidebar navigation
   const [isSidebarOpen, setIsSidebarOpen] = useState(true) // New: untuk toggle sidebar di mobile
+  const prevActivePageRef = useRef('wisata') // Track previous activePage
 
   // Check if user is logged in
   useEffect(() => {
@@ -46,26 +48,67 @@ export default function AdminDashboard() {
     loadContents()
   }, [])
 
+  // Auto-clear form ketika pindah kategori (hanya jika activePage benar-benar berubah)
+  useEffect(() => {
+    // Cek apakah activePage benar-benar berubah
+    if (prevActivePageRef.current !== activePage) {
+      console.log(`🔄 Kategori berubah dari ${prevActivePageRef.current} ke ${activePage}`)
+      
+      // Hanya clear jika tidak sedang edit
+      if (!isEditMode) {
+        setTitle('')
+        setSubtitle('')
+        setDescription('')
+        setFunfact('') // Clear funfact juga
+        clearAllImages()
+        setCategory(activePage)
+      }
+      
+      // Update ref untuk next comparison
+      prevActivePageRef.current = activePage
+    }
+  }, [activePage]) // HANYA dependency activePage, BUKAN isEditMode
+
   async function loadContents() {
     try {
-      const { data, error } = await supabase
-        .from('konten')
-        .select('*')
-        .order('created_at', { ascending: false })
+      // Load dari 3 tabel terpisah
+      const [wisataResult, kulinerResult, budayaResult] = await Promise.all([
+        supabase.from('konten_wisata').select('*').order('created_at', { ascending: false }),
+        supabase.from('konten_kuliner').select('*').order('created_at', { ascending: false }),
+        supabase.from('konten_budaya').select('*').order('created_at', { ascending: false })
+      ])
 
-      if (error) throw error
+      // Check errors
+      if (wisataResult.error) throw wisataResult.error
+      if (kulinerResult.error) throw kulinerResult.error
+      if (budayaResult.error) throw budayaResult.error
       
-      if (data) {
-        setItems(data)
-      }
+      // Combine data dengan menambahkan field 'kategori' untuk filtering
+      const allItems = [
+        ...(wisataResult.data || []).map(item => ({ ...item, kategori: 'wisata' })),
+        ...(kulinerResult.data || []).map(item => ({ ...item, kategori: 'kuliner' })),
+        ...(budayaResult.data || []).map(item => ({ ...item, kategori: 'budaya' }))
+      ]
+      
+      // Sort by created_at
+      allItems.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      
+      setItems(allItems)
     } catch (error) {
       console.error('Error loading contents:', error.message)
     }
   }
 
   function handleMultipleImageChange(e) {
+    console.log('🔍 handleMultipleImageChange dipanggil!')
+    console.log('📂 Active Page:', activePage)
+    console.log('📁 Files selected:', e.target.files)
+    
     const files = Array.from(e.target.files)
-    const remainingSlots = 5 - imageFiles.length
+    const remainingSlots = 5 - imagePreviews.length
+    
+    console.log('📊 Image Previews saat ini:', imagePreviews.length)
+    console.log('🎯 Remaining Slots:', remainingSlots)
     
     if (files.length > remainingSlots) {
       alert(`⚠️ Maksimal ${remainingSlots} gambar lagi (Total maksimal 5 gambar)`)
@@ -84,15 +127,23 @@ export default function AdminDashboard() {
     const newFiles = [...imageFiles, ...files]
     setImageFiles(newFiles)
     
+    console.log('📦 Total files after add:', newFiles.length)
+    
     // Create previews
     files.forEach(file => {
+      console.log('🖼️ Creating preview untuk:', file.name)
       const reader = new FileReader()
       reader.onloadend = () => {
-        setImagePreviews(prev => [...prev, {
-          url: reader.result,
-          file: file,
-          name: file.name
-        }])
+        console.log('✅ Preview berhasil dibuat:', file.name)
+        setImagePreviews(prev => {
+          const updated = [...prev, {
+            url: reader.result,
+            file: file,
+            name: file.name
+          }]
+          console.log('📸 Total previews sekarang:', updated.length)
+          return updated
+        })
       }
       reader.readAsDataURL(file)
     })
@@ -108,6 +159,11 @@ export default function AdminDashboard() {
     setImagePreviews([])
   }
 
+  // Helper function untuk mendapatkan nama tabel berdasarkan kategori
+  function getTableName(kategori) {
+    return `konten_${kategori}` // 'wisata' -> 'konten_wisata'
+  }
+
   function handleEdit(item) {
     setIsEditMode(true)
     setEditingId(item.id)
@@ -115,6 +171,7 @@ export default function AdminDashboard() {
     setSubtitle(item.subtittle || '')
     setCategory(item.kategori)
     setDescription(item.deskripsi || '')
+    setFunfact(item.funfact || '') // Set funfact dari database
     
     // Handle multiple images from gambar_url (stored with ||| separator)
     if (item.gambar_url) {
@@ -140,8 +197,9 @@ export default function AdminDashboard() {
     setEditingId(null)
     setTitle('')
     setSubtitle('')
-    setCategory('wisata')
+    setCategory(activePage) // FIX: Sync dengan activePage
     setDescription('')
+    setFunfact('') // Clear funfact
     clearAllImages()
   }
 
@@ -192,13 +250,16 @@ export default function AdminDashboard() {
         const updateData = {
           nama: title.trim(),
           subtittle: subtitle.trim(),
-          kategori: category,
           deskripsi: description.trim(),
-          gambar_url: gambarUrlsString, // Using existing gambar_url column
+          funfact: funfact.trim(), // Tambahkan funfact
+          gambar_url: gambarUrlsString,
         }
 
+        // Gunakan tabel sesuai kategori item yang sedang diedit
+        const tableName = getTableName(category) // category dari item yang diedit
+        
         const { data, error } = await supabase
-          .from('konten')
+          .from(tableName)
           .update(updateData)
           .eq('id', editingId)
           .select()
@@ -206,8 +267,10 @@ export default function AdminDashboard() {
         if (error) throw error
 
         if (data && data[0]) {
+          // Tambahkan field kategori untuk konsistensi di state
+          const updatedItem = { ...data[0], kategori: category }
           setItems(prev => prev.map(item => 
-            item.id === editingId ? data[0] : item
+            item.id === editingId ? updatedItem : item
           ))
         }
 
@@ -218,20 +281,25 @@ export default function AdminDashboard() {
         const newItem = {
           nama: title.trim(),
           subtittle: subtitle.trim(),
-          kategori: category,
           deskripsi: description.trim(),
-          gambar_url: gambarUrlsString, // Using existing gambar_url column
+          funfact: funfact.trim(), // Tambahkan funfact
+          gambar_url: gambarUrlsString,
         }
 
+        // Gunakan tabel sesuai dengan activePage (kategori yang sedang dipilih)
+        const tableName = getTableName(activePage)
+        
         const { data, error } = await supabase
-          .from('konten')
+          .from(tableName)
           .insert([newItem])
           .select()
 
         if (error) throw error
 
         if (data && data[0]) {
-          setItems(prev => [data[0], ...prev])
+          // Tambahkan field kategori untuk konsistensi di state
+          const insertedItem = { ...data[0], kategori: activePage }
+          setItems(prev => [insertedItem, ...prev])
         }
 
         alert('✅ Konten berhasil ditambahkan!')
@@ -239,8 +307,9 @@ export default function AdminDashboard() {
         // Reset form
         setTitle('')
         setSubtitle('')
-        setCategory('wisata')
+        setCategory(activePage) // Sync category dengan activePage
         setDescription('')
+        setFunfact('') // Clear funfact
         clearAllImages()
       }
     } catch (error) {
@@ -255,8 +324,18 @@ export default function AdminDashboard() {
     if (!confirm('⚠️ Yakin ingin menghapus konten ini?')) return
 
     try {
+      // Cari item untuk tahu kategorinya
+      const item = items.find(i => i.id === id)
+      if (!item) {
+        alert('❌ Konten tidak ditemukan!')
+        return
+      }
+      
+      // Gunakan tabel sesuai kategori
+      const tableName = getTableName(item.kategori)
+      
       const { error } = await supabase
-        .from('konten')
+        .from(tableName)
         .delete()
         .eq('id', id)
 
@@ -795,6 +874,47 @@ export default function AdminDashboard() {
                     outline: 'none'
                   }}
                   onFocus={(e) => e.target.style.borderColor = '#65a30d'}
+                  onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                />
+              </div>
+
+              {/* Fun Fact Field */}
+              <div>
+                <label style={{ 
+                  display: 'block', 
+                  fontWeight: '600', 
+                  marginBottom: '8px',
+                  color: '#374151',
+                  fontSize: '14px'
+                }}>
+                  💡 Fun Fact
+                  <span style={{ 
+                    color: '#9ca3af', 
+                    fontSize: '12px', 
+                    fontWeight: '400',
+                    marginLeft: '6px'
+                  }}>
+                    (fakta unik/menarik)
+                  </span>
+                </label>
+                <textarea
+                  value={funfact}
+                  onChange={(e) => setFunfact(e.target.value)}
+                  placeholder="Tambahkan fakta menarik atau unik tentang konten ini..."
+                  rows={2}
+                  style={{
+                    width: '100%',
+                    padding: '14px 16px',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '12px',
+                    fontSize: '15px',
+                    resize: 'vertical',
+                    fontFamily: 'inherit',
+                    boxSizing: 'border-box',
+                    transition: 'all 0.2s',
+                    outline: 'none'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#f59e0b'}
                   onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
                 />
               </div>

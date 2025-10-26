@@ -17,6 +17,16 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
   const sliderRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
 
+  // Debug log untuk melihat data yang masuk ke komponen
+  useEffect(() => {
+    console.log(`\n🎴 BudayaSection ${index} rendered:`, budaya.title);
+    console.log("   sliderImages:", budaya.sliderImages);
+    console.log("   sliderImages length:", budaya.sliderImages?.length);
+    if (budaya.sliderImages && budaya.sliderImages.length > 0) {
+      console.log("   First image URL:", budaya.sliderImages[0]);
+    }
+  }, [budaya, index]);
+
   // Slider state
   const [activeSlide, setActiveSlide] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -25,14 +35,17 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
 
   // Auto-advance slider
   useEffect(() => {
-    if (!budaya.sliderImages || budaya.sliderImages.length === 0) return;
+    if (!budaya.sliderImages || budaya.sliderImages.length === 0) {
+      console.log(`⚠️ BudayaSection ${index}: No slider images!`);
+      return;
+    }
 
     const interval = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % budaya.sliderImages.length);
     }, 4000); // Change slide every 4 seconds
 
     return () => clearInterval(interval);
-  }, [budaya.sliderImages]);
+  }, [budaya.sliderImages, index]);
 
   // Sync slider scroll with active slide
   useEffect(() => {
@@ -125,9 +138,17 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
                     }`}
                   >
                     <img
-                      src={img}
+                      src={img || '/placeholder.jpg'}
                       alt={`${budaya.title} slider ${imgIdx + 1}`}
                       draggable="false"
+                      onError={(e) => {
+                        console.error(`❌ Failed to load image: ${img}`);
+                        e.target.style.backgroundColor = '#f3f4f6';
+                        e.target.alt = 'Gambar gagal dimuat';
+                      }}
+                      onLoad={() => {
+                        console.log(`✅ Image loaded successfully: ${img?.substring(0, 50)}...`);
+                      }}
                     />
                   </div>
                 ))}
@@ -197,39 +218,21 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
           </motion.div>
         </motion.div>
 
-        {/* CTA Section */}
-        <motion.div
-          className="budaya-cta"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-        >
-          {/* CTA Image */}
+        {/* Fun Facts Section */}
+        {budaya.funFact && (
           <motion.div
-            className="cta-image"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
+            className="budaya-funfact"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 1 }}
           >
-            <img src={budaya.images.cta} alt={`${budaya.title} CTA`} />
+            <div className="funfact-icon">💡</div>
+            <div className="funfact-content">
+              <h4 className="funfact-title">Tahukah Kamu?</h4>
+              <p className="funfact-text">{budaya.funFact}</p>
+            </div>
           </motion.div>
-
-          {/* CTA Content */}
-          <div className="cta-content">
-            <h4 className="cta-title">{budaya.ctaTitle}</h4>
-            <p className="cta-description">{budaya.ctaDescription}</p>
-          </div>
-
-          {/* CTA Button */}
-          <motion.a
-            href={budaya.link}
-            className="cta-button"
-            whileHover={{ scale: 1.05, x: 5 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <span className="cta-icon">◉</span>
-            <span>{budaya.ctaButton}</span>
-          </motion.a>
-        </motion.div>
+        )}
 
         {/* Bottom Border Line */}
         <div className="budaya-divider"></div>
@@ -254,33 +257,78 @@ export default function BudayaPage() {
       try {
         setLoading(true);
         const { data, error } = await supabase
-          .from("konten")
+          .from("konten_budaya") // Update: gunakan tabel baru
           .select("*")
-          .eq("kategori", "budaya")
           .order("created_at", { ascending: false });
 
         if (error) {
           console.error("Error fetching budaya data:", error);
         } else if (data) {
+          console.log("🔍 Data budaya dari database:", data); // Debug log
+          console.log("🔍 Jumlah data:", data.length);
+          
           // Transform data dari database ke format yang dibutuhkan komponen
-          const transformedData = data.map((item, index) => ({
-            id: item.id,
-            number: String(index + 1).padStart(2, "0"),
-            title: item.nama,
-            subtitle: item.subtittle || "",
-            description: item.deskripsi || "",
-            ctaTitle: `Yuk, eksplor ${item.nama}!`,
-            ctaDescription: item.subtittle || `Pelajari lebih lanjut tentang ${item.nama}`,
-            ctaButton: "Pelajari Lebih Lanjut",
-            sliderImages: item.gambar_url ? [item.gambar_url] : [],
-            images: {
-              main: item.gambar_url || "",
-              secondary: item.gambar_url || "",
-              diamond: item.gambar_url || "",
-              cta: item.gambar_url || "",
-            },
-            link: `/budaya/${item.id}`,
-          }));
+          const transformedData = data.map((item, index) => {
+            console.log(`\n📦 Item ${index + 1}:`, item.nama);
+            console.log("   gambar_url raw:", item.gambar_url);
+            
+            // Handle gambar_url - bisa jadi string (dengan separator |||) atau array
+            let sliderImages = [];
+            if (item.gambar_url) {
+              // Cek apakah gambar_url berisi multiple URLs (dipisah |||)
+              if (item.gambar_url.includes('|||')) {
+                sliderImages = item.gambar_url.split('|||').map(url => url.trim()).filter(url => url);
+                console.log("   ✅ Detected ||| separator, images:", sliderImages.length);
+              } 
+              // Cek apakah gambar_url berisi multiple URLs (dipisah koma - format lama)
+              else if (item.gambar_url.includes(',')) {
+                sliderImages = item.gambar_url.split(',').map(url => url.trim()).filter(url => url);
+                console.log("   ✅ Detected , separator, images:", sliderImages.length);
+              }
+              // Cek apakah JSON array
+              else if (item.gambar_url.startsWith('[')) {
+                try {
+                  sliderImages = JSON.parse(item.gambar_url);
+                  console.log("   ✅ Detected JSON array, images:", sliderImages.length);
+                } catch (e) {
+                  sliderImages = [item.gambar_url];
+                  console.log("   ⚠️ JSON parse failed, using single URL");
+                }
+              }
+              // Single URL
+              else {
+                sliderImages = [item.gambar_url];
+                console.log("   ✅ Single URL");
+              }
+            } else {
+              console.log("   ⚠️ No gambar_url found!");
+            }
+            
+            console.log("   📸 Final sliderImages:", sliderImages);
+            console.log("   🖼️ First image:", sliderImages[0]);
+
+            return {
+              id: item.id,
+              number: String(index + 1).padStart(2, "0"),
+              title: item.nama,
+              subtitle: item.subtittle || "",
+              description: item.deskripsi || "",
+              funFact: item.funfact || "", // Update: gunakan 'funfact' bukan 'fun_fact'
+              sliderImages: sliderImages,
+              images: {
+                main: sliderImages[0] || "",
+                secondary: sliderImages[1] || sliderImages[0] || "",
+                diamond: sliderImages[2] || sliderImages[0] || "",
+              },
+            };
+          });
+          
+          console.log("✅ Data transformed successfully!");
+          console.log("📊 Total items:", transformedData.length);
+          transformedData.forEach((item, idx) => {
+            console.log(`   Item ${idx + 1}: ${item.title} - ${item.sliderImages.length} images`);
+          });
+          
           setBudayaData(transformedData);
         }
       } catch (error) {
@@ -678,6 +726,35 @@ export default function BudayaPage() {
                 aria-label={`Go to section ${dotIdx + 1}`}
               />
             ))}
+          </div>
+        )}
+
+        {/* Show message if no data */}
+        {isClient && budayaData && budayaData.length === 0 && (
+          <div style={{
+            minHeight: '50vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '4rem 2rem',
+            textAlign: 'center'
+          }}>
+            <div>
+              <h3 style={{ 
+                fontSize: '1.5rem', 
+                color: '#8b7355', 
+                marginBottom: '1rem',
+                fontWeight: '600'
+              }}>
+                Belum Ada Data Budaya
+              </h3>
+              <p style={{ 
+                color: '#666', 
+                fontSize: '1rem' 
+              }}>
+                Silakan tambahkan data budaya melalui admin dashboard
+              </p>
+            </div>
           </div>
         )}
 
