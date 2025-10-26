@@ -360,13 +360,13 @@ export default function BudayaPage() {
       {/* CONTAINER SECTION - Menggunakan CSS Classes */}
       <section className="map-wrapper">
         <div className="map-container-wrapper">
+          
           {/* Header */}
           <div className="map-header">
             <h1>
-              Eksplor Berbagai Budaya{" "}
-              <span className="highlight">Banyumas</span>,
+              Eksplor Berbagai Wisata <span className="highlight">Banyumas</span>,
             </h1>
-            <h2>Kesenian dan Tradisi Lestari</h2>
+            <h2>Curug dan Keindahan Lainnya</h2>
           </div>
 
           {/* Divider */}
@@ -374,219 +374,97 @@ export default function BudayaPage() {
 
           {/* Intro Text */}
           <div className="map-intro-text">
-            <p>
-              Banyumas kaya akan warisan budaya yang mengakar kuat dalam
-              kehidupan masyarakatnya. Dari kesenian tradisional yang memukau
-              hingga upacara adat yang penuh makna, setiap tradisi menawarkan
-              pengalaman budaya yang unik. Nikmati pertunjukan seni yang
-              memesona, jelajahi ritual adat yang masih lestari, dan temukan
-              berbagai kekayaan budaya lainnya mulai dari kerajinan tangan,
-              musik tradisional, hingga upacara adat yang sarat nilai-nilai
-              luhur.
-            </p>
+            <p>Banyumas menyimpan pesona alam dan budaya yang memikat hati. Dari deretan air terjun yang menyegarkan hingga panorama hijau yang menenangkan, setiap sudut menawarkan pengalaman wisata yang unik. Nikmati keindahan alamnya, jelajahi kawasan alam yang masih asri, dan temukan berbagai destinasi menarik lainnya mulai dari wisata keluarga, petualangan alam, hingga tempat-tempat bersejarah yang sarat cerita.</p>
           </div>
 
           {/* Section Title */}
-          <h2 className="map-section-title">Rekomendasi Budaya</h2>
+          <h2 className="map-section-title">Rekomendasi Wisata</h2>
 
           {/* Map Section */}
           <div className="map-section">
+            
             {/* Map Container */}
-            <div
-              className="map-container"
-              style={{ backgroundImage: "url('/peta.png')" }}
-            >
+            <div className="map-container" style={{ backgroundImage: "url('/peta.png')" }}>
+              
               {/* Capital Marker */}
               <div className="capital-marker" title="Banyumas Regency"></div>
 
               {/* Map Markers */}
-              <div
-                className="map-marker marker-1"
-                onMouseEnter={() => handleMarkerClick(1)}
-                onMouseLeave={() => setActiveCard(null)}
-              >
-                1
-              </div>
-              <div
-                className="map-marker marker-2"
-                onMouseEnter={() => handleMarkerClick(2)}
-                onMouseLeave={() => setActiveCard(null)}
-              >
-                2
-              </div>
-              <div
-                className="map-marker marker-3"
-                onMouseEnter={() => handleMarkerClick(3)}
-                onMouseLeave={() => setActiveCard(null)}
-              >
-                3
-              </div>
-              <div
-                className="map-marker marker-4"
-                onMouseEnter={() => handleMarkerClick(4)}
-                onMouseLeave={() => setActiveCard(null)}
-              >
-                4
-              </div>
-              <div
-                className="map-marker marker-5"
-                onMouseEnter={() => handleMarkerClick(5)}
-                onMouseLeave={() => setActiveCard(null)}
-              >
-                5
-              </div>
+              <div className="map-marker marker-1" onMouseEnter={() => handleMarkerClick(1)} onMouseLeave={() => setActiveCard(null)}>1</div>
+              <div className="map-marker marker-2" onMouseEnter={() => handleMarkerClick(2)} onMouseLeave={() => setActiveCard(null)}>2</div>
+              <div className="map-marker marker-3" onMouseEnter={() => handleMarkerClick(3)} onMouseLeave={() => setActiveCard(null)}>3</div>
+              <div className="map-marker marker-4" onMouseEnter={() => handleMarkerClick(4)} onMouseLeave={() => setActiveCard(null)}>4</div>
+              <div className="map-marker marker-5" onMouseEnter={() => handleMarkerClick(5)} onMouseLeave={() => setActiveCard(null)}>5</div>
 
               {/* Wave decorations */}
-              <svg
-                className="wave-decoration wave-left"
-                width="60"
-                height="30"
-                viewBox="0 0 60 30"
-              >
-                <path
-                  d="M0,15 Q15,5 30,15 T60,15"
-                  stroke="#fff"
-                  fill="none"
-                  strokeWidth="2"
-                />
+              <svg className="wave-decoration wave-left" width="60" height="30" viewBox="0 0 60 30">
+                <path d="M0,15 Q15,5 30,15 T60,15" stroke="#fff" fill="none" strokeWidth="2"/>
               </svg>
-
-              <svg
-                className="wave-decoration wave-right"
-                width="60"
-                height="30"
-                viewBox="0 0 60 30"
-              >
-                <path
-                  d="M0,15 Q15,5 30,15 T60,15"
-                  stroke="#fff"
-                  fill="none"
-                  strokeWidth="2"
-                />
+              
+              <svg className="wave-decoration wave-right" width="60" height="30" viewBox="0 0 60 30">
+                <path d="M0,15 Q15,5 30,15 T60,15" stroke="#fff" fill="none" strokeWidth="2"/>
               </svg>
-
-              <svg
-                className="wave-decoration wave-bottom"
-                width="60"
-                height="30"
-                viewBox="0 0 60 30"
-              >
-                <path
-                  d="M0,15 Q15,5 30,15 T60,15"
-                  stroke="#fff"
-                  fill="none"
-                  strokeWidth="2"
-                />
+              
+              <svg className="wave-decoration wave-bottom" width="60" height="30" viewBox="0 0 60 30">
+                <path d="M0,15 Q15,5 30,15 T60,15" stroke="#fff" fill="none" strokeWidth="2"/>
               </svg>
             </div>
 
             {/* Info Cards - Desktop Layout */}
             <div className="hidden xl:block">
               {/* Card 1 */}
-              <div
-                className={`info-card card-1 ${
-                  activeCard === 1 ? "active" : ""
-                }`}
-              >
-                <div className="info-card-number" data-number="1">
-                  1
-                </div>
-                <h3>Ebeg</h3>
-                <p>
-                  Tarian tradisional khas Banyumas yang menampilkan atraksi
-                  mistis dengan menunggangi kuda kepang.
-                </p>
+              <div className={`info-card card-1 ${activeCard === 1 ? 'active' : ''}`}>
+                <div className="info-card-number" data-number="1">1</div>
+                <h3>Baturraden</h3>
+                <p>Destinasi wisata alam di kaki Gunung Slamet yang menawarkan kesejukan dan keindahan alam.</p>
               </div>
 
               {/* Card 2 */}
-              <div
-                className={`info-card card-2 ${
-                  activeCard === 2 ? "active" : ""
-                }`}
-              >
-                <div className="info-card-number" data-number="2">
-                  2
-                </div>
-                <h3>Lengger</h3>
-                <p>
-                  Tarian tradisional yang dibawakan oleh penari laki-laki
-                  berpakaian wanita dengan gerakan gemulai
-                </p>
+              <div className={`info-card card-2 ${activeCard === 2 ? 'active' : ''}`}>
+                <div className="info-card-number" data-number="2">2</div>
+                <h3>Manggala Ranch</h3>
+                <p>Air terjun eksotis yang tersembunyi di tengah hutan dengan keindahan alam yang memukau</p>
               </div>
 
               {/* Card 3 */}
-              <div
-                className={`info-card card-3 ${
-                  activeCard === 3 ? "active" : ""
-                }`}
-              >
-                <div className="info-card-number" data-number="3">
-                  3
-                </div>
-                <h3>Calung</h3>
-                <p>
-                  Musik tradisional dari bambu yang menghasilkan nada merdu dan
-                  harmonis khas Banyumas
-                </p>
+              <div className={`info-card card-3 ${activeCard === 3 ? 'active' : ''}`}>
+                <div className="info-card-number" data-number="3">3</div>
+                <h3>Menara Teratai</h3>
+                <p>Danau tenang dengan suasana damai dan pemandangan asri yang menyejukkan hati</p>
               </div>
 
               {/* Card 4 */}
-              <div
-                className={`info-card card-4 ${
-                  activeCard === 4 ? "active" : ""
-                }`}
-              >
-                <div className="info-card-number" data-number="4">
-                  4
-                </div>
-                <h3>Begalan</h3>
-                <p>
-                  Tradisi penyambutan pengantin dengan pertunjukan seni yang
-                  penuh makna dan filosofi
-                </p>
+              <div className={`info-card card-4 ${activeCard === 4 ? 'active' : ''}`}>
+                <div className="info-card-number" data-number="4">4</div>
+                <h3>Cafe Serayu</h3>
+                <p>Pusat kota dengan berbagai destinasi wisata menarik dan kuliner khas yang wajib dicoba</p>
               </div>
 
               {/* Card 5 */}
-              <div
-                className={`info-card card-5 ${
-                  activeCard === 5 ? "active" : ""
-                }`}
-              >
-                <div className="info-card-number" data-number="5">
-                  5
-                </div>
-                <h3>Dialek Ngapak</h3>
-                <p>
-                  Bahasa khas Banyumas dengan logat yang unik dan menjadi
-                  identitas kebudayaan masyarakat
-                </p>
+              <div className={`info-card card-5 ${activeCard === 5 ? 'active' : ''}`}>
+                <div className="info-card-number" data-number="5">5</div>
+                <h3>Kota Tua</h3>
+                <p>Kota kecil dengan wisata alam yang mempesona dan udara sejuk pegunungan</p>
               </div>
             </div>
-
-            {/* Mobile Cards */}
-            <div className="xl:hidden mt-8 space-y-6">
-              {/* {[
-                { id: 1, name: "Baturraden", desc: "Destinasi wisata alam di kaki Gunung Slamet yang menawarkan kesejukan dan keindahan alam. Nikmati udara segar, pemandangan hijau, dan cuaca pegunungan yang menyegarkan." },
-                { id: 2, name: "Curug Cipendok", desc: "Air terjun eksotis yang tersembunyi di tengah hutan dengan keindahan alam yang memukau" },
-                { id: 3, name: "Telaga Sunyi", desc: "Danau tenang dengan suasana damai dan pemandangan asri yang menyejukkan hati" },
-                { id: 4, name: "Purwokerto", desc: "Pusat kota dengan berbagai destinasi wisata menarik dan kuliner khas yang wajib dicoba" },
-                { id: 5, name: "Patikraja", desc: "Kota kecil dengan wisata alam yang mempesona dan udara sejuk pegunungan" }
-              ].map((item) => (
-                <div key={item.id} className="mobile-card">
-                  <div className="mobile-card-number">{item.id}</div>
-                  <h3>{item.name}</h3>
-                  <p>{item.desc}</p>
-                </div>
-              ))} */}
-            </div>
           </div>
+
+        </div>
+
+        {/* DESCRIPTION SECTION - Keluar dari map-container-wrapper agar bisa mepet kanan */}
+        <div className="description-container">
+          <div className="description-divider"></div>
+          <h2 className="description-title">Kunjungi Setiap Destinasi di Banyumas</h2>
+          <p className="description-text">
+            Mulai dari kesejukan pegunungan Baturraden, kejerniham air terjun alami, hingga keunikan tradisi dan kuliner lokal yang menggugah selera. Tak hanya keindahan alamnya, keramahan masyarakat dan kekayaan budaya yang masih terjaga menjadikan Banyumas tempat yang istimewa untuk dijelajahi. Baik untuk liburan keluarga, petualangan alam, maupun wisata sejarah, Banyumas selalu punya cerita menarik di setiap perjalanannya.
+          </p>
         </div>
       </section>
 
       {/* BUDAYA SECTIONS - AYANA STYLE WITH NEW LAYOUT */}
-      <div className="ayana-budaya-wrapper" ref={budayaWrapperRef}>
+      <div className="ayana-budaya-wrapper">
         {/* Dots Navigation - Fixed Right */}
-        {isClient && budayaData && budayaData.length > 0 && showDots && (
+        {isClient && budayaData && budayaData.length > 0 && (
           <div className="ayana-dots-nav">
             {budayaData.map((_, dotIdx) => (
               <button

@@ -449,17 +449,17 @@ body {
 /* Map Section Styles */
 .map-wrapper {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding: 20px;
-  min-height: 100vh;
+  padding: 0;
+  min-height: 70vh;
 }
 
 .map-container-wrapper {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   background: white;
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+  padding: 40px 0 60px 40px;
+  box-shadow: none;
 }
 
 .map-header {
@@ -471,32 +471,35 @@ body {
   font-size: 2.5em;
   color: #333;
   margin-bottom: 10px;
+  margin-left: -200px;
 }
 
 .map-header .highlight {
-  color: #8b7355;
+  color: #8B7355;
 }
 
 .map-header h2 {
-  font-size: 1.5em;
+  font-size: 1.8em;
   color: #555;
   font-weight: 500;
+  margin-left: 320px;
 }
 
 .map-divider {
   width: 200px;
   height: 3px;
-  background: linear-gradient(90deg, transparent, #8b7355, transparent);
+  background: linear-gradient(90deg, transparent, #8B7355, transparent);
   margin: 20px auto;
 }
 
 .map-intro-text {
-  text-align: center;
-  max-width: 800px;
+  text-align: left;
+  max-width: 600px;
   margin: 0 auto 40px;
   line-height: 1.8;
   color: #666;
   font-size: 0.95em;
+  margin-left: 300px;
 }
 
 .map-section-title {
@@ -509,10 +512,10 @@ body {
 .map-section {
   position: relative;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1200px; 
   margin: 0 auto;
-  padding: 60px 250px 200px 250px; /* Top, Right, Bottom, Left - ruang untuk cards */
-  min-height: 800px; /* Tinggi cukup untuk card bawah */
+  padding: 60px 250px 20px 250px; /* Top, Right, Bottom, Left - ruang untuk cards */
+  min-height: 0; /* Tidak ada min height */
 }
 
 .map-container {
@@ -522,9 +525,9 @@ body {
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  border: 3px solid #8b4513;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
 }
 
 .capital-marker {
@@ -534,18 +537,18 @@ body {
   transform: translate(-50%, -50%);
   width: 15px;
   height: 15px;
-  background: #0066cc;
+  background: #0066CC;
   border: 2px solid white;
   border-radius: 50%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
 .map-marker {
   position: absolute;
   width: 30px;
   height: 30px;
-  background: #ffd700;
-  border: 3px solid #ffa500;
+  background: #FFD700;
+  border: 3px solid #FFA500;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -561,44 +564,20 @@ body {
   transform: scale(1.2);
 }
 
-.marker-1 {
-  top: 15%;
-  right: 25%;
-}
-.marker-2 {
-  top: 35%;
-  left: 30%;
-}
-.marker-3 {
-  top: 55%;
-  left: 35%;
-}
-.marker-4 {
-  top: 45%;
-  right: 20%;
-}
-.marker-5 {
-  bottom: 20%;
-  left: 45%;
-}
+.marker-1 { top: 13%; right: 40%; }
+.marker-2 { top: 35%; left: 30%; }
+.marker-3 { top: 40%; left: 45%; }
+.marker-4 { top: 62%; right: 43%; }
+.marker-5 { bottom: 30%; left: 70%; }
 
 .wave-decoration {
   position: absolute;
   opacity: 0.1;
 }
 
-.wave-left {
-  left: 0;
-  top: 30%;
-}
-.wave-right {
-  right: 0;
-  top: 40%;
-}
-.wave-bottom {
-  bottom: 10%;
-  left: 20%;
-}
+.wave-left { left: 0; top: 30%; }
+.wave-right { right: 0; top: 40%; }
+.wave-bottom { bottom: 10%; left: 20%; }
 
 /* Desktop Cards - Proper positioning */
 .desktop-cards {
@@ -609,15 +588,29 @@ body {
 
 .info-card {
   position: absolute;
-  background: linear-gradient(135deg, #c5d86d 0%, #b8cc52 100%);
+  background: linear-gradient(135deg, #C5D86D 0%, #B8CC52 100%);
   border-radius: 15px;
   width: 400px;
-  padding: 45px 25px 25px 25px; /* Top padding besar buat lingkaran */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  max-width: 220px; /* Sedikit lebih lebar */
-  border: 2px solid #8b7355;
+  padding: 55px 15px 20px 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  max-width: 220px;
+  border: 8px solid #A8B96E; /* Border luar lebih tebal */
   z-index: 20;
-  min-height: 200px; /* Tinggi minimum card */
+  min-height: 180px;
+  position: relative;
+}
+
+/* Border dalam untuk styling dekoratif */
+.info-card::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border: 2px solid #3d4d2d;
+  border-radius: 8px;
+  pointer-events: none;
 }
 
 .info-card-number {
@@ -625,11 +618,11 @@ body {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  top: 0; /* Geser ke bawah supaya nggak kepotong */
+  top: 15px; /* Geser ke bawah supaya nggak kepotong */
   left: 50%;
   transform: translateX(-50%);
   border: 4px solid white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -640,28 +633,28 @@ body {
 
 /* Background images per nomor card */
 .card-1 .info-card-number {
-  background-image: url("/ayang.png");
+  background-image: url('/pemandangan.png');
 }
 
 .card-2 .info-card-number {
-  background-image: url("/Suasana sepi disaat Ramadhan tapi tetap cantik dan magical banget 🌳✨📍 Curug Jenggala, Kalipagu__#curugjenggala #kalipagu #baturraden #purwokerto.jpg");
+  background-image: url('/manggala_ranch.jpg');
 }
 
 .card-3 .info-card-number {
-  background-image: url("/IMG3.png");
+  background-image: url('/IMG3.png');
 }
 
 .card-4 .info-card-number {
-  background-image: url("/IMG_5702 2.png");
+  background-image: url('/IMG_5702 2.png');
 }
 
 .card-5 .info-card-number {
-  background-image: url("/IMG_6806 1.png");
+  background-image: url('/IMG_6806 1.png');
 }
 
 /* Overlay untuk tetap keliatan nomor */
 .info-card-number::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -680,45 +673,71 @@ body {
 
 .info-card h3 {
   text-align: center;
-  color: #333;
-  margin: 35px 0 0;
-  font-size: 1.2em;
-  padding-top: 3px;
+  color: #2d3e1f;
+  margin: 35px 5px 5px;
+  font-size: 1.1em;
+  padding-top: 15px;
   font-weight: bold;
 }
 
 .info-card p {
-  font-size: 0.85em;
-  line-height: 1.6;
-  color: #444;
-  text-align: justify;
+  font-size: 0.8em;
+  line-height: 1.5;
+  color: #3d4d2d;
+  text-align: center;
+  padding: 0 10px;
 }
 
 /* Positioning cards - EXACT layout dari foto */
-.card-1 {
-  top: -450px;
+.card-1 { 
+  top: -520px; 
   left: -230px; /* Lebih deket ke peta */
+
 }
 
-.card-2 {
-  top: -400px;
+.card-2 { 
+  top: -450px; 
   left: -230px; /* Posisi bawah kiri */
 }
 
-.card-3 {
-  top: -910px;
-  right: -630px; /* Kanan atas */
+.card-3 { 
+  top: -1120px; 
+  right: -710px; /* Kanan atas */
 }
 
-.card-4 {
-  top: -830px;
-  right: -630px; /* Kanan bawah */
+.card-4 { 
+  top: -1070px; 
+  right: -710px; /* Kanan bawah */
 }
 
-.card-5 {
-  top: -850px;
-  left: 50%;
-  transform: translateX(-50%);
+.card-5 { 
+  top: -990px; 
+  left: 260px; 
+  /* transform: translateX(-50%);  */
+}
+
+/* Active state untuk card yang dipilih */
+.info-card.active {
+  background: linear-gradient(135deg, #4a5d23 0%, #3d4d1c 100%) !important;
+  transform: scale(1.05);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3) !important;
+  transition: all 0.3s ease;
+}
+
+.info-card.active h3,
+.info-card.active p {
+  color: white !important;
+}
+
+/* Hover effect untuk marker */
+.map-marker {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.map-marker:hover {
+  transform: scale(1.3) !important;
+  background: #FFA500;
 }
 
 /* .mobile-card {
@@ -751,7 +770,7 @@ body {
   font-size: 1.1em;
 } */
 
-.mobile-card h3 {
+/* .mobile-card h3 {
   text-align: center;
   color: #333;
   margin: 25px 0 10px;
@@ -763,7 +782,7 @@ body {
   line-height: 1.6;
   color: #444;
   text-align: justify;
-}
+} */
 
 @media (max-width: 1024px) {
   .info-card {
@@ -799,7 +818,7 @@ body {
   position: relative;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); */
 }
 
 .map-container img {
@@ -819,26 +838,7 @@ body {
   overflow: hidden;
 }
 
-.info-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.info-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(180deg, #84cc16 0%, #65a30d 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.info-card:hover::before {
-  opacity: 1;
-}
+/* Hover effect dihapus - card hanya interaktif via marker di peta */
 
 .info-card .number {
   display: inline-flex;
@@ -888,7 +888,7 @@ body {
 }
 
 .pin-marker::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 50%;
   left: 50%;
@@ -900,8 +900,7 @@ body {
 }
 
 @keyframes bounce {
-  0%,
-  100% {
+  0%, 100% {
     transform: translateY(0);
   }
   50% {
@@ -910,8 +909,7 @@ body {
 }
 
 @keyframes pulse {
-  0%,
-  100% {
+  0%, 100% {
     opacity: 1;
   }
   50% {
