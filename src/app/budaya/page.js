@@ -181,39 +181,34 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
           </motion.div>
         )}
 
-        {/* Image Gallery Grid */}
+        {/* Content Section: Diamond + Description */}
         <motion.div
-          className="budaya-gallery-grid"
+          className="budaya-content-section"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
         >
-          {/* Main Large Image */}
+          {/* Dashed Line Decoration (Horizontal - atas) */}
+          <div className="dashed-line-decoration-horizontal"></div>
+
+          {/* Dashed Line Decoration (Vertical - kiri) */}
+          <div className="dashed-line-decoration-vertical"></div>
+
+          {/* Description Text (Kiri) */}
           <motion.div
-            className="gallery-main-image"
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.3 }}
+            className="content-description"
+            initial={{ opacity: 0, x: -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
           >
-            <img src={budaya.images.main} alt={`${budaya.title} main`} />
+            <p>{budaya.description}</p>
           </motion.div>
 
-          {/* Secondary Vertical Image */}
+          {/* Diamond Shape Image (Kanan Bawah) */}
           <motion.div
-            className="gallery-secondary-image"
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.3 }}
-          >
-            <img
-              src={budaya.images.secondary}
-              alt={`${budaya.title} secondary`}
-            />
-          </motion.div>
-
-          {/* Diamond Shape Image */}
-          <motion.div
-            className="gallery-diamond-image"
+            className="content-diamond-image"
             ref={diamondRef}
-            whileHover={{ scale: 1.1, rotate: 5 }}
+            whileHover={{ scale: 1.05, rotate: 2 }}
             transition={{ duration: 0.4 }}
           >
             <div className="diamond-shape">
@@ -223,16 +218,6 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
               />
             </div>
           </motion.div>
-        </motion.div>
-
-        {/* Description Text */}
-        <motion.div
-          className="budaya-description"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-        >
-          <p>{budaya.description}</p>
         </motion.div>
 
         {/* CTA Section */}
