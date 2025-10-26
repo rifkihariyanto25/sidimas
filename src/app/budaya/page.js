@@ -239,9 +239,11 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
 
 export default function BudayaPage() {
   const sectionsRef = useRef([]);
+  const budayaWrapperRef = useRef(null);
   const [currentSection, setCurrentSection] = useState(0);
   const [isClient, setIsClient] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
+  const [showDots, setShowDots] = useState(false);
 
   const handleMarkerClick = (cardNumber) => {
     setActiveCard(cardNumber);
@@ -285,6 +287,37 @@ export default function BudayaPage() {
         observer.observe(section);
       }
     });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isClient]);
+
+  // Track if we're in budaya wrapper area (show/hide dots)
+  useEffect(() => {
+    if (!isClient || !budayaWrapperRef.current) return;
+
+    const wrapperElement = budayaWrapperRef.current;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Show dots when ANY part of wrapper is visible
+        console.log("Wrapper intersecting:", entry.isIntersecting);
+        setShowDots(entry.isIntersecting);
+      },
+      {
+        root: null,
+        threshold: 0.1, // Trigger when 10% of wrapper is visible
+      }
+    );
+
+    observer.observe(wrapperElement);
+
+    // Initial check - check if wrapper already visible on mount
+    const rect = wrapperElement.getBoundingClientRect();
+    const isInitiallyVisible = rect.top < window.innerHeight && rect.bottom > 0;
+    console.log("Initial wrapper visible:", isInitiallyVisible);
+    setShowDots(isInitiallyVisible);
 
     return () => {
       observer.disconnect();
@@ -582,9 +615,9 @@ export default function BudayaPage() {
       </section>
 
       {/* BUDAYA SECTIONS - AYANA STYLE WITH NEW LAYOUT */}
-      <div className="ayana-budaya-wrapper">
+      <div className="ayana-budaya-wrapper" ref={budayaWrapperRef}>
         {/* Dots Navigation - Fixed Right */}
-        {isClient && budayaData && budayaData.length > 0 && (
+        {isClient && budayaData && budayaData.length > 0 && showDots && (
           <div className="ayana-dots-nav">
             {budayaData.map((_, dotIdx) => (
               <button
