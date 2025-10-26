@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Link from "next/link";
+import "../wisata/wisata.css"; // IMPORT WISATA CSS UNTUK MAP SECTION
 import "./budaya.css";
 import "./new-layout.css";
 import Navbar from "../components/Navbar";
@@ -276,32 +277,43 @@ export default function BudayaPage() {
     setIsClient(true);
   }, []);
 
+  // Track section changes with IntersectionObserver
   useEffect(() => {
-    if (!isClient) return;
+    if (!isClient || sectionsRef.current.length === 0) return;
 
-    const handleScroll = () => {
-      try {
-        const scrollPosition = window.scrollY;
-        const windowHeight = window.innerHeight;
-
-        sectionsRef.current.forEach((section, index) => {
-          if (section) {
-            const rect = section.getBoundingClientRect();
-            const sectionTop = rect.top;
-            const sectionMiddle = sectionTop + rect.height / 2;
-
-            if (sectionMiddle >= 0 && sectionMiddle <= windowHeight) {
-              setCurrentSection(index);
-            }
-          }
-        });
-      } catch (error) {
-        console.error("Scroll handler error:", error);
-      }
+    const observerOptions = {
+      root: null,
+      rootMargin: "-45% 0px -45% 0px",
+      threshold: 0,
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const index = sectionsRef.current.findIndex(
+            (section) => section === entry.target
+          );
+          if (index !== -1) {
+            setCurrentSection(index);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions
+    );
+
+    sectionsRef.current.forEach((section) => {
+      if (section) {
+        observer.observe(section);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
   }, [isClient]);
 
   // Loading state
