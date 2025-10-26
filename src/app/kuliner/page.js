@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import kulinerData from "./kulinerData";
@@ -236,10 +236,12 @@ function KulinerSection({ kuliner, index, currentSection, sectionsRef }) {
 
 export default function KulinerPage() {
   const sectionsRef = useRef([]);
+  const kulinerWrapperRef = useRef(null);
   const [currentSection, setCurrentSection] = useState(0);
   const [isClient, setIsClient] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showDots, setShowDots] = useState(false);
 
   const handleMarkerClick = (cardNumber) => {
     setActiveCard(cardNumber);
@@ -250,43 +252,66 @@ export default function KulinerPage() {
     setIsClient(true);
   }, []);
 
+  // Track section changes with IntersectionObserver
   useEffect(() => {
-    if (!isClient) return;
+    if (!isClient || sectionsRef.current.length === 0) return;
 
-    const handleScroll = () => {
-      try {
-        const windowHeight = window.innerHeight;
-        const scrollPosition = window.scrollY;
-        
-        // Find which section is currently most in view
-        let closestSection = 0;
-        let closestDistance = Infinity;
-
-        sectionsRef.current.forEach((section, index) => {
-          if (section) {
-            const rect = section.getBoundingClientRect();
-            const sectionCenter = rect.top + rect.height / 2;
-            const viewportCenter = windowHeight / 2;
-            const distance = Math.abs(sectionCenter - viewportCenter);
-
-            if (distance < closestDistance) {
-              closestDistance = distance;
-              closestSection = index;
-            }
-          }
-        });
-
-        setCurrentSection(closestSection);
-      } catch (error) {
-        console.error("Scroll handler error:", error);
-      }
+    const observerOptions = {
+      root: null,
+      rootMargin: "-45% 0px -45% 0px",
+      threshold: 0,
     };
 
-    // Initial check
-    handleScroll();
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const index = sectionsRef.current.findIndex(
+            (section) => section === entry.target
+          );
+          if (index !== -1) {
+            setCurrentSection(index);
+          }
+        }
+      });
+    };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions
+    );
+
+    sectionsRef.current.forEach((section) => {
+      if (section) {
+        observer.observe(section);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isClient]);
+
+  // Track if we're in kuliner wrapper area (show/hide dots)
+  useEffect(() => {
+    if (!isClient || !kulinerWrapperRef.current) return;
+
+    const wrapperElement = kulinerWrapperRef.current;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowDots(entry.isIntersecting);
+      },
+      {
+        root: null,
+        threshold: 0.01, // Trigger when even 1% of wrapper is visible
+      }
+    );
+
+    observer.observe(wrapperElement);
+
+    return () => {
+      observer.disconnect();
+    };
   }, [isClient]);
 
   // Data untuk slider kuliner - semua gambar dalam satu array
@@ -331,10 +356,17 @@ export default function KulinerPage() {
 
 
         {/* KULINER SECTIONS - AYANA STYLE WITH NEW LAYOUT */}
-        <div className="ayana-kuliner-wrapper">
+        <div className="ayana-kuliner-wrapper" ref={kulinerWrapperRef}>
           {/* Dots Navigation - Fixed Right */}
-          {isClient && kulinerData && kulinerData.length > 0 && (
-            <div className="ayana-dots-nav">
+          <AnimatePresence>
+            {isClient && kulinerData && kulinerData.length > 0 && showDots && (
+              <motion.div 
+                className="ayana-dots-nav"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
               {kulinerData.map((_, dotIdx) => (
                 <button
                   key={dotIdx}
@@ -350,8 +382,9 @@ export default function KulinerPage() {
                   aria-label={`Go to section ${dotIdx + 1}`}
                 />
               ))}
-            </div>
-          )}
+            </motion.div>
+            )}
+          </AnimatePresence>
 
           {isClient &&
             kulinerData &&
