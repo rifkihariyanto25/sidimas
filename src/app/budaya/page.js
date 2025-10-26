@@ -156,39 +156,34 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
           </motion.div>
         )}
 
-        {/* Image Gallery Grid */}
+        {/* Content Section: Diamond + Description */}
         <motion.div
-          className="budaya-gallery-grid"
+          className="budaya-content-section"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
         >
-          {/* Main Large Image */}
+          {/* Dashed Line Decoration (Horizontal - atas) */}
+          <div className="dashed-line-decoration-horizontal"></div>
+
+          {/* Dashed Line Decoration (Vertical - kiri) */}
+          <div className="dashed-line-decoration-vertical"></div>
+
+          {/* Description Text (Kiri) */}
           <motion.div
-            className="gallery-main-image"
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.3 }}
+            className="content-description"
+            initial={{ opacity: 0, x: -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
           >
-            <img src={budaya.images.main} alt={`${budaya.title} main`} />
+            <p>{budaya.description}</p>
           </motion.div>
 
-          {/* Secondary Vertical Image */}
+          {/* Diamond Shape Image (Kanan Bawah) */}
           <motion.div
-            className="gallery-secondary-image"
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.3 }}
-          >
-            <img
-              src={budaya.images.secondary}
-              alt={`${budaya.title} secondary`}
-            />
-          </motion.div>
-
-          {/* Diamond Shape Image */}
-          <motion.div
-            className="gallery-diamond-image"
+            className="content-diamond-image"
             ref={diamondRef}
-            whileHover={{ scale: 1.1, rotate: 5 }}
+            whileHover={{ scale: 1.05, rotate: 2 }}
             transition={{ duration: 0.4 }}
           >
             <div className="diamond-shape">
@@ -198,16 +193,6 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
               />
             </div>
           </motion.div>
-        </motion.div>
-
-        {/* Description Text */}
-        <motion.div
-          className="budaya-description"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-        >
-          <p>{budaya.description}</p>
         </motion.div>
 
         {/* CTA Section */}
@@ -255,6 +240,11 @@ export default function BudayaPage() {
   const sectionsRef = useRef([]);
   const [currentSection, setCurrentSection] = useState(0);
   const [isClient, setIsClient] = useState(false);
+  const [activeCard, setActiveCard] = useState(null);
+
+  const handleMarkerClick = (cardNumber) => {
+    setActiveCard(cardNumber);
+  };
 
   // Ensure client-side rendering
   useEffect(() => {
@@ -396,11 +386,41 @@ export default function BudayaPage() {
               <div className="capital-marker" title="Banyumas Regency"></div>
 
               {/* Map Markers */}
-              <div className="map-marker marker-1">1</div>
-              <div className="map-marker marker-2">2</div>
-              <div className="map-marker marker-3">3</div>
-              <div className="map-marker marker-4">4</div>
-              <div className="map-marker marker-5">5</div>
+              <div
+                className="map-marker marker-1"
+                onMouseEnter={() => handleMarkerClick(1)}
+                onMouseLeave={() => setActiveCard(null)}
+              >
+                1
+              </div>
+              <div
+                className="map-marker marker-2"
+                onMouseEnter={() => handleMarkerClick(2)}
+                onMouseLeave={() => setActiveCard(null)}
+              >
+                2
+              </div>
+              <div
+                className="map-marker marker-3"
+                onMouseEnter={() => handleMarkerClick(3)}
+                onMouseLeave={() => setActiveCard(null)}
+              >
+                3
+              </div>
+              <div
+                className="map-marker marker-4"
+                onMouseEnter={() => handleMarkerClick(4)}
+                onMouseLeave={() => setActiveCard(null)}
+              >
+                4
+              </div>
+              <div
+                className="map-marker marker-5"
+                onMouseEnter={() => handleMarkerClick(5)}
+                onMouseLeave={() => setActiveCard(null)}
+              >
+                5
+              </div>
 
               {/* Wave decorations */}
               <svg
@@ -449,7 +469,11 @@ export default function BudayaPage() {
             {/* Info Cards - Desktop Layout */}
             <div className="hidden xl:block">
               {/* Card 1 */}
-              <div className="info-card card-1">
+              <div
+                className={`info-card card-1 ${
+                  activeCard === 1 ? "active" : ""
+                }`}
+              >
                 <div className="info-card-number" data-number="1">
                   1
                 </div>
@@ -461,7 +485,11 @@ export default function BudayaPage() {
               </div>
 
               {/* Card 2 */}
-              <div className="info-card card-2">
+              <div
+                className={`info-card card-2 ${
+                  activeCard === 2 ? "active" : ""
+                }`}
+              >
                 <div className="info-card-number" data-number="2">
                   2
                 </div>
@@ -473,7 +501,11 @@ export default function BudayaPage() {
               </div>
 
               {/* Card 3 */}
-              <div className="info-card card-3">
+              <div
+                className={`info-card card-3 ${
+                  activeCard === 3 ? "active" : ""
+                }`}
+              >
                 <div className="info-card-number" data-number="3">
                   3
                 </div>
@@ -485,7 +517,11 @@ export default function BudayaPage() {
               </div>
 
               {/* Card 4 */}
-              <div className="info-card card-4">
+              <div
+                className={`info-card card-4 ${
+                  activeCard === 4 ? "active" : ""
+                }`}
+              >
                 <div className="info-card-number" data-number="4">
                   4
                 </div>
@@ -497,7 +533,11 @@ export default function BudayaPage() {
               </div>
 
               {/* Card 5 */}
-              <div className="info-card card-5">
+              <div
+                className={`info-card card-5 ${
+                  activeCard === 5 ? "active" : ""
+                }`}
+              >
                 <div className="info-card-number" data-number="5">
                   5
                 </div>

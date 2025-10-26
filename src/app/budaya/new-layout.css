@@ -12,14 +12,15 @@
 /* Individual Budaya Section */
 .budaya-section-new {
   background-color: #fbffe6;
-  padding: 80px 40px;
+  padding: 80px 60px; /* Tambah padding kiri-kanan dari 40px ke 120px */
   margin-bottom: 0;
   position: relative;
 }
 
 .budaya-container {
-  max-width: 1400px;
+  max-width: 1200px; /* Kurangi dari 1400px ke 1200px untuk lebih centered */
   margin: 0 auto;
+  padding: 0 40px; /* Tambahkan padding internal */
 }
 
 /* Header Section */
@@ -52,7 +53,97 @@
   font-weight: 400;
 }
 
-/* Image Gallery Grid */
+/* ======================================
+   CONTENT SECTION (Diamond + Description)
+   Layout seperti image2.png
+   ====================================== */
+
+.budaya-content-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+  margin: 60px 0;
+  position: relative;
+}
+
+/* Dashed Line Decoration - Horizontal (Garis Putus-putus Atas) */
+.dashed-line-decoration-horizontal {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  width: 50%;
+  height: 2px;
+  background-image: repeating-linear-gradient(
+    to right,
+    #333 0,
+    #333 10px,
+    transparent 10px,
+    transparent 20px
+  );
+  opacity: 0.3;
+}
+
+/* Dashed Line Decoration - Vertical (Garis Putus-putus Kiri) */
+.dashed-line-decoration-vertical {
+  position: absolute;
+  left: -40px;
+  top: -570px; /* Perpanjang ke atas (dari 0 ke -100px) */
+  bottom: 100px;
+  width: 2px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #333 0,
+    #333 10px,
+    transparent 10px,
+    transparent 20px
+  );
+  opacity: 0.3;
+}
+
+/* Description Text (Sebelah Kiri) */
+.content-description {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  padding-right: 40px;
+}
+
+.content-description p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #2c2c2c;
+  text-align: left;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Diamond Image Container (Kanan Bawah - di wilayah kanan deskripsi) */
+.content-diamond-image {
+  flex-shrink: 0;
+  width: 180px;
+  align-self: flex-end; /* Posisi di bawah */
+}
+
+.content-diamond-image .diamond-shape {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 1;
+  transform: rotate(45deg);
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s ease;
+}
+
+.content-diamond-image .diamond-shape img {
+  width: 141.42%; /* √2 to cover rotated square */
+  height: 141.42%;
+  object-fit: cover;
+  transform: rotate(-45deg) scale(1.42);
+  transform-origin: center;
+}
+
+/* Image Gallery Grid (Legacy - tidak dipakai lagi) */
 .budaya-gallery-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -97,25 +188,6 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-}
-
-.diamond-shape {
-  width: 100%;
-  max-width: 280px;
-  aspect-ratio: 1;
-  transform: rotate(45deg);
-  overflow: hidden;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  transition: transform 0.4s ease;
-}
-
-.diamond-shape img {
-  width: 141.42%; /* √2 to cover rotated square */
-  height: 141.42%;
-  object-fit: cover;
-  transform: rotate(-45deg) scale(1.42);
-  transform-origin: center;
 }
 
 /* ======================================
@@ -250,8 +322,8 @@
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
 }
 
-/* Description */
-.budaya-description {
+/* Description (Legacy - tidak dipakai, sudah diganti dengan .content-description) */
+/* .budaya-description {
   max-width: 900px;
   margin-bottom: 40px;
 }
@@ -260,7 +332,7 @@
   font-size: 1.1rem;
   line-height: 1.8;
   color: #333;
-}
+} */
 
 /* CTA Section */
 .budaya-cta {
@@ -378,7 +450,12 @@
   }
 
   .budaya-section-new {
-    padding: 60px 32px;
+    padding: 60px 80px; /* Kurangi dari 120px ke 80px di tablet */
+  }
+
+  .budaya-container {
+    padding: 0 30px;
+    max-width: 1000px;
   }
 
   .budaya-title {
@@ -392,15 +469,21 @@
   .ayana-dots-nav {
     right: 16px;
   }
+
+  .budaya-content-section {
+    gap: 40px;
+  }
+
+  .content-diamond-image {
+    width: 240px;
+  }
+
+  .content-description p {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 768px) {
-  .budaya-gallery-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-    height: auto;
-  }
-
   .budaya-slider-slide {
     height: 400px;
   }
@@ -409,22 +492,40 @@
     display: none; /* Hide custom cursor on mobile */
   }
 
-  .gallery-main-image {
-    grid-column: 1;
-    grid-row: 1;
-    height: 300px;
+  .budaya-section-new {
+    padding: 40px 40px; /* Padding lebih kecil di mobile tapi masih ada space */
   }
 
-  .gallery-secondary-image {
-    grid-column: 1;
-    grid-row: 2;
-    height: 250px;
+  .budaya-container {
+    padding: 0 20px;
   }
 
-  .gallery-diamond-image {
-    grid-column: 1;
-    grid-row: 3;
-    height: auto;
+  .budaya-content-section {
+    flex-direction: column;
+    gap: 30px;
+    align-items: flex-start;
+  }
+
+  .content-description {
+    padding-right: 0;
+    width: 100%;
+  }
+
+  .content-diamond-image {
+    width: 220px;
+    align-self: flex-end; /* Tetap di kanan bawah pada mobile */
+  }
+
+  .dashed-line-decoration-horizontal {
+    width: 60%;
+  }
+
+  .dashed-line-decoration-vertical {
+    left: -20px;
+  }
+
+  .content-description p {
+    font-size: 1rem;
   }
 
   .budaya-cta {
@@ -459,6 +560,14 @@
 }
 
 @media (max-width: 480px) {
+  .budaya-section-new {
+    padding: 40px 24px; /* Padding minimal di small mobile */
+  }
+
+  .budaya-container {
+    padding: 0 16px;
+  }
+
   .budaya-number {
     font-size: 1rem;
   }
@@ -475,16 +584,12 @@
     height: 300px;
   }
 
-  .gallery-main-image {
-    height: 250px;
+  .content-diamond-image {
+    width: 200px;
   }
 
-  .gallery-secondary-image {
-    height: 200px;
-  }
-
-  .diamond-shape {
-    max-width: 200px;
+  .content-description p {
+    font-size: 0.95rem;
   }
 
   .cta-title {

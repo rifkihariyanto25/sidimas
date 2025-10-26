@@ -24,53 +24,59 @@ export default function Home() {
       try {
         // Fetch wisata - 4 terakhir berdasarkan kategori 'wisata'
         const { data: wisataData, error: wisataError } = await supabase
-          .from('konten')
-          .select('id, nama, gambar_url')
-          .eq('kategori', 'wisata')
-          .order('created_at', { ascending: false })
+          .from("konten")
+          .select("id, nama, gambar_url")
+          .eq("kategori", "wisata")
+          .order("created_at", { ascending: false })
           .limit(4);
 
         if (wisataData && !wisataError && wisataData.length > 0) {
-          setWisataSlides(wisataData.map(item => ({
-            id: item.id,
-            img: item.gambar_url,
-            alt: item.nama
-          })));
+          setWisataSlides(
+            wisataData.map((item) => ({
+              id: item.id,
+              img: item.gambar_url,
+              alt: item.nama,
+            }))
+          );
         }
 
         // Fetch kuliner - 4 terakhir berdasarkan kategori 'kuliner'
         const { data: kulinerData, error: kulinerError } = await supabase
-          .from('konten')
-          .select('id, nama, gambar_url')
-          .eq('kategori', 'kuliner')
-          .order('created_at', { ascending: false })
+          .from("konten")
+          .select("id, nama, gambar_url")
+          .eq("kategori", "kuliner")
+          .order("created_at", { ascending: false })
           .limit(4);
 
         if (kulinerData && !kulinerError && kulinerData.length > 0) {
-          setKulinerSlides(kulinerData.map(item => ({
-            id: item.id,
-            img: item.gambar_url,
-            alt: item.nama
-          })));
+          setKulinerSlides(
+            kulinerData.map((item) => ({
+              id: item.id,
+              img: item.gambar_url,
+              alt: item.nama,
+            }))
+          );
         }
 
         // Fetch budaya - 4 terakhir berdasarkan kategori 'budaya'
         const { data: budayaData, error: budayaError } = await supabase
-          .from('konten')
-          .select('id, nama, gambar_url')
-          .eq('kategori', 'budaya')
-          .order('created_at', { ascending: false })
+          .from("konten")
+          .select("id, nama, gambar_url")
+          .eq("kategori", "budaya")
+          .order("created_at", { ascending: false })
           .limit(4);
 
         if (budayaData && !budayaError && budayaData.length > 0) {
-          setBudayaSlides(budayaData.map(item => ({
-            id: item.id,
-            img: item.gambar_url,
-            alt: item.nama
-          })));
+          setBudayaSlides(
+            budayaData.map((item) => ({
+              id: item.id,
+              img: item.gambar_url,
+              alt: item.nama,
+            }))
+          );
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -100,45 +106,38 @@ export default function Home() {
           >
             <div className="absolute inset-0 bg-black/25"></div>
             <div className="hero-content relative z-10 px-6 md:px-16">
-              <p className="tracking-widest mb-2 uppercase text-sm">Ayo Jelajahi</p>
-              <h1 className="text-4xl md:text-6xl font-bold mb-4">Wisata Banyumas.</h1>
+              <p className="tracking-widest mb-2 uppercase text-sm">
+                Ayo Jelajahi
+              </p>
+              <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                Wisata Banyumas.
+              </h1>
               <p className="max-w-lg mb-6">
                 Eksplorasi Keindahan Bumi Ngapak dari Lereng Gunung hingga Kota
               </p>
-              <a 
-                href="#" 
-                className="inline-block font-semibold px-20 py-5.5 transition text-lg"
-                style={{
-                  backgroundColor: '#A4C639',
-                  color: '#2D3E1F',
-                  border: 'none',
-                  borderRadius: '10px'
-                }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#93B52E'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = '#A4C639'}
-              >
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
                 Mulai Jelajahi
               </a>
             </div>
 
             {/* LOGO LOOP WISATA */}
-           <div className="mini-slider">
-            <LogoLoop
-              logos={wisataSlides.map(slide => ({
-                src: slide.img,
-                alt: slide.alt,
-                width: 120,
-                height: 90
-              }))}
-              speed={60}           // Kecepatan scroll
-              direction="left"     // 'left' atau 'right'
-              logoHeight={90}      // Tinggi logo
-              gap={24}             // Jarak antar logo (diperbesar)
-              pauseOnHover={true}  // Pause ketika hover
-              scaleOnHover={true}  // Zoom ketika hover
-              ariaLabel="Wisata Banyumas"
-            />
-          </div>
+            <div className="mini-slider">
+              <LogoLoop
+                logos={wisataSlides.map((slide) => ({
+                  src: slide.img,
+                  alt: slide.alt,
+                  width: 120,
+                  height: 90,
+                }))}
+                speed={60} // Kecepatan scroll
+                direction="left" // 'left' atau 'right'
+                logoHeight={90} // Tinggi logo
+                gap={24} // Jarak antar logo (diperbesar)
+                pauseOnHover={true} // Pause ketika hover
+                scaleOnHover={true} // Zoom ketika hover
+                ariaLabel="Wisata Banyumas"
+              />
+            </div>
           </section>
         </SwiperSlide>
 
@@ -150,23 +149,17 @@ export default function Home() {
           >
             <div className="absolute inset-0 bg-black/25"></div>
             <div className="hero-content relative z-10 px-6 md:px-16">
-              <p className="tracking-widest mb-2 uppercase text-sm">Coba Nikmati</p>
-              <h1 className="text-4xl md:text-6xl font-bold mb-4">Kuliner Banyumas.</h1>
-              <p className="max-w-lg mb-6">
-                Mendoan hangat, sroto Sokaraja, hingga gethuk goreng yang bikin kangen!
+              <p className="tracking-widest mb-2 uppercase text-sm">
+                Coba Nikmati
               </p>
-              <a 
-                href="#" 
-                className="inline-block font-semibold px-12 py-3.5 transition text-lg"
-                style={{
-                  backgroundColor: '#A4C639',
-                  color: '#2D3E1F',
-                  border: 'none',
-                  borderRadius: '10px'
-                }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#93B52E'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = '#A4C639'}
-              >
+              <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                Kuliner Banyumas.
+              </h1>
+              <p className="max-w-lg mb-6">
+                Mendoan hangat, sroto Sokaraja, hingga gethuk goreng yang bikin
+                kangen!
+              </p>
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
                 Jelajahi Kuliner
               </a>
             </div>
@@ -174,11 +167,11 @@ export default function Home() {
             {/* LOGO LOOP KULINER */}
             <div className="mini-slider">
               <LogoLoop
-                logos={kulinerSlides.map(slide => ({
+                logos={kulinerSlides.map((slide) => ({
                   src: slide.img,
                   alt: slide.alt,
                   width: 120,
-                  height: 90
+                  height: 90,
                 }))}
                 speed={60}
                 direction="left"
@@ -200,23 +193,17 @@ export default function Home() {
           >
             <div className="absolute inset-0 bg-black/25"></div>
             <div className="hero-content relative z-10 px-6 md:px-16">
-              <p className="tracking-widest mb-2 uppercase text-sm">Mari Lestarikan</p>
-              <h1 className="text-4xl md:text-6xl font-bold mb-4">Budaya Banyumas.</h1>
-              <p className="max-w-lg mb-6">
-                Dari wayang kulit, jaranan, hingga kesenian tradisional yang memikat hati
+              <p className="tracking-widest mb-2 uppercase text-sm">
+                Mari Lestarikan
               </p>
-              <a 
-                href="#" 
-                className="inline-block font-semibold px-12 py-3.5 transition text-lg"
-                style={{
-                  backgroundColor: '#A4C639',
-                  color: '#2D3E1F',
-                  border: 'none',
-                  borderRadius: '10px'
-                }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#93B52E'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = '#A4C639'}
-              >
+              <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                Budaya Banyumas.
+              </h1>
+              <p className="max-w-lg mb-6">
+                Dari wayang kulit, jaranan, hingga kesenian tradisional yang
+                memikat hati
+              </p>
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
                 Kenali Budaya
               </a>
             </div>
@@ -224,11 +211,11 @@ export default function Home() {
             {/* LOGO LOOP BUDAYA */}
             <div className="mini-slider">
               <LogoLoop
-                logos={budayaSlides.map(slide => ({
+                logos={budayaSlides.map((slide) => ({
                   src: slide.img,
                   alt: slide.alt,
                   width: 120,
-                  height: 90
+                  height: 90,
                 }))}
                 speed={60}
                 direction="left"
@@ -244,186 +231,191 @@ export default function Home() {
       </Swiper>
 
       {/* ✅ SECTION ABOUT (Timeline) */}
- <motion.section 
-   className="about relative py-16"
-   initial={{ opacity: 0, y: 50 }}
-   whileInView={{ opacity: 1, y: 0 }}
-   transition={{ duration: 0.8 }}
-   viewport={{ once: true, margin: "-100px" }}
- >
+      <motion.section
+        className="about relative py-16"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true, margin: "-100px" }}
+      >
+        {/* Background wayang/gamelan kiri kanan */}
+        <motion.div
+          className="wayang-left"
+          initial={{ x: -100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 0.4 }}
+          transition={{ duration: 1, delay: 0.3 }}
+          viewport={{ once: true }}
+        >
+          <img src="/ayang.png" alt="Gamelan Kiri" />
+        </motion.div>
 
-  {/* Background wayang/gamelan kiri kanan */}
-  <motion.div 
-    className="wayang-left"
-    initial={{ x: -100, opacity: 0 }}
-    whileInView={{ x: 0, opacity: 0.4 }}
-    transition={{ duration: 1, delay: 0.3 }}
-    viewport={{ once: true }}
-  >
-    <img src="/ayang.png" alt="Gamelan Kiri" />
-  </motion.div>
+        <motion.div
+          className="wayang-right"
+          initial={{ x: 100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 0.4 }}
+          transition={{ duration: 1, delay: 0.3 }}
+          viewport={{ once: true }}
+        >
+          <img src="/ayang.png" alt="Gamelan Kanan" />
+        </motion.div>
 
-  <motion.div 
-    className="wayang-right"
-    initial={{ x: 100, opacity: 0 }}
-    whileInView={{ x: 0, opacity: 0.4 }}
-    transition={{ duration: 1, delay: 0.3 }}
-    viewport={{ once: true }}
-  >
-    <img src="/ayang.png" alt="Gamelan Kanan" />
-  </motion.div>
-
-  <motion.h2 
-    className="text-center text-3xl font-bold mb-2"
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, delay: 0.2 }}
-    viewport={{ once: true }}
-  >
-    Alasan
-  </motion.h2>
-  <p className="text-center mb-12">
-    Kenapa Kamu Harus Mengetahui Kekayaan <span className="text-lime-700 font-semibold">Banyumas</span>
-  </p>
-
-  <div className="timeline relative z-10">
-    {/* Item kiri */}
-    <motion.div 
-      className="timeline-item left"
-      initial={{ opacity: 0, x: -50 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      viewport={{ once: true }}
-    >
-      <span className="timeline-dot"></span>
-      <div className="timeline-content">
-        <h3>Bahasa Banyumasan</h3>
-        <p>
-          Bahasa Banyumasan itu unik banget dan punya ciri khas sendiri. Tau bahasanya bikin kita lebih dekat sama warga lokal.
+        <motion.h2
+          className="text-center text-3xl font-bold mb-2"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: true }}
+        >
+          Alasan
+        </motion.h2>
+        <p className="text-center mb-12">
+          Kenapa Kamu Harus Mengetahui Kekayaan{" "}
+          <span className="text-lime-700 font-semibold">Banyumas</span>
         </p>
-      </div>
-      <div className="timeline-img-side">
-        <img src="/IMG3.png" alt="Bahasa Banyumasan" />
-      </div>
-    </motion.div>
 
-    {/* Item kanan */}
-    <motion.div 
-      className="timeline-item left"
-      initial={{ opacity: 0, x: 50 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, delay: 0.4 }}
-      viewport={{ once: true }}
-    >
-      <span className="timeline-dot"></span>
-      <div className="timeline-img-side">
-        <img src="/jaranan.jpeg" alt="Budaya dan Tradisi" />
-      </div>
-      <div className="timeline-content">
-        <h3>Budaya & Tradisi</h3>
-        <p>
-          Dari wayang kulit sampai upacara adat, Banyumas punya banyak kegiatan seru.
-        </p>
-      </div>
-    </motion.div>
-  </div>
-</motion.section>
+        <div className="timeline relative z-10">
+          {/* Item kiri */}
+          <motion.div
+            className="timeline-item left"
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <span className="timeline-dot"></span>
+            <div className="timeline-content">
+              <h3>Bahasa Banyumasan</h3>
+              <p>
+                Bahasa Banyumasan itu unik banget dan punya ciri khas sendiri.
+                Tau bahasanya bikin kita lebih dekat sama warga lokal.
+              </p>
+            </div>
+            <div className="timeline-img-side">
+              <img src="/IMG3.png" alt="Bahasa Banyumasan" />
+            </div>
+          </motion.div>
 
-
+          {/* Item kanan */}
+          <motion.div
+            className="timeline-item left"
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
+            <span className="timeline-dot"></span>
+            <div className="timeline-img-side">
+              <img src="/jaranan.jpeg" alt="Budaya dan Tradisi" />
+            </div>
+            <div className="timeline-content">
+              <h3>Budaya & Tradisi</h3>
+              <p>
+                Dari wayang kulit sampai upacara adat, Banyumas punya banyak
+                kegiatan seru.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </motion.section>
 
       {/* ✅ SECTION BERAGAM KHAS */}
-<motion.section 
-  className="khas py-20 px-6 md:px-16 bg-gray-50 text-black"
-  initial={{ opacity: 0, y: 50 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8 }}
-  viewport={{ once: true, margin: "-100px" }}
->
-  <div className="max-w-6xl mx-auto">
-    <motion.div 
-      className="text-center mb-4"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      viewport={{ once: true }}
-    >
-      <h2 className="text-3xl font-bold mb-2">
-        Beragam Khas <span className="text-lime-600">Banyumas</span>
-      </h2>
-      <p className="text-gray-600 mb-6">
-        Lihat beragam ciri khas budaya Banyumas, mulai dari wisata, kuliner dan budaya
-      </p>
-    </motion.div>
-    
-    {/* Tab Navigation */}
-    <div className="tab-buttons">
-      <button className="px-6 py-2 bg-lime-600 text-white rounded-full font-medium">
-        Semua
-      </button>
-      <button className="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-lime-50">
-        Wisata
-      </button>
-      <button className="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-lime-50">
-        Kuliner
-      </button>
-      <button className="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-lime-50">
-        Budaya
-      </button>
-    </div>
+      <motion.section
+        className="khas py-20 px-6 md:px-16 bg-gray-50 text-black"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true, margin: "-100px" }}
+      >
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            className="text-center mb-4"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl font-bold mb-2">
+              Beragam Khas <span className="text-lime-600">Banyumas</span>
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Lihat beragam ciri khas budaya Banyumas, mulai dari wisata,
+              kuliner dan budaya
+            </p>
+          </motion.div>
 
-    {/* Grid Layout */}
-    <div className="grid">
-      {/* Gambar 1 - Large (2x2) */}
-      <div>
-        <span className="text-gray-600"></span>
-      </div>
-      
-      {/* Gambar 2 - Normal */}
-      <div>
-        <span className="text-gray-600"></span>
-      </div>
-      
-      {/* Gambar 3 - Normal */}
-      <div>
-        <span className="text-gray-600"></span>
-      </div>
-      
-      {/* Gambar 4 - Normal */}
-      <div>
-        <span className="text-gray-600"></span>
-      </div>
-      
-      {/* Gambar 5 - Normal */}
-      <div>
-        <span className="text-gray-600"></span>
-      </div>
-      
-      {/* Gambar 6 - Wide (2x1) */}
-      <div>
-        <span className="text-gray-600"></span>
-      </div>
-      
-      {/* Gambar 7 - Normal */}
-      <div>
-        <span className="text-gray-600"></span>
-      </div>
-      
-      {/* Gambar 8 - Extra Large (2x2) */}
-      <div>
-        <span className="text-gray-600"></span>
-      </div>
-    </div>
-  </div>
-</motion.section>
+          {/* Tab Navigation */}
+          <div className="tab-buttons">
+            <button className="px-6 py-2 bg-lime-600 text-white rounded-full font-medium">
+              Semua
+            </button>
+            <button className="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-lime-50">
+              Wisata
+            </button>
+            <button className="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-lime-50">
+              Kuliner
+            </button>
+            <button className="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-lime-50">
+              Budaya
+            </button>
+          </div>
+
+          {/* Grid Layout */}
+          <div className="grid">
+            {/* Gambar 1 - Large (2x2) */}
+            <div>
+              <span className="text-gray-600"></span>
+            </div>
+
+            {/* Gambar 2 - Normal */}
+            <div>
+              <span className="text-gray-600"></span>
+            </div>
+
+            {/* Gambar 3 - Normal */}
+            <div>
+              <span className="text-gray-600"></span>
+            </div>
+
+            {/* Gambar 4 - Normal */}
+            <div>
+              <span className="text-gray-600"></span>
+            </div>
+
+            {/* Gambar 5 - Normal */}
+            <div>
+              <span className="text-gray-600"></span>
+            </div>
+
+            {/* Gambar 6 - Wide (2x1) */}
+            <div>
+              <span className="text-gray-600"></span>
+            </div>
+
+            {/* Gambar 7 - Normal */}
+            <div>
+              <span className="text-gray-600"></span>
+            </div>
+
+            {/* Gambar 8 - Extra Large (2x2) */}
+            <div>
+              <span className="text-gray-600"></span>
+            </div>
+          </div>
+        </div>
+      </motion.section>
 
       {/* ✅ CTA SECTION */}
       <section className="cta py-20 bg-[url('/Group 3.png')] bg-cover bg-center text-center text-white relative">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10 max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold mb-6">
-            Cari tahu kuliner, wisata, dan budaya menarik yang wajib kamu tahu...
+            Cari tahu kuliner, wisata, dan budaya menarik yang wajib kamu
+            tahu...
           </h2>
-          <a href="#" className="px-6 py-3 bg-lime-500 rounded-lg font-semibold hover:bg-lime-600 transition">
+          <a
+            href="#"
+            className="px-6 py-3 bg-lime-500 rounded-lg font-semibold hover:bg-lime-600 transition"
+          >
             Mulai Jelajahi
           </a>
         </div>
