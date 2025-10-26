@@ -2,16 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Link from "next/link";
 import "./budaya.css";
 import "./new-layout.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import budayaData from "./budayaData";
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Component for individual Budaya Section with new layout
 function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
@@ -72,29 +68,8 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
     setActiveSlide(newIndex);
   };
 
-  // Diamond hover scale animation
-  useEffect(() => {
-    if (!diamondRef.current) return;
-
-    try {
-      const ctx = gsap.context(() => {
-        gsap.to(diamondRef.current, {
-          scale: 1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: diamondRef.current,
-            start: "top 80%",
-            end: "bottom 20%",
-            scrub: 1,
-          },
-        });
-      }, sectionRef);
-
-      return () => ctx.revert();
-    } catch (error) {
-      console.error("GSAP animation error:", error);
-    }
-  }, []);
+  // Diamond hover scale animation - using CSS instead of GSAP
+  // Removed GSAP dependency
 
   return (
     <motion.section

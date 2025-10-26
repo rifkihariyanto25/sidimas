@@ -105,7 +105,18 @@ export default function Home() {
               <p className="max-w-lg mb-6">
                 Eksplorasi Keindahan Bumi Ngapak dari Lereng Gunung hingga Kota
               </p>
-              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
+              <a 
+                href="#" 
+                className="inline-block font-semibold px-20 py-5.5 transition text-lg"
+                style={{
+                  backgroundColor: '#A4C639',
+                  color: '#2D3E1F',
+                  border: 'none',
+                  borderRadius: '10px'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#93B52E'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#A4C639'}
+              >
                 Mulai Jelajahi
               </a>
             </div>
@@ -144,7 +155,18 @@ export default function Home() {
               <p className="max-w-lg mb-6">
                 Mendoan hangat, sroto Sokaraja, hingga gethuk goreng yang bikin kangen!
               </p>
-              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
+              <a 
+                href="#" 
+                className="inline-block font-semibold px-12 py-3.5 transition text-lg"
+                style={{
+                  backgroundColor: '#A4C639',
+                  color: '#2D3E1F',
+                  border: 'none',
+                  borderRadius: '10px'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#93B52E'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#A4C639'}
+              >
                 Jelajahi Kuliner
               </a>
             </div>
@@ -183,7 +205,18 @@ export default function Home() {
               <p className="max-w-lg mb-6">
                 Dari wayang kulit, jaranan, hingga kesenian tradisional yang memikat hati
               </p>
-              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
+              <a 
+                href="#" 
+                className="inline-block font-semibold px-12 py-3.5 transition text-lg"
+                style={{
+                  backgroundColor: '#A4C639',
+                  color: '#2D3E1F',
+                  border: 'none',
+                  borderRadius: '10px'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#93B52E'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#A4C639'}
+              >
                 Kenali Budaya
               </a>
             </div>
@@ -395,6 +428,31 @@ export default function Home() {
           </a>
         </div>
       </section>
+
+      {/* ✅ FOOTER HERO SECTION */}
+      <div className="footer-top">
+        <div className="footer-container">
+          {/* Hero Section dengan Animasi */}
+          <div className="footer-hero">
+            <div className="footer-character">
+              <Image 
+                src="/Group 86.png" 
+                alt="Banyumas Character" 
+                width={300} 
+                height={400}
+                className="character-img"
+              />
+            </div>
+            <div className="footer-hero-text">
+              <h2>
+                <span className="text-lime-400">Ayo Kunjungi</span><br />
+                DAN JELAJAHI BANYUMAS
+              </h2>
+              <p>Be an explorer and experience the beauty of diversity in Banyumas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* ✅ FOOTER */}
       <Footer />
