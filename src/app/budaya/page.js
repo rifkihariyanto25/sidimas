@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
+import "../wisata/wisata.css"; // IMPORT WISATA CSS UNTUK MAP SECTION
 import "./budaya.css";
 import "./new-layout.css";
 import Navbar from "../components/Navbar";
@@ -252,8 +253,9 @@ export default function BudayaPage() {
     setIsClient(true);
   }, []);
 
+  // Track section changes with scroll
   useEffect(() => {
-    if (!isClient) return;
+    if (!isClient || sectionsRef.current.length === 0) return;
 
     const handleScroll = () => {
       try {
@@ -582,9 +584,9 @@ export default function BudayaPage() {
       </section>
 
       {/* BUDAYA SECTIONS - AYANA STYLE WITH NEW LAYOUT */}
-      <div className="ayana-budaya-wrapper">
+      <div className="ayana-budaya-wrapper" ref={budayaWrapperRef}>
         {/* Dots Navigation - Fixed Right */}
-        {isClient && budayaData && budayaData.length > 0 && (
+        {isClient && budayaData && budayaData.length > 0 && showDots && (
           <div className="ayana-dots-nav">
             {budayaData.map((_, dotIdx) => (
               <button
