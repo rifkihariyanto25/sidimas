@@ -290,7 +290,7 @@ export default function Home() {
         <h3>Budaya & Tradisi</h3>
         <p>
           Dari wayang kulit sampai upacara adat, Banyumas punya banyak kegiatan seru.
-        </p>
+        </p>  
       </div>
     </motion.div>
   </div>

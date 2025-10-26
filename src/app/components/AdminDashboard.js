@@ -15,13 +15,14 @@ export default function AdminDashboard() {
   const router = useRouter()
   const [items, setItems] = useState([])
   const [title, setTitle] = useState('')
+  const [subtitle, setSubtitle] = useState('')
   const [category, setCategory] = useState('wisata')
   const [description, setDescription] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [filterCategory, setFilterCategory] = useState('all')
   const [adminEmail, setAdminEmail] = useState('')
-  const [imageFile, setImageFile] = useState(null)
-  const [imagePreview, setImagePreview] = useState('')
+  const [imageFiles, setImageFiles] = useState([])
+  const [imagePreviews, setImagePreviews] = useState([])
   const [editingId, setEditingId] = useState(null)
   const [isEditMode, setIsEditMode] = useState(false)
 
@@ -60,31 +61,74 @@ export default function AdminDashboard() {
     }
   }
 
-  function handleImageChange(e) {
-    const file = e.target.files[0]
-    if (file) {
-      setImageFile(file)
-      // Create preview
+  function handleMultipleImageChange(e) {
+    const files = Array.from(e.target.files)
+    const remainingSlots = 5 - imageFiles.length
+    
+    if (files.length > remainingSlots) {
+      alert(`⚠️ Maksimal ${remainingSlots} gambar lagi (Total maksimal 5 gambar)`)
+      return
+    }
+    
+    // Validate file size (max 5MB per file)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    const oversizedFiles = files.filter(file => file.size > maxSize)
+    if (oversizedFiles.length > 0) {
+      alert('⚠️ Beberapa file melebihi 5MB. Silakan pilih file yang lebih kecil.')
+      return
+    }
+    
+    // Add files
+    const newFiles = [...imageFiles, ...files]
+    setImageFiles(newFiles)
+    
+    // Create previews
+    files.forEach(file => {
       const reader = new FileReader()
       reader.onloadend = () => {
-        setImagePreview(reader.result)
+        setImagePreviews(prev => [...prev, {
+          url: reader.result,
+          file: file,
+          name: file.name
+        }])
       }
       reader.readAsDataURL(file)
-    }
+    })
   }
 
-  function clearImage() {
-    setImageFile(null)
-    setImagePreview('')
+  function removeImage(index) {
+    setImageFiles(prev => prev.filter((_, i) => i !== index))
+    setImagePreviews(prev => prev.filter((_, i) => i !== index))
+  }
+
+  function clearAllImages() {
+    setImageFiles([])
+    setImagePreviews([])
   }
 
   function handleEdit(item) {
     setIsEditMode(true)
     setEditingId(item.id)
     setTitle(item.nama)
+    setSubtitle(item.subtittle || '')
     setCategory(item.kategori)
     setDescription(item.deskripsi || '')
-    setImagePreview(item.gambar_url || '')
+    
+    // Handle multiple images from gambar_url (stored with ||| separator)
+    if (item.gambar_url) {
+      // Parse URLs from string
+      const urls = item.gambar_url.split('|||').filter(url => url.trim())
+      
+      // Set previews from existing URLs
+      const previews = urls.map((url, index) => ({
+        url: url.trim(),
+        file: null,
+        name: `Gambar ${index + 1}`,
+        isExisting: true
+      }))
+      setImagePreviews(previews)
+    }
+    
     // Scroll ke form
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -93,9 +137,10 @@ export default function AdminDashboard() {
     setIsEditMode(false)
     setEditingId(null)
     setTitle('')
+    setSubtitle('')
     setCategory('wisata')
     setDescription('')
-    clearImage()
+    clearAllImages()
   }
 
   async function handleSubmit(e) {
@@ -105,17 +150,26 @@ export default function AdminDashboard() {
     setIsLoading(true)
     
     try {
-      let gambarUrl = isEditMode ? imagePreview : ''
+      let gambarUrls = []
 
-      // Upload image to Supabase Storage jika ada file baru
-      if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop()
+      // Get existing URLs from previews (for edit mode)
+      const existingUrls = imagePreviews
+        .filter(preview => preview.isExisting)
+        .map(preview => preview.url)
+
+      // Upload new images to Supabase Storage
+      const newFiles = imageFiles.filter((_, index) => 
+        !imagePreviews[index]?.isExisting
+      )
+
+      for (const file of newFiles) {
+        const fileExt = file.name.split('.').pop()
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`
         const filePath = `konten/${fileName}`
 
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('images')
-          .upload(filePath, imageFile)
+          .upload(filePath, file)
 
         if (uploadError) throw uploadError
 
@@ -124,16 +178,21 @@ export default function AdminDashboard() {
           .from('images')
           .getPublicUrl(filePath)
 
-        gambarUrl = urlData.publicUrl
+        gambarUrls.push(urlData.publicUrl)
       }
+
+      // Combine existing and new URLs
+      const allUrls = [...existingUrls, ...gambarUrls]
+      const gambarUrlsString = allUrls.join('|||') // Store as string with separator
 
       if (isEditMode) {
         // UPDATE mode
         const updateData = {
           nama: title.trim(),
+          subtittle: subtitle.trim(),
           kategori: category,
           deskripsi: description.trim(),
-          gambar_url: gambarUrl,
+          gambar_url: gambarUrlsString, // Using existing gambar_url column
         }
 
         const { data, error } = await supabase
@@ -156,9 +215,10 @@ export default function AdminDashboard() {
         // INSERT mode
         const newItem = {
           nama: title.trim(),
+          subtittle: subtitle.trim(),
           kategori: category,
           deskripsi: description.trim(),
-          gambar_url: gambarUrl,
+          gambar_url: gambarUrlsString, // Using existing gambar_url column
         }
 
         const { data, error } = await supabase
@@ -176,9 +236,10 @@ export default function AdminDashboard() {
         
         // Reset form
         setTitle('')
+        setSubtitle('')
         setCategory('wisata')
         setDescription('')
-        clearImage()
+        clearAllImages()
       }
     } catch (error) {
       console.error('Error saving content:', error.message)
@@ -452,6 +513,44 @@ export default function AdminDashboard() {
                   color: '#374151',
                   fontSize: '14px'
                 }}>
+                  Sub Judul
+                  <span style={{ 
+                    color: '#9ca3af', 
+                    fontSize: '12px', 
+                    fontWeight: '400',
+                    marginLeft: '6px'
+                  }}>
+                    (opsional)
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  value={subtitle}
+                  onChange={(e) => setSubtitle(e.target.value)}
+                  placeholder="Contoh: Wisata Alam Sejuk di Kaki Gunung Slamet"
+                  style={{
+                    width: '100%',
+                    padding: '14px 16px',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '12px',
+                    fontSize: '15px',
+                    boxSizing: 'border-box',
+                    transition: 'all 0.2s',
+                    outline: 'none'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#65a30d'}
+                  onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                />
+              </div>
+
+              <div>
+                <label style={{ 
+                  display: 'block', 
+                  fontWeight: '600', 
+                  marginBottom: '8px',
+                  color: '#374151',
+                  fontSize: '14px'
+                }}>
                   Kategori
                 </label>
                 <div style={{ display: 'grid', gap: '10px' }}>
@@ -531,55 +630,106 @@ export default function AdminDashboard() {
                   color: '#374151',
                   fontSize: '14px'
                 }}>
-                  Gambar
+                  📷 Gambar (Maksimal 5 foto)
+                  <span style={{ 
+                    color: '#65a30d', 
+                    fontSize: '13px', 
+                    fontWeight: '700',
+                    marginLeft: '8px',
+                    background: '#f0fdf4',
+                    padding: '2px 8px',
+                    borderRadius: '6px'
+                  }}>
+                    {imagePreviews.length}/5
+                  </span>
                 </label>
                 
-                {imagePreview ? (
-                  <div style={{ position: 'relative' }}>
-                    <img 
-                      src={imagePreview} 
-                      alt="Preview" 
-                      style={{
-                        width: '100%',
-                        height: '200px',
-                        objectFit: 'cover',
+                {/* Preview Grid */}
+                {imagePreviews.length > 0 && (
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))',
+                    gap: '12px',
+                    marginBottom: '12px'
+                  }}>
+                    {imagePreviews.map((preview, index) => (
+                      <div key={index} style={{ 
+                        position: 'relative',
+                        aspectRatio: '1',
                         borderRadius: '12px',
-                        border: '2px solid #e5e7eb'
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={clearImage}
-                      style={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: '10px',
-                        background: '#dc2626',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '50%',
-                        width: '32px',
-                        height: '32px',
-                        cursor: 'pointer',
-                        fontSize: '16px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-                      }}
-                      title="Hapus gambar"
-                    >
-                      ✕
-                    </button>
+                        overflow: 'hidden',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                      }}>
+                        <img 
+                          src={preview.url} 
+                          alt={`Preview ${index + 1}`}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          style={{
+                            position: 'absolute',
+                            top: '6px',
+                            right: '6px',
+                            background: '#dc2626',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '26px',
+                            height: '26px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.background = '#b91c1c'
+                            e.target.style.transform = 'scale(1.1)'
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.background = '#dc2626'
+                            e.target.style.transform = 'scale(1)'
+                          }}
+                          title="Hapus gambar"
+                        >
+                          ✕
+                        </button>
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '6px',
+                          left: '6px',
+                          background: 'rgba(0,0,0,0.7)',
+                          color: 'white',
+                          padding: '3px 8px',
+                          borderRadius: '6px',
+                          fontSize: '11px',
+                          fontWeight: '700',
+                          backdropFilter: 'blur(4px)'
+                        }}>
+                          #{index + 1}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ) : (
+                )}
+                
+                {/* Upload Button (muncul jika belum 5 gambar) */}
+                {imagePreviews.length < 5 && (
                   <label style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
                     width: '100%',
-                    height: '150px',
+                    height: '130px',
                     border: '2px dashed #d1d5db',
                     borderRadius: '12px',
                     cursor: 'pointer',
@@ -597,17 +747,51 @@ export default function AdminDashboard() {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={handleImageChange}
+                      multiple
+                      onChange={handleMultipleImageChange}
                       style={{ display: 'none' }}
                     />
-                    <div style={{ fontSize: '48px', marginBottom: '8px' }}>📷</div>
+                    <div style={{ fontSize: '40px', marginBottom: '8px' }}>📷</div>
                     <div style={{ fontSize: '14px', color: '#6b7280', fontWeight: '600' }}>
                       Klik untuk upload gambar
                     </div>
                     <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '4px' }}>
-                      PNG, JPG, JPEG (Max 5MB)
+                      {5 - imagePreviews.length} slot tersisa • PNG, JPG (Max 5MB/file)
                     </div>
                   </label>
+                )}
+
+                {/* Clear All Button */}
+                {imagePreviews.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={clearAllImages}
+                    style={{
+                      marginTop: '8px',
+                      width: '100%',
+                      background: '#f3f4f6',
+                      color: '#6b7280',
+                      border: '1px solid #e5e7eb',
+                      padding: '8px',
+                      borderRadius: '8px',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = '#fee2e2'
+                      e.target.style.color = '#dc2626'
+                      e.target.style.borderColor = '#fecaca'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = '#f3f4f6'
+                      e.target.style.color = '#6b7280'
+                      e.target.style.borderColor = '#e5e7eb'
+                    }}
+                  >
+                    🗑️ Hapus Semua Gambar
+                  </button>
                 )}
               </div>
 
@@ -716,6 +900,13 @@ export default function AdminDashboard() {
               <div style={{ display: 'grid', gap: '16px', maxHeight: '700px', overflowY: 'auto', paddingRight: '8px' }}>
                 {filteredItems.map(item => {
                   const catData = getCategoryData(item.kategori)
+                  
+                  // Parse multiple image URLs from gambar_url (stored with ||| separator)
+                  let imageUrls = []
+                  if (item.gambar_url) {
+                    imageUrls = item.gambar_url.split('|||').filter(url => url.trim()).map(url => url.trim())
+                  }
+                  
                   return (
                     <div
                       key={item.id}
@@ -738,20 +929,47 @@ export default function AdminDashboard() {
                         e.currentTarget.style.transform = 'translateY(0)'
                       }}
                     >
+                      {/* Multiple Images Grid */}
+                      {imageUrls.length > 0 && (
+                        <div style={{
+                          display: 'grid',
+                          gridTemplateColumns: imageUrls.length === 1 ? '1fr' : 'repeat(auto-fill, minmax(100px, 1fr))',
+                          gap: '8px',
+                          marginBottom: '16px'
+                        }}>
+                          {imageUrls.slice(0, 5).map((url, idx) => (
+                            <div key={idx} style={{ position: 'relative', aspectRatio: '1' }}>
+                              <img 
+                                src={url} 
+                                alt={`${item.nama} ${idx + 1}`}
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover',
+                                  borderRadius: '10px'
+                                }}
+                              />
+                              {imageUrls.length > 1 && (
+                                <div style={{
+                                  position: 'absolute',
+                                  bottom: '4px',
+                                  right: '4px',
+                                  background: 'rgba(0,0,0,0.7)',
+                                  color: 'white',
+                                  padding: '2px 6px',
+                                  borderRadius: '4px',
+                                  fontSize: '10px',
+                                  fontWeight: '600'
+                                }}>
+                                  {idx + 1}/{imageUrls.length}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: '16px' }}>
-                        {item.gambar_url && (
-                          <img 
-                            src={item.gambar_url} 
-                            alt={item.nama}
-                            style={{
-                              width: '120px',
-                              height: '120px',
-                              objectFit: 'cover',
-                              borderRadius: '12px',
-                              flexShrink: 0
-                            }}
-                          />
-                        )}
                         <div style={{ flex: 1 }}>
                           <div style={{ marginBottom: '12px' }}>
                             <span style={{
@@ -769,13 +987,24 @@ export default function AdminDashboard() {
                             </span>
                           </div>
                           <h3 style={{ 
-                            margin: '0 0 8px 0', 
+                            margin: '0 0 4px 0', 
                             fontSize: '20px',
                             fontWeight: '700',
                             color: '#1f2937'
                           }}>
                             {item.nama}
                           </h3>
+                          {item.subtittle && (
+                            <p style={{ 
+                              margin: '0 0 8px 0', 
+                              color: '#16a34a', 
+                              fontSize: '14px', 
+                              fontWeight: '600',
+                              lineHeight: '1.4'
+                            }}>
+                              {item.subtittle}
+                            </p>
+                          )}
                           {item.deskripsi && (
                             <p style={{ 
                               margin: 0, 
