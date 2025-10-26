@@ -8,7 +8,7 @@ import "./budaya.css";
 import "./new-layout.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import budayaData from "./budayaData";
+import { supabase } from "@/lib/supabase";
 
 // Component for individual Budaya Section with new layout
 function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
@@ -245,6 +245,53 @@ export default function BudayaPage() {
   const [isClient, setIsClient] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
   const [showDots, setShowDots] = useState(false);
+  const [budayaData, setBudayaData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch data budaya dari Supabase
+  useEffect(() => {
+    const fetchBudayaData = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("konten")
+          .select("*")
+          .eq("kategori", "budaya")
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          console.error("Error fetching budaya data:", error);
+        } else if (data) {
+          // Transform data dari database ke format yang dibutuhkan komponen
+          const transformedData = data.map((item, index) => ({
+            id: item.id,
+            number: String(index + 1).padStart(2, "0"),
+            title: item.nama,
+            subtitle: item.subtittle || "",
+            description: item.deskripsi || "",
+            ctaTitle: `Yuk, eksplor ${item.nama}!`,
+            ctaDescription: item.subtittle || `Pelajari lebih lanjut tentang ${item.nama}`,
+            ctaButton: "Pelajari Lebih Lanjut",
+            sliderImages: item.gambar_url ? [item.gambar_url] : [],
+            images: {
+              main: item.gambar_url || "",
+              secondary: item.gambar_url || "",
+              diamond: item.gambar_url || "",
+              cta: item.gambar_url || "",
+            },
+            link: `/budaya/${item.id}`,
+          }));
+          setBudayaData(transformedData);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBudayaData();
+  }, []);
 
   const handleMarkerClick = (cardNumber) => {
     setActiveCard(cardNumber);
@@ -323,7 +370,7 @@ export default function BudayaPage() {
   }, [isClient]);
 
   // Loading state
-  if (!isClient) {
+  if (!isClient || loading) {
     return (
       <div
         style={{
