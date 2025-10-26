@@ -3,9 +3,9 @@ import Image from "next/image"
 export default function Footer() {
   return (
     <footer className="footer">
-      <div className="footer-top">
+      {/* <div className="footer-top">
         <div className="footer-container">
-          {/* Hero Section dengan Animasi */}
+          
           <div className="footer-hero">
             <div className="footer-character">
               <Image 
@@ -25,7 +25,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Footer Links - Full Width Section */}
       <div className="footer-links">

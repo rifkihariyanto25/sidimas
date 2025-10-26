@@ -115,10 +115,7 @@ export default function Home() {
               <p className="max-w-lg mb-6">
                 Eksplorasi Keindahan Bumi Ngapak dari Lereng Gunung hingga Kota
               </p>
-              <a
-                href="#"
-                className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110"
-              >
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
                 Mulai Jelajahi
               </a>
             </div>
@@ -162,10 +159,7 @@ export default function Home() {
                 Mendoan hangat, sroto Sokaraja, hingga gethuk goreng yang bikin
                 kangen!
               </p>
-              <a
-                href="#"
-                className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110"
-              >
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
                 Jelajahi Kuliner
               </a>
             </div>
@@ -209,10 +203,7 @@ export default function Home() {
                 Dari wayang kulit, jaranan, hingga kesenian tradisional yang
                 memikat hati
               </p>
-              <a
-                href="#"
-                className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110"
-              >
+              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 opacity-100 brightness-110">
                 Kenali Budaya
               </a>
             </div>
@@ -429,6 +420,31 @@ export default function Home() {
           </a>
         </div>
       </section>
+
+      {/* ✅ FOOTER HERO SECTION */}
+      <div className="footer-top">
+        <div className="footer-container">
+          {/* Hero Section dengan Animasi */}
+          <div className="footer-hero">
+            <div className="footer-character">
+              <Image 
+                src="/Group 86.png" 
+                alt="Banyumas Character" 
+                width={300} 
+                height={400}
+                className="character-img"
+              />
+            </div>
+            <div className="footer-hero-text">
+              <h2>
+                <span className="text-lime-400">Ayo Kunjungi</span><br />
+                DAN JELAJAHI BANYUMAS
+              </h2>
+              <p>Be an explorer and experience the beauty of diversity in Banyumas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* ✅ FOOTER */}
       <Footer />

@@ -15,15 +15,18 @@ export default function AdminDashboard() {
   const router = useRouter()
   const [items, setItems] = useState([])
   const [title, setTitle] = useState('')
+  const [subtitle, setSubtitle] = useState('')
   const [category, setCategory] = useState('wisata')
   const [description, setDescription] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [filterCategory, setFilterCategory] = useState('all')
   const [adminEmail, setAdminEmail] = useState('')
-  const [imageFile, setImageFile] = useState(null)
-  const [imagePreview, setImagePreview] = useState('')
+  const [imageFiles, setImageFiles] = useState([])
+  const [imagePreviews, setImagePreviews] = useState([])
   const [editingId, setEditingId] = useState(null)
   const [isEditMode, setIsEditMode] = useState(false)
+  const [activePage, setActivePage] = useState('wisata') // New: untuk sidebar navigation
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true) // New: untuk toggle sidebar di mobile
 
   // Check if user is logged in
   useEffect(() => {
@@ -60,31 +63,74 @@ export default function AdminDashboard() {
     }
   }
 
-  function handleImageChange(e) {
-    const file = e.target.files[0]
-    if (file) {
-      setImageFile(file)
-      // Create preview
+  function handleMultipleImageChange(e) {
+    const files = Array.from(e.target.files)
+    const remainingSlots = 5 - imageFiles.length
+    
+    if (files.length > remainingSlots) {
+      alert(`⚠️ Maksimal ${remainingSlots} gambar lagi (Total maksimal 5 gambar)`)
+      return
+    }
+    
+    // Validate file size (max 5MB per file)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    const oversizedFiles = files.filter(file => file.size > maxSize)
+    if (oversizedFiles.length > 0) {
+      alert('⚠️ Beberapa file melebihi 5MB. Silakan pilih file yang lebih kecil.')
+      return
+    }
+    
+    // Add files
+    const newFiles = [...imageFiles, ...files]
+    setImageFiles(newFiles)
+    
+    // Create previews
+    files.forEach(file => {
       const reader = new FileReader()
       reader.onloadend = () => {
-        setImagePreview(reader.result)
+        setImagePreviews(prev => [...prev, {
+          url: reader.result,
+          file: file,
+          name: file.name
+        }])
       }
       reader.readAsDataURL(file)
-    }
+    })
   }
 
-  function clearImage() {
-    setImageFile(null)
-    setImagePreview('')
+  function removeImage(index) {
+    setImageFiles(prev => prev.filter((_, i) => i !== index))
+    setImagePreviews(prev => prev.filter((_, i) => i !== index))
+  }
+
+  function clearAllImages() {
+    setImageFiles([])
+    setImagePreviews([])
   }
 
   function handleEdit(item) {
     setIsEditMode(true)
     setEditingId(item.id)
     setTitle(item.nama)
+    setSubtitle(item.subtittle || '')
     setCategory(item.kategori)
     setDescription(item.deskripsi || '')
-    setImagePreview(item.gambar_url || '')
+    
+    // Handle multiple images from gambar_url (stored with ||| separator)
+    if (item.gambar_url) {
+      // Parse URLs from string
+      const urls = item.gambar_url.split('|||').filter(url => url.trim())
+      
+      // Set previews from existing URLs
+      const previews = urls.map((url, index) => ({
+        url: url.trim(),
+        file: null,
+        name: `Gambar ${index + 1}`,
+        isExisting: true
+      }))
+      setImagePreviews(previews)
+    }
+    
     // Scroll ke form
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -93,9 +139,10 @@ export default function AdminDashboard() {
     setIsEditMode(false)
     setEditingId(null)
     setTitle('')
+    setSubtitle('')
     setCategory('wisata')
     setDescription('')
-    clearImage()
+    clearAllImages()
   }
 
   async function handleSubmit(e) {
@@ -105,17 +152,26 @@ export default function AdminDashboard() {
     setIsLoading(true)
     
     try {
-      let gambarUrl = isEditMode ? imagePreview : ''
+      let gambarUrls = []
 
-      // Upload image to Supabase Storage jika ada file baru
-      if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop()
+      // Get existing URLs from previews (for edit mode)
+      const existingUrls = imagePreviews
+        .filter(preview => preview.isExisting)
+        .map(preview => preview.url)
+
+      // Upload new images to Supabase Storage
+      const newFiles = imageFiles.filter((_, index) => 
+        !imagePreviews[index]?.isExisting
+      )
+
+      for (const file of newFiles) {
+        const fileExt = file.name.split('.').pop()
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`
         const filePath = `konten/${fileName}`
 
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('images')
-          .upload(filePath, imageFile)
+          .upload(filePath, file)
 
         if (uploadError) throw uploadError
 
@@ -124,16 +180,21 @@ export default function AdminDashboard() {
           .from('images')
           .getPublicUrl(filePath)
 
-        gambarUrl = urlData.publicUrl
+        gambarUrls.push(urlData.publicUrl)
       }
+
+      // Combine existing and new URLs
+      const allUrls = [...existingUrls, ...gambarUrls]
+      const gambarUrlsString = allUrls.join('|||') // Store as string with separator
 
       if (isEditMode) {
         // UPDATE mode
         const updateData = {
           nama: title.trim(),
+          subtittle: subtitle.trim(),
           kategori: category,
           deskripsi: description.trim(),
-          gambar_url: gambarUrl,
+          gambar_url: gambarUrlsString, // Using existing gambar_url column
         }
 
         const { data, error } = await supabase
@@ -156,9 +217,10 @@ export default function AdminDashboard() {
         // INSERT mode
         const newItem = {
           nama: title.trim(),
+          subtittle: subtitle.trim(),
           kategori: category,
           deskripsi: description.trim(),
-          gambar_url: gambarUrl,
+          gambar_url: gambarUrlsString, // Using existing gambar_url column
         }
 
         const { data, error } = await supabase
@@ -176,9 +238,10 @@ export default function AdminDashboard() {
         
         // Reset form
         setTitle('')
+        setSubtitle('')
         setCategory('wisata')
         setDescription('')
-        clearImage()
+        clearAllImages()
       }
     } catch (error) {
       console.error('Error saving content:', error.message)
@@ -228,140 +291,320 @@ export default function AdminDashboard() {
     }
   }
 
+  function handlePageChange(page) {
+    setActivePage(page)
+    setCategory(page)
+    setFilterCategory(page)
+    // Reset form when changing page
+    if (!isEditMode) {
+      setTitle('')
+      setSubtitle('')
+      setDescription('')
+      clearAllImages()
+    }
+  }
+
   return (
     <div style={{
+      display: 'flex',
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #65a30d 0%, #15803d 100%)',
-      padding: '40px 20px'
+      background: '#f3f4f6'
     }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{ 
-          textAlign: 'center', 
-          marginBottom: '40px',
-          color: 'white',
-          position: 'relative'
+      {/* Sidebar */}
+      <div style={{
+        width: isSidebarOpen ? '280px' : '80px',
+        background: 'linear-gradient(180deg, #15803d 0%, #065f46 100%)',
+        color: 'white',
+        transition: 'width 0.3s ease',
+        position: 'fixed',
+        height: '100vh',
+        overflowY: 'auto',
+        boxShadow: '4px 0 20px rgba(0,0,0,0.1)',
+        zIndex: 1000
+      }}>
+        {/* Logo & Toggle */}
+        <div style={{
+          padding: '24px 20px',
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}>
-          {/* Logout Button */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-end',
-            gap: '8px'
-          }}>
-            <div style={{
-              background: 'rgba(255,255,255,0.2)',
-              padding: '8px 16px',
-              borderRadius: '20px',
-              fontSize: '13px',
-              fontWeight: '600',
-              backdropFilter: 'blur(10px)'
-            }}>
-              👤 {adminEmail}
+          {isSidebarOpen && (
+            <div>
+              <h2 style={{
+                margin: 0,
+                fontSize: '22px',
+                fontWeight: '800',
+                letterSpacing: '-0.5px'
+              }}>
+                🎯 SIDimas
+              </h2>
+              <p style={{
+                margin: '4px 0 0 0',
+                fontSize: '12px',
+                opacity: 0.8
+              }}>
+                Admin Panel
+              </p>
             </div>
+          )}
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            style={{
+              background: 'rgba(255,255,255,0.1)',
+              border: 'none',
+              color: 'white',
+              width: '36px',
+              height: '36px',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '18px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.2)'}
+            onMouseLeave={(e) => e.target.style.background = 'rgba(255,255,255,0.1)'}
+          >
+            {isSidebarOpen ? '◀' : '▶'}
+          </button>
+        </div>
+
+        {/* Navigation Menu */}
+        <div style={{ padding: '20px 12px' }}>
+          {isSidebarOpen && (
+            <div style={{
+              fontSize: '11px',
+              fontWeight: '700',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              opacity: 0.6,
+              marginBottom: '12px',
+              paddingLeft: '12px'
+            }}>
+              Kategori Konten
+            </div>
+          )}
+          
+          {CATEGORIES.map(cat => {
+            const isActive = activePage === cat.value
+            const itemCount = items.filter(item => item.kategori === cat.value).length
+            
+            return (
+              <button
+                key={cat.value}
+                onClick={() => handlePageChange(cat.value)}
+                style={{
+                  width: '100%',
+                  background: isActive ? 'rgba(255,255,255,0.15)' : 'transparent',
+                  border: isActive ? '2px solid rgba(255,255,255,0.3)' : '2px solid transparent',
+                  color: 'white',
+                  padding: isSidebarOpen ? '14px 16px' : '14px 8px',
+                  borderRadius: '12px',
+                  marginBottom: '8px',
+                  cursor: 'pointer',
+                  fontSize: '15px',
+                  fontWeight: isActive ? '700' : '600',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  transition: 'all 0.2s',
+                  textAlign: 'left',
+                  justifyContent: isSidebarOpen ? 'flex-start' : 'center'
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.target.style.background = 'rgba(255,255,255,0.08)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.target.style.background = 'transparent'
+                  }
+                }}
+              >
+                <span style={{ fontSize: '24px' }}>{cat.icon}</span>
+                {isSidebarOpen && (
+                  <>
+                    <span style={{ flex: 1 }}>{cat.label.split(' ')[1]}</span>
+                    <span style={{
+                      background: isActive ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)',
+                      padding: '4px 10px',
+                      borderRadius: '12px',
+                      fontSize: '13px',
+                      fontWeight: '700'
+                    }}>
+                      {itemCount}
+                    </span>
+                  </>
+                )}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* User Info & Logout */}
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: '20px',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+          background: 'rgba(0,0,0,0.1)'
+        }}>
+          {isSidebarOpen ? (
+            <>
+              <div style={{
+                background: 'rgba(255,255,255,0.1)',
+                padding: '12px',
+                borderRadius: '10px',
+                marginBottom: '12px',
+                fontSize: '13px'
+              }}>
+                <div style={{ opacity: 0.7, fontSize: '11px', marginBottom: '4px' }}>
+                  Logged in as
+                </div>
+                <div style={{ fontWeight: '700', wordBreak: 'break-word' }}>
+                  {adminEmail}
+                </div>
+              </div>
+              <button
+                onClick={handleLogout}
+                style={{
+                  width: '100%',
+                  background: 'rgba(220, 38, 38, 0.2)',
+                  border: '2px solid rgba(220, 38, 38, 0.3)',
+                  color: 'white',
+                  padding: '12px',
+                  borderRadius: '10px',
+                  fontSize: '14px',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(220, 38, 38, 0.3)'
+                  e.target.style.borderColor = 'rgba(220, 38, 38, 0.5)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(220, 38, 38, 0.2)'
+                  e.target.style.borderColor = 'rgba(220, 38, 38, 0.3)'
+                }}
+              >
+                🚪 Logout
+              </button>
+            </>
+          ) : (
             <button
               onClick={handleLogout}
               style={{
-                background: 'rgba(255,255,255,0.2)',
-                border: '2px solid rgba(255,255,255,0.3)',
+                width: '100%',
+                background: 'rgba(220, 38, 38, 0.2)',
+                border: 'none',
                 color: 'white',
-                padding: '10px 20px',
-                borderRadius: '12px',
-                fontSize: '14px',
-                fontWeight: '700',
+                padding: '12px',
+                borderRadius: '10px',
+                fontSize: '20px',
                 cursor: 'pointer',
-                transition: 'all 0.2s',
-                backdropFilter: 'blur(10px)'
+                transition: 'all 0.2s'
               }}
-              onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(255,255,255,0.3)'
-                e.target.style.borderColor = 'rgba(255,255,255,0.5)'
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(255,255,255,0.2)'
-                e.target.style.borderColor = 'rgba(255,255,255,0.3)'
-              }}
+              onMouseEnter={(e) => e.target.style.background = 'rgba(220, 38, 38, 0.3)'}
+              onMouseLeave={(e) => e.target.style.background = 'rgba(220, 38, 38, 0.2)'}
+              title="Logout"
             >
-              🚪 Logout
+              🚪
             </button>
-          </div>
+          )}
+        </div>
+      </div>
 
-          <h1 style={{ 
-            fontSize: '48px', 
+      {/* Main Content */}
+      <div style={{
+        marginLeft: isSidebarOpen ? '280px' : '80px',
+        flex: 1,
+        transition: 'margin-left 0.3s ease',
+        padding: '30px',
+        minHeight: '100vh'
+      }}>
+        {/* Header */}
+        <div style={{
+          marginBottom: '30px'
+        }}>
+          <h1 style={{
+            margin: '0 0 8px 0',
+            fontSize: '32px',
             fontWeight: '800',
-            margin: '0 0 10px 0',
-            textShadow: '0 4px 6px rgba(0,0,0,0.1)'
+            color: '#1f2937',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
           }}>
-            🎯 Dashboard Admin SIDimas
+            {getCategoryData(activePage).icon}
+            <span>Kelola {getCategoryData(activePage).label.split(' ')[1]}</span>
           </h1>
-          <p style={{ 
-            fontSize: '18px', 
-            opacity: 0.9,
-            margin: 0
+          <p style={{
+            margin: 0,
+            fontSize: '15px',
+            color: '#6b7280'
           }}>
-            Kelola konten wisata, kuliner, dan budaya Banyumas
+            Tambah, edit, dan kelola konten {getCategoryData(activePage).label.split(' ')[1].toLowerCase()} Banyumas
           </p>
         </div>
 
-        {/* Stats Cards */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '20px',
-          marginBottom: '30px'
+        {/* Stats Card */}
+        <div style={{
+          background: `linear-gradient(135deg, ${getCategoryData(activePage).color}15 0%, ${getCategoryData(activePage).color}08 100%)`,
+          border: `2px solid ${getCategoryData(activePage).color}30`,
+          borderRadius: '16px',
+          padding: '24px',
+          marginBottom: '30px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '20px'
         }}>
           <div style={{
-            background: 'white',
+            background: getCategoryData(activePage).gradient,
+            width: '80px',
+            height: '80px',
             borderRadius: '16px',
-            padding: '24px',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-            textAlign: 'center'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '40px',
+            boxShadow: `0 8px 20px ${getCategoryData(activePage).color}40`
           }}>
-            <div style={{ fontSize: '36px', marginBottom: '8px' }}>📊</div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#1f2937' }}>
-              {items.length}
+            {getCategoryData(activePage).icon}
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{
+              fontSize: '14px',
+              color: '#6b7280',
+              fontWeight: '600',
+              marginBottom: '4px'
+            }}>
+              Total Konten {getCategoryData(activePage).label.split(' ')[1]}
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280', fontWeight: '600' }}>
-              Total Konten
+            <div style={{
+              fontSize: '36px',
+              fontWeight: '800',
+              color: getCategoryData(activePage).color
+            }}>
+              {items.filter(item => item.kategori === activePage).length}
             </div>
           </div>
-          {stats.map(stat => (
-            <div key={stat.value} style={{
-              background: 'white',
-              borderRadius: '16px',
-              padding: '24px',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-              textAlign: 'center',
-              cursor: 'pointer',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-4px)'
-              e.currentTarget.style.boxShadow = '0 15px 40px rgba(0,0,0,0.2)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.15)'
-            }}
-            onClick={() => setFilterCategory(stat.value)}>
-              <div style={{ fontSize: '36px', marginBottom: '8px' }}>{stat.icon}</div>
-              <div style={{ fontSize: '32px', fontWeight: '700', color: stat.color }}>
-                {stat.count}
-              </div>
-              <div style={{ fontSize: '14px', color: '#6b7280', fontWeight: '600' }}>
-                {stat.label.split(' ')[1]}
-              </div>
-            </div>
-          ))}
         </div>
 
         {/* Main Content Grid */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))',
           gap: '30px',
           alignItems: 'start'
         }}>
@@ -452,41 +695,75 @@ export default function AdminDashboard() {
                   color: '#374151',
                   fontSize: '14px'
                 }}>
+                  Sub Judul
+                  <span style={{ 
+                    color: '#9ca3af', 
+                    fontSize: '12px', 
+                    fontWeight: '400',
+                    marginLeft: '6px'
+                  }}>
+                    (opsional)
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  value={subtitle}
+                  onChange={(e) => setSubtitle(e.target.value)}
+                  placeholder="Contoh: Wisata Alam Sejuk di Kaki Gunung Slamet"
+                  style={{
+                    width: '100%',
+                    padding: '14px 16px',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '12px',
+                    fontSize: '15px',
+                    boxSizing: 'border-box',
+                    transition: 'all 0.2s',
+                    outline: 'none'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#65a30d'}
+                  onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                />
+              </div>
+
+              {/* Kategori Info (Read-only, determined by sidebar) */}
+              <div>
+                <label style={{ 
+                  display: 'block', 
+                  fontWeight: '600', 
+                  marginBottom: '8px',
+                  color: '#374151',
+                  fontSize: '14px'
+                }}>
                   Kategori
                 </label>
-                <div style={{ display: 'grid', gap: '10px' }}>
-                  {CATEGORIES.map(cat => (
-                    <label
-                      key={cat.value}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '14px 16px',
-                        border: `2px solid ${category === cat.value ? cat.color : '#e5e7eb'}`,
-                        borderRadius: '12px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        background: category === cat.value ? `${cat.color}10` : 'transparent',
-                      }}
-                    >
-                      <input
-                        type="radio"
-                        name="category"
-                        value={cat.value}
-                        checked={category === cat.value}
-                        onChange={(e) => setCategory(e.target.value)}
-                        style={{ marginRight: '12px', width: '18px', height: '18px' }}
-                      />
-                      <span style={{ fontSize: '20px', marginRight: '8px' }}>{cat.icon}</span>
-                      <span style={{ 
-                        fontWeight: '600', 
-                        color: category === cat.value ? cat.color : '#374151',
-                        fontSize: '15px'
-                      }}>
-                        {cat.label.split(' ')[1]}
-                      </span>
-                    </label>
-                  ))}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '14px 16px',
+                  border: `2px solid ${getCategoryData(activePage).color}`,
+                  borderRadius: '12px',
+                  background: `${getCategoryData(activePage).color}10`,
+                  gap: '12px'
+                }}>
+                  <span style={{ fontSize: '24px' }}>{getCategoryData(activePage).icon}</span>
+                  <span style={{ 
+                    fontWeight: '700', 
+                    color: getCategoryData(activePage).color,
+                    fontSize: '16px',
+                    flex: 1
+                  }}>
+                    {getCategoryData(activePage).label.split(' ')[1]}
+                  </span>
+                  <span style={{
+                    background: getCategoryData(activePage).gradient,
+                    color: 'white',
+                    padding: '4px 12px',
+                    borderRadius: '20px',
+                    fontSize: '12px',
+                    fontWeight: '700'
+                  }}>
+                    Aktif
+                  </span>
                 </div>
               </div>
 
@@ -531,55 +808,106 @@ export default function AdminDashboard() {
                   color: '#374151',
                   fontSize: '14px'
                 }}>
-                  Gambar
+                  📷 Gambar (Maksimal 5 foto)
+                  <span style={{ 
+                    color: '#65a30d', 
+                    fontSize: '13px', 
+                    fontWeight: '700',
+                    marginLeft: '8px',
+                    background: '#f0fdf4',
+                    padding: '2px 8px',
+                    borderRadius: '6px'
+                  }}>
+                    {imagePreviews.length}/5
+                  </span>
                 </label>
                 
-                {imagePreview ? (
-                  <div style={{ position: 'relative' }}>
-                    <img 
-                      src={imagePreview} 
-                      alt="Preview" 
-                      style={{
-                        width: '100%',
-                        height: '200px',
-                        objectFit: 'cover',
+                {/* Preview Grid */}
+                {imagePreviews.length > 0 && (
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))',
+                    gap: '12px',
+                    marginBottom: '12px'
+                  }}>
+                    {imagePreviews.map((preview, index) => (
+                      <div key={index} style={{ 
+                        position: 'relative',
+                        aspectRatio: '1',
                         borderRadius: '12px',
-                        border: '2px solid #e5e7eb'
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={clearImage}
-                      style={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: '10px',
-                        background: '#dc2626',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '50%',
-                        width: '32px',
-                        height: '32px',
-                        cursor: 'pointer',
-                        fontSize: '16px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-                      }}
-                      title="Hapus gambar"
-                    >
-                      ✕
-                    </button>
+                        overflow: 'hidden',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                      }}>
+                        <img 
+                          src={preview.url} 
+                          alt={`Preview ${index + 1}`}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          style={{
+                            position: 'absolute',
+                            top: '6px',
+                            right: '6px',
+                            background: '#dc2626',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '26px',
+                            height: '26px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.background = '#b91c1c'
+                            e.target.style.transform = 'scale(1.1)'
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.background = '#dc2626'
+                            e.target.style.transform = 'scale(1)'
+                          }}
+                          title="Hapus gambar"
+                        >
+                          ✕
+                        </button>
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '6px',
+                          left: '6px',
+                          background: 'rgba(0,0,0,0.7)',
+                          color: 'white',
+                          padding: '3px 8px',
+                          borderRadius: '6px',
+                          fontSize: '11px',
+                          fontWeight: '700',
+                          backdropFilter: 'blur(4px)'
+                        }}>
+                          #{index + 1}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ) : (
+                )}
+                
+                {/* Upload Button (muncul jika belum 5 gambar) */}
+                {imagePreviews.length < 5 && (
                   <label style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
                     width: '100%',
-                    height: '150px',
+                    height: '130px',
                     border: '2px dashed #d1d5db',
                     borderRadius: '12px',
                     cursor: 'pointer',
@@ -597,17 +925,51 @@ export default function AdminDashboard() {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={handleImageChange}
+                      multiple
+                      onChange={handleMultipleImageChange}
                       style={{ display: 'none' }}
                     />
-                    <div style={{ fontSize: '48px', marginBottom: '8px' }}>📷</div>
+                    <div style={{ fontSize: '40px', marginBottom: '8px' }}>📷</div>
                     <div style={{ fontSize: '14px', color: '#6b7280', fontWeight: '600' }}>
                       Klik untuk upload gambar
                     </div>
                     <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '4px' }}>
-                      PNG, JPG, JPEG (Max 5MB)
+                      {5 - imagePreviews.length} slot tersisa • PNG, JPG (Max 5MB/file)
                     </div>
                   </label>
+                )}
+
+                {/* Clear All Button */}
+                {imagePreviews.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={clearAllImages}
+                    style={{
+                      marginTop: '8px',
+                      width: '100%',
+                      background: '#f3f4f6',
+                      color: '#6b7280',
+                      border: '1px solid #e5e7eb',
+                      padding: '8px',
+                      borderRadius: '8px',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = '#fee2e2'
+                      e.target.style.color = '#dc2626'
+                      e.target.style.borderColor = '#fecaca'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = '#f3f4f6'
+                      e.target.style.color = '#6b7280'
+                      e.target.style.borderColor = '#e5e7eb'
+                    }}
+                  >
+                    🗑️ Hapus Semua Gambar
+                  </button>
                 )}
               </div>
 
@@ -655,50 +1017,27 @@ export default function AdminDashboard() {
                 margin: 0,
                 fontSize: '24px',
                 fontWeight: '700',
-                color: '#1f2937'
+                color: '#1f2937',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
               }}>
-                📋 Daftar Konten
+                <span>📋</span>
+                <span>Daftar {getCategoryData(activePage).label.split(' ')[1]}</span>
               </h2>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                <button
-                  onClick={() => setFilterCategory('all')}
-                  style={{
-                    padding: '6px 14px',
-                    borderRadius: '20px',
-                    border: 'none',
-                    background: filterCategory === 'all' ? '#65a30d' : '#e5e7eb',
-                    color: filterCategory === 'all' ? 'white' : '#6b7280',
-                    fontSize: '13px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  Semua
-                </button>
-                {CATEGORIES.map(cat => (
-                  <button
-                    key={cat.value}
-                    onClick={() => setFilterCategory(cat.value)}
-                    style={{
-                      padding: '6px 14px',
-                      borderRadius: '20px',
-                      border: 'none',
-                      background: filterCategory === cat.value ? cat.color : '#e5e7eb',
-                      color: filterCategory === cat.value ? 'white' : '#6b7280',
-                      fontSize: '13px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    {cat.icon} {cat.label.split(' ')[1]}
-                  </button>
-                ))}
+              <div style={{
+                background: `${getCategoryData(activePage).color}15`,
+                padding: '8px 16px',
+                borderRadius: '20px',
+                fontSize: '14px',
+                fontWeight: '700',
+                color: getCategoryData(activePage).color
+              }}>
+                {items.filter(item => item.kategori === activePage).length} Konten
               </div>
             </div>
 
-            {filteredItems.length === 0 ? (
+            {items.filter(item => item.kategori === activePage).length === 0 ? (
               <div style={{
                 textAlign: 'center',
                 padding: '60px 20px',
@@ -706,7 +1045,7 @@ export default function AdminDashboard() {
               }}>
                 <div style={{ fontSize: '64px', marginBottom: '16px' }}>📭</div>
                 <p style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
-                  {filterCategory === 'all' ? 'Belum ada konten' : `Belum ada konten ${filterCategory}`}
+                  Belum ada konten {getCategoryData(activePage).label.split(' ')[1].toLowerCase()}
                 </p>
                 <p style={{ margin: '8px 0 0 0', fontSize: '14px' }}>
                   Mulai tambahkan konten baru!
@@ -714,8 +1053,15 @@ export default function AdminDashboard() {
               </div>
             ) : (
               <div style={{ display: 'grid', gap: '16px', maxHeight: '700px', overflowY: 'auto', paddingRight: '8px' }}>
-                {filteredItems.map(item => {
+                {items.filter(item => item.kategori === activePage).map(item => {
                   const catData = getCategoryData(item.kategori)
+                  
+                  // Parse multiple image URLs from gambar_url (stored with ||| separator)
+                  let imageUrls = []
+                  if (item.gambar_url) {
+                    imageUrls = item.gambar_url.split('|||').filter(url => url.trim()).map(url => url.trim())
+                  }
+                  
                   return (
                     <div
                       key={item.id}
@@ -738,20 +1084,47 @@ export default function AdminDashboard() {
                         e.currentTarget.style.transform = 'translateY(0)'
                       }}
                     >
+                      {/* Multiple Images Grid */}
+                      {imageUrls.length > 0 && (
+                        <div style={{
+                          display: 'grid',
+                          gridTemplateColumns: imageUrls.length === 1 ? '1fr' : 'repeat(auto-fill, minmax(100px, 1fr))',
+                          gap: '8px',
+                          marginBottom: '16px'
+                        }}>
+                          {imageUrls.slice(0, 5).map((url, idx) => (
+                            <div key={idx} style={{ position: 'relative', aspectRatio: '1' }}>
+                              <img 
+                                src={url} 
+                                alt={`${item.nama} ${idx + 1}`}
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover',
+                                  borderRadius: '10px'
+                                }}
+                              />
+                              {imageUrls.length > 1 && (
+                                <div style={{
+                                  position: 'absolute',
+                                  bottom: '4px',
+                                  right: '4px',
+                                  background: 'rgba(0,0,0,0.7)',
+                                  color: 'white',
+                                  padding: '2px 6px',
+                                  borderRadius: '4px',
+                                  fontSize: '10px',
+                                  fontWeight: '600'
+                                }}>
+                                  {idx + 1}/{imageUrls.length}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: '16px' }}>
-                        {item.gambar_url && (
-                          <img 
-                            src={item.gambar_url} 
-                            alt={item.nama}
-                            style={{
-                              width: '120px',
-                              height: '120px',
-                              objectFit: 'cover',
-                              borderRadius: '12px',
-                              flexShrink: 0
-                            }}
-                          />
-                        )}
                         <div style={{ flex: 1 }}>
                           <div style={{ marginBottom: '12px' }}>
                             <span style={{
@@ -769,13 +1142,24 @@ export default function AdminDashboard() {
                             </span>
                           </div>
                           <h3 style={{ 
-                            margin: '0 0 8px 0', 
+                            margin: '0 0 4px 0', 
                             fontSize: '20px',
                             fontWeight: '700',
                             color: '#1f2937'
                           }}>
                             {item.nama}
                           </h3>
+                          {item.subtittle && (
+                            <p style={{ 
+                              margin: '0 0 8px 0', 
+                              color: '#16a34a', 
+                              fontSize: '14px', 
+                              fontWeight: '600',
+                              lineHeight: '1.4'
+                            }}>
+                              {item.subtittle}
+                            </p>
+                          )}
                           {item.deskripsi && (
                             <p style={{ 
                               margin: 0, 
