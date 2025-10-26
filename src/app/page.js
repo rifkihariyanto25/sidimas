@@ -121,23 +121,27 @@ export default function Home() {
             </div>
 
             {/* LOGO LOOP WISATA */}
-            <div className="mini-slider">
-              <LogoLoop
-                logos={wisataSlides.map((slide) => ({
-                  src: slide.img,
-                  alt: slide.alt,
-                  width: 120,
-                  height: 90,
-                }))}
-                speed={60} // Kecepatan scroll
-                direction="left" // 'left' atau 'right'
-                logoHeight={90} // Tinggi logo
-                gap={24} // Jarak antar logo (diperbesar)
-                pauseOnHover={true} // Pause ketika hover
-                scaleOnHover={true} // Zoom ketika hover
-                ariaLabel="Wisata Banyumas"
-              />
-            </div>
+            {wisataSlides.length > 0 && (
+              <div className="mini-slider">
+                <LogoLoop
+                  logos={wisataSlides
+                    .filter((slide) => slide.img) // Filter hanya yang punya gambar
+                    .map((slide) => ({
+                      src: slide.img,
+                      alt: slide.alt || 'Wisata Banyumas',
+                      width: 120,
+                      height: 90,
+                    }))}
+                  speed={60} // Kecepatan scroll
+                  direction="left" // 'left' atau 'right'
+                  logoHeight={90} // Tinggi logo
+                  gap={24} // Jarak antar logo (diperbesar)
+                  pauseOnHover={true} // Pause ketika hover
+                  scaleOnHover={true} // Zoom ketika hover
+                  ariaLabel="Wisata Banyumas"
+                />
+              </div>
+            )}
           </section>
         </SwiperSlide>
 
@@ -165,23 +169,27 @@ export default function Home() {
             </div>
 
             {/* LOGO LOOP KULINER */}
-            <div className="mini-slider">
-              <LogoLoop
-                logos={kulinerSlides.map((slide) => ({
-                  src: slide.img,
-                  alt: slide.alt,
-                  width: 120,
-                  height: 90,
-                }))}
-                speed={60}
-                direction="left"
-                logoHeight={90}
-                gap={24}
-                pauseOnHover={true}
-                scaleOnHover={true}
-                ariaLabel="Kuliner Banyumas"
-              />
-            </div>
+            {kulinerSlides.length > 0 && (
+              <div className="mini-slider">
+                <LogoLoop
+                  logos={kulinerSlides
+                    .filter((slide) => slide.img) // Filter hanya yang punya gambar
+                    .map((slide) => ({
+                      src: slide.img,
+                      alt: slide.alt || 'Kuliner Banyumas',
+                      width: 120,
+                      height: 90,
+                    }))}
+                  speed={60}
+                  direction="left"
+                  logoHeight={90}
+                  gap={24}
+                  pauseOnHover={true}
+                  scaleOnHover={true}
+                  ariaLabel="Kuliner Banyumas"
+                />
+              </div>
+            )}
           </section>
         </SwiperSlide>
 
@@ -209,23 +217,27 @@ export default function Home() {
             </div>
 
             {/* LOGO LOOP BUDAYA */}
-            <div className="mini-slider">
-              <LogoLoop
-                logos={budayaSlides.map((slide) => ({
-                  src: slide.img,
-                  alt: slide.alt,
-                  width: 120,
-                  height: 90,
-                }))}
-                speed={60}
-                direction="left"
-                logoHeight={90}
-                gap={24}
-                pauseOnHover={true}
-                scaleOnHover={true}
-                ariaLabel="Budaya Banyumas"
-              />
-            </div>
+            {budayaSlides.length > 0 && (
+              <div className="mini-slider">
+                <LogoLoop
+                  logos={budayaSlides
+                    .filter((slide) => slide.img) // Filter hanya yang punya gambar
+                    .map((slide) => ({
+                      src: slide.img,
+                      alt: slide.alt || 'Budaya Banyumas',
+                      width: 120,
+                      height: 90,
+                    }))}
+                  speed={60}
+                  direction="left"
+                  logoHeight={90}
+                  gap={24}
+                  pauseOnHover={true}
+                  scaleOnHover={true}
+                  ariaLabel="Budaya Banyumas"
+                />
+              </div>
+            )}
           </section>
         </SwiperSlide>
       </Swiper>
