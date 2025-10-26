@@ -25,6 +25,8 @@ export default function AdminDashboard() {
   const [imagePreviews, setImagePreviews] = useState([])
   const [editingId, setEditingId] = useState(null)
   const [isEditMode, setIsEditMode] = useState(false)
+  const [activePage, setActivePage] = useState('wisata') // New: untuk sidebar navigation
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true) // New: untuk toggle sidebar di mobile
 
   // Check if user is logged in
   useEffect(() => {
@@ -289,140 +291,320 @@ export default function AdminDashboard() {
     }
   }
 
+  function handlePageChange(page) {
+    setActivePage(page)
+    setCategory(page)
+    setFilterCategory(page)
+    // Reset form when changing page
+    if (!isEditMode) {
+      setTitle('')
+      setSubtitle('')
+      setDescription('')
+      clearAllImages()
+    }
+  }
+
   return (
     <div style={{
+      display: 'flex',
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #65a30d 0%, #15803d 100%)',
-      padding: '40px 20px'
+      background: '#f3f4f6'
     }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{ 
-          textAlign: 'center', 
-          marginBottom: '40px',
-          color: 'white',
-          position: 'relative'
+      {/* Sidebar */}
+      <div style={{
+        width: isSidebarOpen ? '280px' : '80px',
+        background: 'linear-gradient(180deg, #15803d 0%, #065f46 100%)',
+        color: 'white',
+        transition: 'width 0.3s ease',
+        position: 'fixed',
+        height: '100vh',
+        overflowY: 'auto',
+        boxShadow: '4px 0 20px rgba(0,0,0,0.1)',
+        zIndex: 1000
+      }}>
+        {/* Logo & Toggle */}
+        <div style={{
+          padding: '24px 20px',
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}>
-          {/* Logout Button */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-end',
-            gap: '8px'
-          }}>
-            <div style={{
-              background: 'rgba(255,255,255,0.2)',
-              padding: '8px 16px',
-              borderRadius: '20px',
-              fontSize: '13px',
-              fontWeight: '600',
-              backdropFilter: 'blur(10px)'
-            }}>
-              👤 {adminEmail}
+          {isSidebarOpen && (
+            <div>
+              <h2 style={{
+                margin: 0,
+                fontSize: '22px',
+                fontWeight: '800',
+                letterSpacing: '-0.5px'
+              }}>
+                🎯 SIDimas
+              </h2>
+              <p style={{
+                margin: '4px 0 0 0',
+                fontSize: '12px',
+                opacity: 0.8
+              }}>
+                Admin Panel
+              </p>
             </div>
+          )}
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            style={{
+              background: 'rgba(255,255,255,0.1)',
+              border: 'none',
+              color: 'white',
+              width: '36px',
+              height: '36px',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '18px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.2)'}
+            onMouseLeave={(e) => e.target.style.background = 'rgba(255,255,255,0.1)'}
+          >
+            {isSidebarOpen ? '◀' : '▶'}
+          </button>
+        </div>
+
+        {/* Navigation Menu */}
+        <div style={{ padding: '20px 12px' }}>
+          {isSidebarOpen && (
+            <div style={{
+              fontSize: '11px',
+              fontWeight: '700',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              opacity: 0.6,
+              marginBottom: '12px',
+              paddingLeft: '12px'
+            }}>
+              Kategori Konten
+            </div>
+          )}
+          
+          {CATEGORIES.map(cat => {
+            const isActive = activePage === cat.value
+            const itemCount = items.filter(item => item.kategori === cat.value).length
+            
+            return (
+              <button
+                key={cat.value}
+                onClick={() => handlePageChange(cat.value)}
+                style={{
+                  width: '100%',
+                  background: isActive ? 'rgba(255,255,255,0.15)' : 'transparent',
+                  border: isActive ? '2px solid rgba(255,255,255,0.3)' : '2px solid transparent',
+                  color: 'white',
+                  padding: isSidebarOpen ? '14px 16px' : '14px 8px',
+                  borderRadius: '12px',
+                  marginBottom: '8px',
+                  cursor: 'pointer',
+                  fontSize: '15px',
+                  fontWeight: isActive ? '700' : '600',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  transition: 'all 0.2s',
+                  textAlign: 'left',
+                  justifyContent: isSidebarOpen ? 'flex-start' : 'center'
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.target.style.background = 'rgba(255,255,255,0.08)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.target.style.background = 'transparent'
+                  }
+                }}
+              >
+                <span style={{ fontSize: '24px' }}>{cat.icon}</span>
+                {isSidebarOpen && (
+                  <>
+                    <span style={{ flex: 1 }}>{cat.label.split(' ')[1]}</span>
+                    <span style={{
+                      background: isActive ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)',
+                      padding: '4px 10px',
+                      borderRadius: '12px',
+                      fontSize: '13px',
+                      fontWeight: '700'
+                    }}>
+                      {itemCount}
+                    </span>
+                  </>
+                )}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* User Info & Logout */}
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: '20px',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+          background: 'rgba(0,0,0,0.1)'
+        }}>
+          {isSidebarOpen ? (
+            <>
+              <div style={{
+                background: 'rgba(255,255,255,0.1)',
+                padding: '12px',
+                borderRadius: '10px',
+                marginBottom: '12px',
+                fontSize: '13px'
+              }}>
+                <div style={{ opacity: 0.7, fontSize: '11px', marginBottom: '4px' }}>
+                  Logged in as
+                </div>
+                <div style={{ fontWeight: '700', wordBreak: 'break-word' }}>
+                  {adminEmail}
+                </div>
+              </div>
+              <button
+                onClick={handleLogout}
+                style={{
+                  width: '100%',
+                  background: 'rgba(220, 38, 38, 0.2)',
+                  border: '2px solid rgba(220, 38, 38, 0.3)',
+                  color: 'white',
+                  padding: '12px',
+                  borderRadius: '10px',
+                  fontSize: '14px',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(220, 38, 38, 0.3)'
+                  e.target.style.borderColor = 'rgba(220, 38, 38, 0.5)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(220, 38, 38, 0.2)'
+                  e.target.style.borderColor = 'rgba(220, 38, 38, 0.3)'
+                }}
+              >
+                🚪 Logout
+              </button>
+            </>
+          ) : (
             <button
               onClick={handleLogout}
               style={{
-                background: 'rgba(255,255,255,0.2)',
-                border: '2px solid rgba(255,255,255,0.3)',
+                width: '100%',
+                background: 'rgba(220, 38, 38, 0.2)',
+                border: 'none',
                 color: 'white',
-                padding: '10px 20px',
-                borderRadius: '12px',
-                fontSize: '14px',
-                fontWeight: '700',
+                padding: '12px',
+                borderRadius: '10px',
+                fontSize: '20px',
                 cursor: 'pointer',
-                transition: 'all 0.2s',
-                backdropFilter: 'blur(10px)'
+                transition: 'all 0.2s'
               }}
-              onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(255,255,255,0.3)'
-                e.target.style.borderColor = 'rgba(255,255,255,0.5)'
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(255,255,255,0.2)'
-                e.target.style.borderColor = 'rgba(255,255,255,0.3)'
-              }}
+              onMouseEnter={(e) => e.target.style.background = 'rgba(220, 38, 38, 0.3)'}
+              onMouseLeave={(e) => e.target.style.background = 'rgba(220, 38, 38, 0.2)'}
+              title="Logout"
             >
-              🚪 Logout
+              🚪
             </button>
-          </div>
+          )}
+        </div>
+      </div>
 
-          <h1 style={{ 
-            fontSize: '48px', 
+      {/* Main Content */}
+      <div style={{
+        marginLeft: isSidebarOpen ? '280px' : '80px',
+        flex: 1,
+        transition: 'margin-left 0.3s ease',
+        padding: '30px',
+        minHeight: '100vh'
+      }}>
+        {/* Header */}
+        <div style={{
+          marginBottom: '30px'
+        }}>
+          <h1 style={{
+            margin: '0 0 8px 0',
+            fontSize: '32px',
             fontWeight: '800',
-            margin: '0 0 10px 0',
-            textShadow: '0 4px 6px rgba(0,0,0,0.1)'
+            color: '#1f2937',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
           }}>
-            🎯 Dashboard Admin SIDimas
+            {getCategoryData(activePage).icon}
+            <span>Kelola {getCategoryData(activePage).label.split(' ')[1]}</span>
           </h1>
-          <p style={{ 
-            fontSize: '18px', 
-            opacity: 0.9,
-            margin: 0
+          <p style={{
+            margin: 0,
+            fontSize: '15px',
+            color: '#6b7280'
           }}>
-            Kelola konten wisata, kuliner, dan budaya Banyumas
+            Tambah, edit, dan kelola konten {getCategoryData(activePage).label.split(' ')[1].toLowerCase()} Banyumas
           </p>
         </div>
 
-        {/* Stats Cards */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '20px',
-          marginBottom: '30px'
+        {/* Stats Card */}
+        <div style={{
+          background: `linear-gradient(135deg, ${getCategoryData(activePage).color}15 0%, ${getCategoryData(activePage).color}08 100%)`,
+          border: `2px solid ${getCategoryData(activePage).color}30`,
+          borderRadius: '16px',
+          padding: '24px',
+          marginBottom: '30px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '20px'
         }}>
           <div style={{
-            background: 'white',
+            background: getCategoryData(activePage).gradient,
+            width: '80px',
+            height: '80px',
             borderRadius: '16px',
-            padding: '24px',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-            textAlign: 'center'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '40px',
+            boxShadow: `0 8px 20px ${getCategoryData(activePage).color}40`
           }}>
-            <div style={{ fontSize: '36px', marginBottom: '8px' }}>📊</div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#1f2937' }}>
-              {items.length}
+            {getCategoryData(activePage).icon}
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{
+              fontSize: '14px',
+              color: '#6b7280',
+              fontWeight: '600',
+              marginBottom: '4px'
+            }}>
+              Total Konten {getCategoryData(activePage).label.split(' ')[1]}
             </div>
-            <div style={{ fontSize: '14px', color: '#6b7280', fontWeight: '600' }}>
-              Total Konten
+            <div style={{
+              fontSize: '36px',
+              fontWeight: '800',
+              color: getCategoryData(activePage).color
+            }}>
+              {items.filter(item => item.kategori === activePage).length}
             </div>
           </div>
-          {stats.map(stat => (
-            <div key={stat.value} style={{
-              background: 'white',
-              borderRadius: '16px',
-              padding: '24px',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-              textAlign: 'center',
-              cursor: 'pointer',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-4px)'
-              e.currentTarget.style.boxShadow = '0 15px 40px rgba(0,0,0,0.2)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.15)'
-            }}
-            onClick={() => setFilterCategory(stat.value)}>
-              <div style={{ fontSize: '36px', marginBottom: '8px' }}>{stat.icon}</div>
-              <div style={{ fontSize: '32px', fontWeight: '700', color: stat.color }}>
-                {stat.count}
-              </div>
-              <div style={{ fontSize: '14px', color: '#6b7280', fontWeight: '600' }}>
-                {stat.label.split(' ')[1]}
-              </div>
-            </div>
-          ))}
         </div>
 
         {/* Main Content Grid */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))',
           gap: '30px',
           alignItems: 'start'
         }}>
@@ -543,6 +725,7 @@ export default function AdminDashboard() {
                 />
               </div>
 
+              {/* Kategori Info (Read-only, determined by sidebar) */}
               <div>
                 <label style={{ 
                   display: 'block', 
@@ -553,39 +736,34 @@ export default function AdminDashboard() {
                 }}>
                   Kategori
                 </label>
-                <div style={{ display: 'grid', gap: '10px' }}>
-                  {CATEGORIES.map(cat => (
-                    <label
-                      key={cat.value}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '14px 16px',
-                        border: `2px solid ${category === cat.value ? cat.color : '#e5e7eb'}`,
-                        borderRadius: '12px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        background: category === cat.value ? `${cat.color}10` : 'transparent',
-                      }}
-                    >
-                      <input
-                        type="radio"
-                        name="category"
-                        value={cat.value}
-                        checked={category === cat.value}
-                        onChange={(e) => setCategory(e.target.value)}
-                        style={{ marginRight: '12px', width: '18px', height: '18px' }}
-                      />
-                      <span style={{ fontSize: '20px', marginRight: '8px' }}>{cat.icon}</span>
-                      <span style={{ 
-                        fontWeight: '600', 
-                        color: category === cat.value ? cat.color : '#374151',
-                        fontSize: '15px'
-                      }}>
-                        {cat.label.split(' ')[1]}
-                      </span>
-                    </label>
-                  ))}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '14px 16px',
+                  border: `2px solid ${getCategoryData(activePage).color}`,
+                  borderRadius: '12px',
+                  background: `${getCategoryData(activePage).color}10`,
+                  gap: '12px'
+                }}>
+                  <span style={{ fontSize: '24px' }}>{getCategoryData(activePage).icon}</span>
+                  <span style={{ 
+                    fontWeight: '700', 
+                    color: getCategoryData(activePage).color,
+                    fontSize: '16px',
+                    flex: 1
+                  }}>
+                    {getCategoryData(activePage).label.split(' ')[1]}
+                  </span>
+                  <span style={{
+                    background: getCategoryData(activePage).gradient,
+                    color: 'white',
+                    padding: '4px 12px',
+                    borderRadius: '20px',
+                    fontSize: '12px',
+                    fontWeight: '700'
+                  }}>
+                    Aktif
+                  </span>
                 </div>
               </div>
 
@@ -839,50 +1017,27 @@ export default function AdminDashboard() {
                 margin: 0,
                 fontSize: '24px',
                 fontWeight: '700',
-                color: '#1f2937'
+                color: '#1f2937',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
               }}>
-                📋 Daftar Konten
+                <span>📋</span>
+                <span>Daftar {getCategoryData(activePage).label.split(' ')[1]}</span>
               </h2>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                <button
-                  onClick={() => setFilterCategory('all')}
-                  style={{
-                    padding: '6px 14px',
-                    borderRadius: '20px',
-                    border: 'none',
-                    background: filterCategory === 'all' ? '#65a30d' : '#e5e7eb',
-                    color: filterCategory === 'all' ? 'white' : '#6b7280',
-                    fontSize: '13px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  Semua
-                </button>
-                {CATEGORIES.map(cat => (
-                  <button
-                    key={cat.value}
-                    onClick={() => setFilterCategory(cat.value)}
-                    style={{
-                      padding: '6px 14px',
-                      borderRadius: '20px',
-                      border: 'none',
-                      background: filterCategory === cat.value ? cat.color : '#e5e7eb',
-                      color: filterCategory === cat.value ? 'white' : '#6b7280',
-                      fontSize: '13px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    {cat.icon} {cat.label.split(' ')[1]}
-                  </button>
-                ))}
+              <div style={{
+                background: `${getCategoryData(activePage).color}15`,
+                padding: '8px 16px',
+                borderRadius: '20px',
+                fontSize: '14px',
+                fontWeight: '700',
+                color: getCategoryData(activePage).color
+              }}>
+                {items.filter(item => item.kategori === activePage).length} Konten
               </div>
             </div>
 
-            {filteredItems.length === 0 ? (
+            {items.filter(item => item.kategori === activePage).length === 0 ? (
               <div style={{
                 textAlign: 'center',
                 padding: '60px 20px',
@@ -890,7 +1045,7 @@ export default function AdminDashboard() {
               }}>
                 <div style={{ fontSize: '64px', marginBottom: '16px' }}>📭</div>
                 <p style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
-                  {filterCategory === 'all' ? 'Belum ada konten' : `Belum ada konten ${filterCategory}`}
+                  Belum ada konten {getCategoryData(activePage).label.split(' ')[1].toLowerCase()}
                 </p>
                 <p style={{ margin: '8px 0 0 0', fontSize: '14px' }}>
                   Mulai tambahkan konten baru!
@@ -898,7 +1053,7 @@ export default function AdminDashboard() {
               </div>
             ) : (
               <div style={{ display: 'grid', gap: '16px', maxHeight: '700px', overflowY: 'auto', paddingRight: '8px' }}>
-                {filteredItems.map(item => {
+                {items.filter(item => item.kategori === activePage).map(item => {
                   const catData = getCategoryData(item.kategori)
                   
                   // Parse multiple image URLs from gambar_url (stored with ||| separator)
