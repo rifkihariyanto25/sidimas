@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import wisataData from "./wisataData";
@@ -236,10 +236,12 @@ function WisataSection({ wisata, index, currentSection, sectionsRef }) {
 
 export default function WisataPage() {
   const sectionsRef = useRef([]);
+  const wisataWrapperRef = useRef(null);
   const [currentSection, setCurrentSection] = useState(0);
   const [isClient, setIsClient] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showDots, setShowDots] = useState(false);
 
   const handleMarkerClick = (cardNumber) => {
     setActiveCard(cardNumber);
@@ -250,43 +252,66 @@ export default function WisataPage() {
     setIsClient(true);
   }, []);
 
+  // Track section changes with IntersectionObserver
   useEffect(() => {
-    if (!isClient) return;
+    if (!isClient || sectionsRef.current.length === 0) return;
 
-    const handleScroll = () => {
-      try {
-        const windowHeight = window.innerHeight;
-        const scrollPosition = window.scrollY;
-        
-        // Find which section is currently most in view
-        let closestSection = 0;
-        let closestDistance = Infinity;
-
-        sectionsRef.current.forEach((section, index) => {
-          if (section) {
-            const rect = section.getBoundingClientRect();
-            const sectionCenter = rect.top + rect.height / 2;
-            const viewportCenter = windowHeight / 2;
-            const distance = Math.abs(sectionCenter - viewportCenter);
-
-            if (distance < closestDistance) {
-              closestDistance = distance;
-              closestSection = index;
-            }
-          }
-        });
-
-        setCurrentSection(closestSection);
-      } catch (error) {
-        console.error("Scroll handler error:", error);
-      }
+    const observerOptions = {
+      root: null,
+      rootMargin: "-45% 0px -45% 0px",
+      threshold: 0,
     };
 
-    // Initial check
-    handleScroll();
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const index = sectionsRef.current.findIndex(
+            (section) => section === entry.target
+          );
+          if (index !== -1) {
+            setCurrentSection(index);
+          }
+        }
+      });
+    };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions
+    );
+
+    sectionsRef.current.forEach((section) => {
+      if (section) {
+        observer.observe(section);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isClient]);
+
+  // Track if we're in wisata wrapper area (show/hide dots)
+  useEffect(() => {
+    if (!isClient || !wisataWrapperRef.current) return;
+
+    const wrapperElement = wisataWrapperRef.current;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowDots(entry.isIntersecting);
+      },
+      {
+        root: null,
+        threshold: 0.01, // Trigger when even 1% of wrapper is visible
+      }
+    );
+
+    observer.observe(wrapperElement);
+
+    return () => {
+      observer.disconnect();
+    };
   }, [isClient]);
 
   // Data untuk slider wisata - semua gambar dalam satu array
@@ -327,132 +352,292 @@ export default function WisataPage() {
       </section>
 
       {/* CONTAINER SECTION - Menggunakan CSS Classes */}
-      <section className="map-wrapper">
+      <motion.section 
+        className="map-wrapper"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: false, margin: "-100px" }}
+      >
         <div className="map-container-wrapper">
           
           {/* Header */}
-          <div className="map-header">
+          <motion.div 
+            className="map-header"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: false }}
+          >
             <h1>
               Eksplor Berbagai Wisata <span className="highlight">Banyumas</span>,
             </h1>
             <h2>Curug dan Keindahan Lainnya</h2>
-          </div>
+          </motion.div>
 
           {/* Divider */}
-          <div className="map-divider"></div>
+          <motion.div 
+            className="map-divider"
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: false }}
+          ></motion.div>
 
           {/* Intro Text */}
-          <div className="map-intro-text">
+          <motion.div 
+            className="map-intro-text"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            viewport={{ once: false }}
+          >
             <p>Banyumas menyimpan pesona alam dan budaya yang memikat hati. Dari deretan air terjun yang menyegarkan hingga panorama hijau yang menenangkan, setiap sudut menawarkan pengalaman wisata yang unik. Nikmati keindahan alamnya, jelajahi kawasan alam yang masih asri, dan temukan berbagai destinasi menarik lainnya mulai dari wisata keluarga, petualangan alam, hingga tempat-tempat bersejarah yang sarat cerita.</p>
-          </div>
+          </motion.div>
 
           {/* Section Title */}
-          <h2 className="map-section-title">Rekomendasi Wisata</h2>
+          <motion.h2 
+            className="map-section-title"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            viewport={{ once: false }}
+          >Rekomendasi Wisata</motion.h2>
 
           {/* Map Section */}
           <div className="map-section">
             
             {/* Map Container */}
-            <div className="map-container" style={{ backgroundImage: "url('/peta.png')" }}>
+            <motion.div 
+              className="map-container" 
+              style={{ backgroundImage: "url('/peta.png')" }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              viewport={{ once: false }}
+            >
               
               {/* Capital Marker */}
-              <div className="capital-marker" title="Banyumas Regency"></div>
+              <motion.div 
+                className="capital-marker" 
+                title="Banyumas Regency"
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                transition={{ duration: 0.5, delay: 1, type: "spring", stiffness: 200 }}
+                viewport={{ once: false }}
+              ></motion.div>
 
               {/* Map Markers */}
-              <div className="map-marker marker-1" onMouseEnter={() => handleMarkerClick(1)} onMouseLeave={() => setActiveCard(null)}>1</div>
-              <div className="map-marker marker-2" onMouseEnter={() => handleMarkerClick(2)} onMouseLeave={() => setActiveCard(null)}>2</div>
-              <div className="map-marker marker-3" onMouseEnter={() => handleMarkerClick(3)} onMouseLeave={() => setActiveCard(null)}>3</div>
-              <div className="map-marker marker-4" onMouseEnter={() => handleMarkerClick(4)} onMouseLeave={() => setActiveCard(null)}>4</div>
-              <div className="map-marker marker-5" onMouseEnter={() => handleMarkerClick(5)} onMouseLeave={() => setActiveCard(null)}>5</div>
+              <motion.div 
+                className="map-marker marker-1" 
+                onMouseEnter={() => handleMarkerClick(1)} 
+                onMouseLeave={() => setActiveCard(null)}
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4, delay: 1.1, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.2 }}
+                viewport={{ once: false }}
+              >1</motion.div>
+              <motion.div 
+                className="map-marker marker-2" 
+                onMouseEnter={() => handleMarkerClick(2)} 
+                onMouseLeave={() => setActiveCard(null)}
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4, delay: 1.2, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.2 }}
+                viewport={{ once: false }}
+              >2</motion.div>
+              <motion.div 
+                className="map-marker marker-3" 
+                onMouseEnter={() => handleMarkerClick(3)} 
+                onMouseLeave={() => setActiveCard(null)}
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4, delay: 1.3, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.2 }}
+                viewport={{ once: false }}
+              >3</motion.div>
+              <motion.div 
+                className="map-marker marker-4" 
+                onMouseEnter={() => handleMarkerClick(4)} 
+                onMouseLeave={() => setActiveCard(null)}
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4, delay: 1.4, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.2 }}
+                viewport={{ once: false }}
+              >4</motion.div>
+              <motion.div 
+                className="map-marker marker-5" 
+                onMouseEnter={() => handleMarkerClick(5)} 
+                onMouseLeave={() => setActiveCard(null)}
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4, delay: 1.5, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.2 }}
+                viewport={{ once: false }}
+              >5</motion.div>
 
               {/* Wave decorations */}
-              <svg className="wave-decoration wave-left" width="60" height="30" viewBox="0 0 60 30">
+              <motion.svg 
+                className="wave-decoration wave-left" 
+                width="60" 
+                height="30" 
+                viewBox="0 0 60 30"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 1.6 }}
+                viewport={{ once: false }}
+              >
                 <path d="M0,15 Q15,5 30,15 T60,15" stroke="#fff" fill="none" strokeWidth="2"/>
-              </svg>
+              </motion.svg>
               
-              <svg className="wave-decoration wave-right" width="60" height="30" viewBox="0 0 60 30">
+              <motion.svg 
+                className="wave-decoration wave-right" 
+                width="60" 
+                height="30" 
+                viewBox="0 0 60 30"
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 1.7 }}
+                viewport={{ once: false }}
+              >
                 <path d="M0,15 Q15,5 30,15 T60,15" stroke="#fff" fill="none" strokeWidth="2"/>
-              </svg>
+              </motion.svg>
               
-              <svg className="wave-decoration wave-bottom" width="60" height="30" viewBox="0 0 60 30">
+              <motion.svg 
+                className="wave-decoration wave-bottom" 
+                width="60" 
+                height="30" 
+                viewBox="0 0 60 30"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.8 }}
+                viewport={{ once: false }}
+              >
                 <path d="M0,15 Q15,5 30,15 T60,15" stroke="#fff" fill="none" strokeWidth="2"/>
-              </svg>
-            </div>
+              </motion.svg>
+            </motion.div>
 
             {/* Info Cards - Desktop Layout */}
             <div className="hidden xl:block">
               {/* Card 1 */}
-              <div className={`info-card card-1 ${activeCard === 1 ? 'active' : ''}`}>
+              <motion.div 
+                className={`info-card card-1 ${activeCard === 1 ? 'active' : ''}`}
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 1.9 }}
+                viewport={{ once: false }}
+              >
                 <div className="info-card-number" data-number="1">1</div>
                 <h3>Baturraden</h3>
                 <p>Destinasi wisata alam di kaki Gunung Slamet yang menawarkan kesejukan dan keindahan alam.</p>
-              </div>
+              </motion.div>
 
               {/* Card 2 */}
-              <div className={`info-card card-2 ${activeCard === 2 ? 'active' : ''}`}>
+              <motion.div 
+                className={`info-card card-2 ${activeCard === 2 ? 'active' : ''}`}
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 2.0 }}
+                viewport={{ once: false }}
+              >
                 <div className="info-card-number" data-number="2">2</div>
                 <h3>Manggala Ranch</h3>
                 <p>Air terjun eksotis yang tersembunyi di tengah hutan dengan keindahan alam yang memukau</p>
-              </div>
+              </motion.div>
 
               {/* Card 3 */}
-              <div className={`info-card card-3 ${activeCard === 3 ? 'active' : ''}`}>
+              <motion.div 
+                className={`info-card card-3 ${activeCard === 3 ? 'active' : ''}`}
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 2.1 }}
+                viewport={{ once: false }}
+              >
                 <div className="info-card-number" data-number="3">3</div>
                 <h3>Menara Teratai</h3>
                 <p>Danau tenang dengan suasana damai dan pemandangan asri yang menyejukkan hati</p>
-              </div>
+              </motion.div>
 
               {/* Card 4 */}
-              <div className={`info-card card-4 ${activeCard === 4 ? 'active' : ''}`}>
+              <motion.div 
+                className={`info-card card-4 ${activeCard === 4 ? 'active' : ''}`}
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 2.2 }}
+                viewport={{ once: false }}
+              >
                 <div className="info-card-number" data-number="4">4</div>
                 <h3>Cafe Serayu</h3>
                 <p>Pusat kota dengan berbagai destinasi wisata menarik dan kuliner khas yang wajib dicoba</p>
-              </div>
+              </motion.div>
 
               {/* Card 5 */}
-              <div className={`info-card card-5 ${activeCard === 5 ? 'active' : ''}`}>
+              <motion.div 
+                className={`info-card card-5 ${activeCard === 5 ? 'active' : ''}`}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 2.3 }}
+                viewport={{ once: false }}
+              >
                 <div className="info-card-number" data-number="5">5</div>
                 <h3>Kota Tua</h3>
                 <p>Kota kecil dengan wisata alam yang mempesona dan udara sejuk pegunungan</p>
-              </div>
+              </motion.div>
             </div>
           </div>
 
         </div>
 
         {/* DESCRIPTION SECTION - Keluar dari map-container-wrapper agar bisa mepet kanan */}
-        <div className="description-container">
+        <motion.div 
+          className="description-container"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          viewport={{ once: false }}
+        >
           <div className="description-divider"></div>
           <h2 className="description-title">Kunjungi Setiap Destinasi di Banyumas</h2>
           <p className="description-text">
             Mulai dari kesejukan pegunungan Baturraden, kejerniham air terjun alami, hingga keunikan tradisi dan kuliner lokal yang menggugah selera. Tak hanya keindahan alamnya, keramahan masyarakat dan kekayaan budaya yang masih terjaga menjadikan Banyumas tempat yang istimewa untuk dijelajahi. Baik untuk liburan keluarga, petualangan alam, maupun wisata sejarah, Banyumas selalu punya cerita menarik di setiap perjalanannya.
           </p>
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
 
       {/* WISATA SECTIONS - AYANA STYLE WITH NEW LAYOUT */}
-      <div className="ayana-wisata-wrapper">
+      <div className="ayana-wisata-wrapper" ref={wisataWrapperRef}>
         {/* Dots Navigation - Fixed Right */}
-        {isClient && wisataData && wisataData.length > 0 && (
-          <div className="ayana-dots-nav">
-            {wisataData.map((_, dotIdx) => (
-              <button
-                key={dotIdx}
-                className={`ayana-dot ${
-                  currentSection === dotIdx ? "active" : ""
-                }`}
-                onClick={() => {
-                  sectionsRef.current[dotIdx]?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                  });
-                }}
-                aria-label={`Go to section ${dotIdx + 1}`}
-              />
-            ))}
-          </div>
-        )}
+        <AnimatePresence>
+          {isClient && wisataData && wisataData.length > 0 && showDots && (
+            <motion.div 
+              className="ayana-dots-nav"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              {wisataData.map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  className={`ayana-dot ${
+                    currentSection === dotIdx ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    sectionsRef.current[dotIdx]?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                  }}
+                  aria-label={`Go to section ${dotIdx + 1}`}
+                />
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {isClient &&
           wisataData &&
