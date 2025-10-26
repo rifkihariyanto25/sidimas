@@ -30,9 +30,7 @@
   font-size: 4.5rem;
   font-weight: 900;
   color: white;
-  text-shadow: 
-    3px 3px 0px rgba(0, 0, 0, 0.7),
-    6px 6px 15px rgba(0, 0, 0, 0.8),
+  text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.7), 6px 6px 15px rgba(0, 0, 0, 0.8),
     -1px -1px 0px rgba(255, 255, 255, 0.1);
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -44,9 +42,7 @@
 .hero-content p {
   font-size: 0.675rem !important;
   color: white;
-  text-shadow: 
-    2px 2px 6px rgba(0, 0, 0, 0.9),
-    3px 3px 10px rgba(0, 0, 0, 0.8);
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9), 3px 3px 10px rgba(0, 0, 0, 0.8);
   line-height: 1.4 !important;
   font-style: italic;
   font-weight: 250;
@@ -64,7 +60,7 @@
   .hero-slide h1 {
     font-size: 5.5rem;
   }
-  
+
   .hero-content p {
     font-size: 1rem !important;
   }
@@ -77,9 +73,7 @@
 }
 
 .text-shadow-lg {
-  text-shadow: 
-    2px 2px 8px rgba(0, 0, 0, 0.9),
-    4px 4px 12px rgba(0, 0, 0, 0.8);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9), 4px 4px 12px rgba(0, 0, 0, 0.8);
 }
 
 /* Eksplor Section */
@@ -88,7 +82,7 @@
 }
 
 .divider-custom {
-  background: linear-gradient(90deg, transparent, #8B7355, transparent);
+  background: linear-gradient(90deg, transparent, #8b7355, transparent);
 }
 
 /* Map Section Styles */
@@ -120,7 +114,7 @@
 }
 
 .map-header .highlight {
-  color: #8B7355;
+  color: #8b7355;
 }
 
 .map-header h2 {
@@ -133,7 +127,7 @@
 .map-divider {
   width: 200px;
   height: 3px;
-  background: linear-gradient(90deg, transparent, #8B7355, transparent);
+  background: linear-gradient(90deg, transparent, #8b7355, transparent);
   margin: 20px auto;
 }
 
@@ -157,7 +151,7 @@
 .map-section {
   position: relative;
   width: 100%;
-  max-width: 1200px; 
+  max-width: 1200px;
   margin: 0 auto;
   padding: 60px 250px 20px 250px; /* Top, Right, Bottom, Left - ruang untuk cards */
   min-height: 0; /* Tidak ada min height */
@@ -182,18 +176,18 @@
   transform: translate(-50%, -50%);
   width: 15px;
   height: 15px;
-  background: #0066CC;
+  background: #0066cc;
   border: 2px solid white;
   border-radius: 50%;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .map-marker {
   position: absolute;
   width: 30px;
   height: 30px;
-  background: #FFD700;
-  border: 3px solid #FFA500;
+  background: #ffd700;
+  border: 3px solid #ffa500;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -209,20 +203,44 @@
   transform: scale(1.2);
 }
 
-.marker-1 { top: 13%; right: 40%; }
-.marker-2 { top: 35%; left: 30%; }
-.marker-3 { top: 40%; left: 45%; }
-.marker-4 { top: 62%; right: 43%; }
-.marker-5 { bottom: 30%; left: 70%; }
+.marker-1 {
+  top: 13%;
+  right: 40%;
+}
+.marker-2 {
+  top: 35%;
+  left: 30%;
+}
+.marker-3 {
+  top: 40%;
+  left: 45%;
+}
+.marker-4 {
+  top: 62%;
+  right: 43%;
+}
+.marker-5 {
+  bottom: 30%;
+  left: 70%;
+}
 
 .wave-decoration {
   position: absolute;
   opacity: 0.1;
 }
 
-.wave-left { left: 0; top: 30%; }
-.wave-right { right: 0; top: 40%; }
-.wave-bottom { bottom: 10%; left: 20%; }
+.wave-left {
+  left: 0;
+  top: 30%;
+}
+.wave-right {
+  right: 0;
+  top: 40%;
+}
+.wave-bottom {
+  bottom: 10%;
+  left: 20%;
+}
 
 /* Desktop Cards - Proper positioning */
 .desktop-cards {
@@ -233,20 +251,20 @@
 
 .info-card {
   position: absolute;
-  background: linear-gradient(135deg, #C5D86D 0%, #B8CC52 100%);
+  background: linear-gradient(135deg, #c5d86d 0%, #b8cc52 100%);
   border-radius: 15px;
   width: 400px;
   padding: 55px 15px 20px 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   max-width: 220px;
-  border: 8px solid #A8B96E; /* Border luar lebih tebal */
+  border: 8px solid #a8b96e; /* Border luar lebih tebal */
   z-index: 20;
   min-height: 180px;
 }
 
 /* Border dalam untuk styling dekoratif */
 .info-card::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 8px;
   left: 8px;
@@ -266,7 +284,7 @@
   left: 50%;
   transform: translateX(-50%);
   border: 4px solid white;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -277,28 +295,28 @@
 
 /* Background images per nomor card */
 .card-1 .info-card-number {
-  background-image: url('/pemandangan.png');
+  background-image: url("/pemandangan.png");
 }
 
 .card-2 .info-card-number {
-  background-image: url('/manggala_ranch.jpg');
+  background-image: url("/manggala_ranch.jpg");
 }
 
 .card-3 .info-card-number {
-  background-image: url('/IMG3.png');
+  background-image: url("/IMG3.png");
 }
 
 .card-4 .info-card-number {
-  background-image: url('/IMG_5702 2.png');
+  background-image: url("/IMG_5702 2.png");
 }
 
 .card-5 .info-card-number {
-  background-image: url('/IMG_6806 1.png');
+  background-image: url("/IMG_6806 1.png");
 }
 
 /* Overlay untuk tetap keliatan nomor */
 .info-card-number::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -333,30 +351,29 @@
 }
 
 /* Positioning cards - EXACT layout dari foto */
-.card-1 { 
-  top: -520px; 
+.card-1 {
+  top: -520px;
   left: -230px; /* Lebih deket ke peta */
-
 }
 
-.card-2 { 
-  top: -450px; 
+.card-2 {
+  top: -450px;
   left: -230px; /* Posisi bawah kiri */
 }
 
-.card-3 { 
-  top: -1120px; 
+.card-3 {
+  top: -1120px;
   right: -710px; /* Kanan atas */
 }
 
-.card-4 { 
-  top: -1070px; 
+.card-4 {
+  top: -1070px;
   right: -710px; /* Kanan bawah */
 }
 
-.card-5 { 
-  top: -1050px; 
-  left: 260px; 
+.card-5 {
+  top: -1050px;
+  left: 260px;
   /* transform: translateX(-50%);  */
 }
 
@@ -364,7 +381,7 @@
 .info-card.active {
   background: linear-gradient(135deg, #4a5d23 0%, #3d4d1c 100%) !important;
   transform: scale(1.05);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.3) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3) !important;
   transition: all 0.3s ease;
 }
 
@@ -381,7 +398,7 @@
 
 .map-marker:hover {
   transform: scale(1.3) !important;
-  background: #FFA500;
+  background: #ffa500;
 }
 
 /* .mobile-card {
@@ -468,14 +485,14 @@
     transform: none !important;
     margin: 0 auto !important;
   }
-  
+
   .desktop-cards .info-card {
     position: static !important;
     margin: 20px auto !important;
     transform: none !important;
     max-width: 100%;
   }
-  
+
   .info-card-number {
     position: absolute;
     top: 15px;
@@ -502,7 +519,7 @@
   .map-section-title {
     font-size: 1.5em;
   }
-  
+
   /* Mobile: Stack cards vertically */
   .info-cards-container {
     position: static !important;
@@ -562,7 +579,7 @@
   }
 
   .info-card::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 12px;
     left: 12px;
@@ -582,7 +599,7 @@
     height: 60px !important;
     border-radius: 50% !important;
     border: 4px solid white !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
     background-size: cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -594,27 +611,27 @@
   /* Ensure background images work on mobile */
   .card-1 .info-card-number,
   .info-card:nth-child(1) .info-card-number {
-    background-image: url('/pemandangan.png') !important;
+    background-image: url("/pemandangan.png") !important;
   }
 
   .card-2 .info-card-number,
   .info-card:nth-child(2) .info-card-number {
-    background-image: url('/manggala_ranch.jpg') !important;
+    background-image: url("/manggala_ranch.jpg") !important;
   }
 
   .card-3 .info-card-number,
   .info-card:nth-child(3) .info-card-number {
-    background-image: url('/IMG3.png') !important;
+    background-image: url("/IMG3.png") !important;
   }
 
   .card-4 .info-card-number,
   .info-card:nth-child(4) .info-card-number {
-    background-image: url('/IMG_5702 2.png') !important;
+    background-image: url("/IMG_5702 2.png") !important;
   }
 
   .card-5 .info-card-number,
   .info-card:nth-child(5) .info-card-number {
-    background-image: url('/IMG_6806 1.png') !important;
+    background-image: url("/IMG_6806 1.png") !important;
   }
 
   .info-card h3 {
@@ -713,7 +730,7 @@
 }
 
 .pin-marker::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -725,7 +742,8 @@
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -734,7 +752,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -768,8 +787,7 @@
   margin-top: -1020px;
   margin-left: auto;
   margin-right: 0;
-  text-align: center
-  ;
+  text-align: center;
   padding: 0 30px 0 0;
 }
 
@@ -777,7 +795,7 @@
   width: 800px;
   height: 3px;
   align-items: center;
-  background: linear-gradient(90deg, transparent, #8B7355, transparent);
+  background: linear-gradient(90deg, transparent, #8b7355, transparent);
   margin: 0 0 20px 0;
 }
 
@@ -802,11 +820,11 @@
     margin: 40px auto 0;
     padding: 0 20px;
   }
-  
+
   .description-title {
     font-size: 1.4em;
   }
-  
+
   .description-text {
     font-size: 0.9em;
     padding: 0 10px;
@@ -815,7 +833,7 @@
 
 /* Slider Section */
 .slider-section {
-  background: #FFFEF0;
+  background: #fffef0;
   padding: 80px 20px;
   position: relative;
 }
@@ -844,7 +862,7 @@
 }
 
 .slide-header .highlight-text {
-  color: #8B7355;
+  color: #8b7355;
 }
 
 .slide-header h3 {
@@ -911,7 +929,7 @@
 
 /* Thumbnail yang aktif */
 .thumbnail-item.active {
-  border-color: #8B7355;
+  border-color: #8b7355;
   box-shadow: 0 4px 15px rgba(139, 115, 85, 0.4);
 }
 
@@ -926,7 +944,7 @@
 }
 
 .thumbnails-container::-webkit-scrollbar-thumb {
-  background: #8B7355;
+  background: #8b7355;
   border-radius: 10px;
 }
 
@@ -939,31 +957,31 @@
     flex-direction: column;
     height: auto;
   }
-  
+
   .main-image-container {
     height: 300px;
   }
-  
+
   .thumbnails-container {
     flex-direction: row;
     height: 100px;
     overflow-x: auto;
     overflow-y: hidden;
   }
-  
+
   .thumbnail-item {
     min-width: 80px;
     height: 100%;
   }
-  
+
   .slide-number {
     font-size: 2.5em;
   }
-  
+
   .slide-header h2 {
     font-size: 1.8em;
   }
-  
+
   .slide-header h3 {
     font-size: 1.2em;
   }
@@ -989,33 +1007,33 @@
   .hero-wisata .hero-title {
     font-size: 4.5rem;
   }
-  
+
   .hero-wisata p {
     font-size: 1.125rem;
   }
-  
+
   .info-card {
     margin-bottom: 1rem;
   }
-  
+
   .wisata-section-new {
     padding: 60px 40px;
   }
-  
+
   .wisata-container {
     padding: 0 20px;
   }
-  
+
   .content-diamond-image {
     width: 200px;
   }
-  
+
   .map-header h1,
   .map-header h2 {
     margin-left: 0;
     text-align: center;
   }
-  
+
   .map-intro-text {
     margin-left: 0;
     text-align: center;
@@ -1046,20 +1064,20 @@
     height: 100vh;
     padding: 0 20px;
   }
-  
+
   .hero-wisata .hero-title {
     font-size: 2.5rem !important;
   }
-  
+
   .hero-wisata p,
   .hero-content p {
     font-size: 0.85rem !important;
   }
-  
+
   .map-container {
     margin: 2rem 0;
   }
-  
+
   .info-card {
     padding: 1.25rem;
     position: static !important;
@@ -1067,7 +1085,7 @@
     max-width: 100% !important;
     width: 100% !important;
   }
-  
+
   .info-card h3 {
     font-size: 1.125rem;
   }
@@ -1086,56 +1104,56 @@
     transform: none !important;
     margin: 20px auto !important;
   }
-  
+
   .desktop-cards {
     display: block;
     height: auto;
   }
-  
+
   .wisata-section-new {
     padding: 40px 20px;
   }
-  
+
   .wisata-container {
     padding: 0 16px;
   }
-  
+
   .wisata-title {
     font-size: 1.75rem;
   }
-  
+
   .wisata-subtitle {
     font-size: 1.1rem;
   }
-  
+
   .wisata-content-section {
     flex-direction: column;
     gap: 30px;
   }
-  
+
   .content-description {
     padding-right: 0;
   }
-  
+
   .content-diamond-image {
     width: 180px;
     align-self: center;
   }
-  
+
   .wisata-slider-slide {
     height: 400px;
   }
-  
+
   .wisata-cta {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .wisata-cta .cta-button {
     width: 100%;
     justify-content: center;
   }
-  
+
   .map-container-wrapper {
     padding: 20px;
   }
@@ -1153,7 +1171,7 @@
   .map-section-title {
     font-size: 1.5em;
   }
-  
+
   .map-section {
     padding: 20px;
   }
@@ -1168,33 +1186,33 @@
     padding: 0 !important;
     height: auto !important;
   }
-  
+
   .description-container {
     margin: 40px auto 0 !important;
     padding: 0 20px !important;
     max-width: 100% !important;
     text-align: center !important;
   }
-  
+
   .description-title {
     font-size: 1.4em;
   }
-  
+
   .description-text {
     font-size: 0.9em;
     padding: 0 10px;
     text-align: center;
   }
-  
+
   .description-divider {
     width: 100% !important;
     margin: 0 auto 20px auto !important;
   }
-  
+
   .ayana-dots-nav {
     display: none;
   }
-  
+
   .dashed-line-decoration-horizontal,
   .dashed-line-decoration-vertical {
     display: none;
@@ -1205,43 +1223,43 @@
   .hero-wisata {
     height: 100vh;
   }
-  
+
   .hero-wisata .hero-title {
     font-size: 2rem !important;
   }
-  
+
   .hero-wisata p {
     font-size: 0.8rem !important;
   }
-  
+
   .wisata-title {
     font-size: 1.5rem;
   }
-  
+
   .wisata-subtitle {
     font-size: 1rem;
   }
-  
+
   .wisata-number {
     font-size: 1rem;
   }
-  
+
   .wisata-slider-slide {
     height: 300px;
   }
-  
+
   .content-description p {
     font-size: 0.95rem;
   }
-  
+
   .wisata-cta .cta-title {
     font-size: 1.25rem;
   }
-  
+
   .map-header h1 {
     font-size: 1.5em;
   }
-  
+
   .map-header h2 {
     font-size: 1em;
   }
@@ -1351,7 +1369,13 @@
   right: 0;
   width: 50%;
   height: 2px;
-  background-image: repeating-linear-gradient(to right, #333 0, #333 10px, transparent 10px, transparent 20px);
+  background-image: repeating-linear-gradient(
+    to right,
+    #333 0,
+    #333 10px,
+    transparent 10px,
+    transparent 20px
+  );
   opacity: 0.3;
 }
 
@@ -1361,7 +1385,13 @@
   top: -570px;
   bottom: 100px;
   width: 2px;
-  background-image: repeating-linear-gradient(to bottom, #333 0, #333 10px, transparent 10px, transparent 20px);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #333 0,
+    #333 10px,
+    transparent 10px,
+    transparent 20px
+  );
   opacity: 0.3;
 }
 
@@ -1641,7 +1671,7 @@
   .ayana-dots-nav {
     display: none;
   }
-  
+
   .wisata-slider-slide {
     height: 400px;
     width: 95vw;
@@ -1707,36 +1737,36 @@
   .wisata-subtitle {
     font-size: 1.1rem;
   }
-  
+
   .slider-frame {
     flex-direction: column;
     height: auto;
   }
-  
+
   .main-image-container {
     height: 300px;
   }
-  
+
   .thumbnails-container {
     flex-direction: row;
     height: 100px;
     overflow-x: auto;
     overflow-y: hidden;
   }
-  
+
   .thumbnail-item {
     min-width: 80px;
     height: 100%;
   }
-  
+
   .slide-number {
     font-size: 2.5em;
   }
-  
+
   .slide-header h2 {
     font-size: 1.8em;
   }
-  
+
   .slide-header h3 {
     font-size: 1.2em;
   }
@@ -1747,12 +1777,12 @@
     right: 16px;
     gap: 12px;
   }
-  
+
   .ayana-dot {
     width: 10px;
     height: 10px;
   }
-  
+
   .wisata-slider-slide {
     height: 500px;
     width: 90vw;
@@ -1786,14 +1816,14 @@
   .content-description p {
     font-size: 1rem;
   }
-  
+
   .info-card {
     position: static !important;
     margin: 20px auto !important;
     transform: none !important;
     max-width: 100%;
   }
-  
+
   .desktop-cards {
     display: block;
     height: auto;
@@ -1837,7 +1867,7 @@
   .wisata-cta .cta-title {
     font-size: 1.25rem;
   }
-  
+
   .wisata-cta .cta-image {
     width: 100px;
     height: 100px;
@@ -1849,27 +1879,27 @@
     height: 280px;
     width: 100vw;
   }
-  
+
   .wisata-section-new {
     padding: 30px 12px;
   }
-  
+
   .wisata-container {
     padding: 0 12px;
   }
-  
+
   .wisata-title {
     font-size: 1.35rem;
   }
-  
+
   .wisata-subtitle {
     font-size: 0.95rem;
   }
-  
+
   .content-diamond-image {
     width: 140px;
   }
-  
+
   .wisata-cta .cta-image {
     width: 90px;
     height: 90px;

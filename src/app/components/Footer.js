@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -34,23 +34,39 @@ export default function Footer() {
           <div className="footer-col">
             <h3>Sidimas</h3>
             <p>
-              SIDIMAS hadir sebagai solusi inovatif untuk menjawab kebutuhan masyarakat Banyumas akan layanan informasi yang praktis, mudah diakses, dan mendukung terwujudnya informasi berbasis digital.
+              SIDIMAS hadir sebagai solusi inovatif untuk menjawab kebutuhan
+              masyarakat Banyumas akan layanan informasi yang praktis, mudah
+              diakses, dan mendukung terwujudnya informasi berbasis digital.
             </p>
-            <div className="social-icons">
-              <a href="#" aria-label="Facebook"><i className="fab fa-facebook-f"></i>F</a>
-              <a href="#" aria-label="Instagram"><i className="fab fa-instagram"></i>I</a>
-              <a href="#" aria-label="YouTube"><i className="fab fa-youtube"></i>Y</a>
-            </div>
+            {/* <div className="social-icons">
+              <a href="#" aria-label="Facebook">
+                <i className="fab fa-facebook-f"></i>F
+              </a>
+              <a href="#" aria-label="Instagram">
+                <i className="fab fa-instagram"></i>I
+              </a>
+              <a href="#" aria-label="YouTube">
+                <i className="fab fa-youtube"></i>Y
+              </a>
+            </div> */}
           </div>
 
           {/* Navigasi */}
           <div className="footer-col">
             <h3>Navigasi</h3>
             <ul>
-              <li><a href="/">Beranda</a></li>
-              <li><a href="/wisata">Wisata</a></li>
-              <li><a href="/kuliner">Kuliner</a></li>
-              <li><a href="/budaya">Budaya</a></li>
+              <li>
+                <a href="/">Beranda</a>
+              </li>
+              <li>
+                <a href="/wisata">Wisata</a>
+              </li>
+              <li>
+                <a href="/kuliner">Kuliner</a>
+              </li>
+              <li>
+                <a href="/budaya">Budaya</a>
+              </li>
             </ul>
           </div>
 
@@ -59,10 +75,10 @@ export default function Footer() {
             <h3>Hubungi Kami</h3>
             <ul>
               <li>
-                <span>📍</span> Jl. Bojong Lengkong, Kabupaten Tegal, Jawa Tengah
+                <span>📍</span> Jl. DI Panjaitan No.128
               </li>
               <li>
-                <span>📞</span> +6285222555212
+                <span>📞</span> +62 851-5511-2781
               </li>
             </ul>
           </div>
@@ -71,8 +87,8 @@ export default function Footer() {
 
       {/* Footer Bottom */}
       <div className="footer-bottom">
-        <p>© 2025 Azkal Jaya Las. All Rights Reserved.</p>
+        <p>© 2025 Sidimas. All Rights Reserved.</p>
       </div>
     </footer>
-  )
+  );
 }
