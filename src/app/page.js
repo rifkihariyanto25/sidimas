@@ -236,7 +236,7 @@ export default function Home() {
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: false, margin: "-100px" }}
       >
         {/* Background wayang/gamelan kiri kanan */}
         <motion.div
@@ -244,7 +244,7 @@ export default function Home() {
           initial={{ x: -100, opacity: 0 }}
           whileInView={{ x: 0, opacity: 0.4 }}
           transition={{ duration: 1, delay: 0.3 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
         >
           <img src="/ayang.png" alt="Gamelan Kiri" />
         </motion.div>
@@ -254,7 +254,7 @@ export default function Home() {
           initial={{ x: 100, opacity: 0 }}
           whileInView={{ x: 0, opacity: 0.4 }}
           transition={{ duration: 1, delay: 0.3 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
         >
           <img src="/ayang.png" alt="Gamelan Kanan" />
         </motion.div>
@@ -264,7 +264,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
         >
           Alasan
         </motion.h2>
@@ -280,7 +280,7 @@ export default function Home() {
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
           >
             <span className="timeline-dot"></span>
             <div className="timeline-content">
@@ -301,7 +301,7 @@ export default function Home() {
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
           >
             <span className="timeline-dot"></span>
             <div className="timeline-img-side">
@@ -324,7 +324,7 @@ export default function Home() {
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: false, margin: "-100px" }}
       >
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -332,7 +332,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
           >
             <h2 className="text-3xl font-bold mb-2">
               Beragam Khas <span className="text-lime-600">Banyumas</span>
@@ -343,63 +343,89 @@ export default function Home() {
             </p>
           </motion.div>
 
-          {/* Tab Navigation */}
-          <div className="tab-buttons">
-            <button className="px-6 py-2 bg-lime-600 text-white rounded-full font-medium">
-              Semua
-            </button>
-            <button className="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-lime-50">
-              Wisata
-            </button>
-            <button className="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-lime-50">
-              Kuliner
-            </button>
-            <button className="px-6 py-2 bg-white text-gray-700 rounded-full font-medium hover:bg-lime-50">
-              Budaya
-            </button>
-          </div>
+         
 
           {/* Grid Layout */}
           <div className="grid">
             {/* Gambar 1 - Large (2x2) */}
-            <div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: false, margin: "-50px" }}
+            >
               <span className="text-gray-600"></span>
-            </div>
+            </motion.div>
 
             {/* Gambar 2 - Normal */}
-            <div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: false, margin: "-50px" }}
+            >
               <span className="text-gray-600"></span>
-            </div>
+            </motion.div>
 
             {/* Gambar 3 - Normal */}
-            <div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              viewport={{ once: false, margin: "-50px" }}
+            >
               <span className="text-gray-600"></span>
-            </div>
+            </motion.div>
 
             {/* Gambar 4 - Normal */}
-            <div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              viewport={{ once: false, margin: "-50px" }}
+            >
               <span className="text-gray-600"></span>
-            </div>
+            </motion.div>
 
             {/* Gambar 5 - Normal */}
-            <div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              viewport={{ once: false, margin: "-50px" }}
+            >
               <span className="text-gray-600"></span>
-            </div>
+            </motion.div>
 
             {/* Gambar 6 - Wide (2x1) */}
-            <div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              viewport={{ once: false, margin: "-50px" }}
+            >
               <span className="text-gray-600"></span>
-            </div>
+            </motion.div>
 
             {/* Gambar 7 - Normal */}
-            <div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.7 }}
+              viewport={{ once: false, margin: "-50px" }}
+            >
               <span className="text-gray-600"></span>
-            </div>
+            </motion.div>
 
             {/* Gambar 8 - Extra Large (2x2) */}
-            <div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+              viewport={{ once: false, margin: "-50px" }}
+            >
               <span className="text-gray-600"></span>
-            </div>
+            </motion.div>
           </div>
         </div>
       </motion.section>
