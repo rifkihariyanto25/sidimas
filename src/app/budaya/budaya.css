@@ -4389,6 +4389,25 @@ html {
   .map-section-title {
     font-size: 1.8rem;
   }
+  
+  .description-container {
+    margin-top: -800px !important;
+    padding: 0 40px !important;
+    max-width: 700px !important;
+  }
+  
+  .description-divider {
+    width: 700px;
+  }
+  
+  .description-title {
+    font-size: 1.6rem;
+  }
+  
+  .description-text {
+    font-size: 0.9rem;
+    padding: 0 20px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -4543,17 +4562,25 @@ html {
   
   /* Description section responsive */
   .description-container {
-    padding: 2rem 1rem;
-    text-align: center;
+    margin: 40px auto 0 !important;
+    padding: 0 20px !important;
+    max-width: 100% !important;
+    text-align: center !important;
   }
   
   .description-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
   
   .description-text {
     font-size: 0.9rem;
-    padding: 0 1rem;
+    padding: 0 10px;
+    text-align: center;
+  }
+  
+  .description-divider {
+    width: 100% !important;
+    margin: 0 auto 20px auto !important;
   }
 }
 
@@ -4585,6 +4612,20 @@ html {
   .info-card p {
     font-size: 0.85rem;
   }
+  
+  .description-container {
+    margin: 30px auto 0 !important;
+    padding: 0 15px !important;
+  }
+  
+  .description-title {
+    font-size: 1.25rem;
+  }
+  
+  .description-text {
+    font-size: 0.85rem;
+    padding: 0 5px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -4604,5 +4645,24 @@ html {
     width: 30px;
     height: 30px;
     font-size: 0.8rem;
+  }
+  
+  .description-container {
+    margin: 20px auto 0 !important;
+    padding: 0 10px !important;
+  }
+  
+  .description-title {
+    font-size: 1.1rem;
+  }
+  
+  .description-text {
+    font-size: 0.8rem;
+    padding: 0;
+  }
+  
+  .description-divider {
+    width: 90% !important;
+    margin: 0 auto 15px auto !important;
   }
 }

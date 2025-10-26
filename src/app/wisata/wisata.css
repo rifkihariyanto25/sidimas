@@ -1020,6 +1020,25 @@
     margin-left: 0;
     text-align: center;
   }
+  
+  .description-container {
+    margin-top: -800px !important;
+    padding: 0 40px !important;
+    max-width: 700px !important;
+  }
+  
+  .description-divider {
+    width: 700px;
+  }
+  
+  .description-title {
+    font-size: 1.6em;
+  }
+  
+  .description-text {
+    font-size: 0.9em;
+    padding: 0 20px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1151,8 +1170,10 @@
   }
   
   .description-container {
-    margin: 40px auto 0;
-    padding: 0 20px;
+    margin: 40px auto 0 !important;
+    padding: 0 20px !important;
+    max-width: 100% !important;
+    text-align: center !important;
   }
   
   .description-title {
@@ -1162,10 +1183,12 @@
   .description-text {
     font-size: 0.9em;
     padding: 0 10px;
+    text-align: center;
   }
   
   .description-divider {
-    width: 100%;
+    width: 100% !important;
+    margin: 0 auto 20px auto !important;
   }
   
   .ayana-dots-nav {
@@ -1221,6 +1244,41 @@
   
   .map-header h2 {
     font-size: 1em;
+  }
+  
+  .description-container {
+    margin: 30px auto 0 !important;
+    padding: 0 15px !important;
+  }
+  
+  .description-title {
+    font-size: 1.25em;
+  }
+  
+  .description-text {
+    font-size: 0.85em;
+    padding: 0 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .description-container {
+    margin: 20px auto 0 !important;
+    padding: 0 10px !important;
+  }
+  
+  .description-title {
+    font-size: 1.1em;
+  }
+  
+  .description-text {
+    font-size: 0.8em;
+    padding: 0;
+  }
+  
+  .description-divider {
+    width: 90% !important;
+    margin: 0 auto 15px auto !important;
   }
 }
 /* ======================================
