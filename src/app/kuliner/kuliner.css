@@ -789,3 +789,529 @@
     font-size: 0.95rem;
   }
 }
+
+/* ======================================
+   NEW KULINER LAYOUT - BASED ON BUDAYA DESIGN
+   Background: #FBFFE6
+   ====================================== */
+
+/* Wrapper for all kuliner sections */
+.ayana-kuliner-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Individual Kuliner Section */
+.kuliner-section-new {
+  background-color: #fbffe6;
+  padding: 80px 60px;
+  margin-bottom: 0;
+  position: relative;
+}
+
+.kuliner-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* Header Section */
+.kuliner-header {
+  margin-bottom: 40px;
+}
+
+.kuliner-number {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.kuliner-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.kuliner-title-highlight {
+  color: #7a8450; /* Olive green matching design */
+}
+
+.kuliner-subtitle {
+  font-size: 1.5rem;
+  color: #000;
+  font-weight: 400;
+}
+
+/* ======================================
+   CONTENT SECTION (Diamond + Description)
+   ====================================== */
+
+.kuliner-content-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+  margin: 60px 0;
+  position: relative;
+}
+
+/* Dashed Line Decoration - Horizontal (Garis Putus-putus Atas) */
+.dashed-line-decoration-horizontal {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  width: 50%;
+  height: 2px;
+  background-image: repeating-linear-gradient(
+    to right,
+    #333 0,
+    #333 10px,
+    transparent 10px,
+    transparent 20px
+  );
+  opacity: 0.3;
+}
+
+/* Dashed Line Decoration - Vertical (Garis Putus-putus Kiri) */
+.dashed-line-decoration-vertical {
+  position: absolute;
+  left: -40px;
+  top: -570px;
+  bottom: 100px;
+  width: 2px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #333 0,
+    #333 10px,
+    transparent 10px,
+    transparent 20px
+  );
+  opacity: 0.3;
+}
+
+/* Description Text (Sebelah Kiri) */
+.content-description {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  padding-right: 40px;
+}
+
+.content-description p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #2c2c2c;
+  text-align: left;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Diamond Image Container (Kanan Bawah) */
+.content-diamond-image {
+  flex-shrink: 0;
+  width: 180px;
+  align-self: flex-end;
+}
+
+.content-diamond-image .diamond-shape {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 1;
+  transform: rotate(45deg);
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s ease;
+}
+
+.content-diamond-image .diamond-shape img {
+  width: 141.42%; /* √2 to cover rotated square */
+  height: 141.42%;
+  object-fit: cover;
+  transform: rotate(-45deg) scale(1.42);
+  transform-origin: center;
+}
+
+/* ======================================
+   AYANA-STYLE SLIDER
+   ====================================== */
+
+.kuliner-slider-wrapper {
+  width: 100%;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.kuliner-slider-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  position: relative;
+  user-select: none;
+}
+
+.kuliner-slider-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.kuliner-slider-track {
+  display: flex;
+  gap: 2px; /* White border between slides */
+  width: fit-content;
+}
+
+.kuliner-slider-slide {
+  flex-shrink: 0;
+  width: 100vw;
+  max-width: 1400px;
+  height: 600px;
+  position: relative;
+  overflow: hidden;
+  background-color: #000;
+}
+
+.kuliner-slider-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+
+.kuliner-slider-slide.active img {
+  transform: scale(1);
+}
+
+.kuliner-slider-slide:not(.active) img {
+  transform: scale(1.05);
+}
+
+/* Slider Dots */
+.kuliner-slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 0 20px;
+}
+
+.kuliner-slider-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #d0d0d0;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  position: relative;
+}
+
+.kuliner-slider-dot::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(122, 132, 80, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.kuliner-slider-dot:hover::before,
+.kuliner-slider-dot.active::before {
+  opacity: 1;
+}
+
+.kuliner-slider-dot.active {
+  background-color: #7a8450;
+  transform: scale(1.3);
+}
+
+.kuliner-slider-dot:hover {
+  background-color: #7a8450;
+  transform: scale(1.15);
+}
+
+/* Custom Cursor for Slider (Ayana-style arrows) */
+.kuliner-slider-cursor {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+.kuliner-slider-container:hover .kuliner-slider-cursor {
+  opacity: 0.6;
+}
+
+.kuliner-slider-cursor svg {
+  width: 100%;
+  height: 100%;
+  fill: white;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* CTA Section */
+.kuliner-cta {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 32px 0;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.kuliner-cta .cta-image {
+  flex-shrink: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.kuliner-cta .cta-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.kuliner-cta .cta-content {
+  flex: 1;
+}
+
+.kuliner-cta .cta-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.kuliner-cta .cta-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555;
+}
+
+.kuliner-cta .cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 28px;
+  background-color: #7a8450;
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.kuliner-cta .cta-button:hover {
+  background-color: #6a7440;
+  transform: translateX(5px);
+}
+
+.kuliner-cta .cta-icon {
+  font-size: 1.2rem;
+}
+
+/* Dots Navigation - Fixed Right Side */
+.ayana-dots-nav {
+  position: fixed;
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ayana-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #d0d0d0;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.ayana-dot.active {
+  background-color: #7a8450;
+  transform: scale(1.4);
+}
+
+.ayana-dot:hover {
+  background-color: #7a8450;
+  transform: scale(1.2);
+}
+
+/* Bottom Divider */
+.kuliner-divider {
+  height: 2px;
+  background-color: #e0e0e0;
+  margin-top: 40px;
+}
+
+/* Responsive Design for New Layout */
+@media (max-width: 1024px) {
+  .kuliner-slider-slide {
+    height: 500px;
+  }
+
+  .kuliner-section-new {
+    padding: 60px 80px;
+  }
+
+  .kuliner-container {
+    padding: 0 30px;
+    max-width: 1000px;
+  }
+
+  .kuliner-title {
+    font-size: 2rem;
+  }
+
+  .kuliner-subtitle {
+    font-size: 1.25rem;
+  }
+
+  .ayana-dots-nav {
+    right: 16px;
+  }
+
+  .kuliner-content-section {
+    gap: 40px;
+  }
+
+  .content-diamond-image {
+    width: 240px;
+  }
+
+  .content-description p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .kuliner-slider-slide {
+    height: 400px;
+  }
+
+  .kuliner-slider-cursor {
+    display: none;
+  }
+
+  .kuliner-section-new {
+    padding: 40px 40px;
+  }
+
+  .kuliner-container {
+    padding: 0 20px;
+  }
+
+  .kuliner-content-section {
+    flex-direction: column;
+    gap: 30px;
+    align-items: flex-start;
+  }
+
+  .content-description {
+    padding-right: 0;
+    width: 100%;
+  }
+
+  .content-diamond-image {
+    width: 220px;
+    align-self: flex-end;
+  }
+
+  .dashed-line-decoration-horizontal {
+    width: 60%;
+  }
+
+  .dashed-line-decoration-vertical {
+    left: -20px;
+  }
+
+  .content-description p {
+    font-size: 1rem;
+  }
+
+  .kuliner-cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .kuliner-cta .cta-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .kuliner-title {
+    font-size: 1.75rem;
+  }
+
+  .kuliner-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .ayana-dots-nav {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .kuliner-section-new {
+    padding: 40px 24px;
+  }
+
+  .kuliner-container {
+    padding: 0 16px;
+  }
+
+  .kuliner-number {
+    font-size: 1rem;
+  }
+
+  .kuliner-title {
+    font-size: 1.5rem;
+  }
+
+  .kuliner-subtitle {
+    font-size: 1rem;
+  }
+
+  .kuliner-slider-slide {
+    height: 300px;
+  }
+
+  .content-diamond-image {
+    width: 200px;
+  }
+
+  .content-description p {
+    font-size: 0.95rem;
+  }
+
+  .kuliner-cta .cta-title {
+    font-size: 1.25rem;
+  }
+}

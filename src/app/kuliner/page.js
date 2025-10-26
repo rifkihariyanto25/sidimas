@@ -2,18 +2,292 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import kulinerData from "./kulinerData";
 import "./kuliner.css";
 
+// Component for individual Kuliner Section with new layout
+function KulinerSection({ kuliner, index, currentSection, sectionsRef }) {
+  const sectionRef = useRef(null);
+  const diamondRef = useRef(null);
+  const sliderRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
+
+  // Slider state
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  // Auto-advance slider
+  useEffect(() => {
+    if (!kuliner.sliderImages || kuliner.sliderImages.length === 0) return;
+
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % kuliner.sliderImages.length);
+    }, 4000); // Change slide every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [kuliner.sliderImages]);
+
+  // Sync slider scroll with active slide
+  useEffect(() => {
+    if (!sliderRef.current) return;
+    const slideWidth = sliderRef.current.offsetWidth;
+    sliderRef.current.scrollTo({
+      left: activeSlide * slideWidth,
+      behavior: "smooth",
+    });
+  }, [activeSlide]);
+
+  // Mouse drag handlers
+  const handleMouseDown = (e) => {
+    if (!sliderRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - sliderRef.current.offsetLeft);
+    setScrollLeft(sliderRef.current.scrollLeft);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging || !sliderRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - sliderRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    sliderRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    // Snap to nearest slide
+    if (!sliderRef.current) return;
+    const slideWidth = sliderRef.current.offsetWidth;
+    const newIndex = Math.round(sliderRef.current.scrollLeft / slideWidth);
+    setActiveSlide(newIndex);
+  };
+
+  return (
+    <motion.section
+      ref={(el) => {
+        sectionsRef.current[index] = el;
+        sectionRef.current = el;
+      }}
+      className="kuliner-section-new"
+      initial={{ opacity: 0 }}
+      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      <div className="kuliner-container">
+        {/* Header: Number + Title */}
+        <motion.div
+          className="kuliner-header"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <h3 className="kuliner-number">#{kuliner.number}</h3>
+          <h2 className="kuliner-title">
+            Eksplor{" "}
+            <span className="kuliner-title-highlight">{kuliner.title}</span>:
+          </h2>
+          <p className="kuliner-subtitle">{kuliner.subtitle}</p>
+        </motion.div>
+
+        {/* Ayana-Style Image Slider */}
+        {kuliner.sliderImages && kuliner.sliderImages.length > 0 && (
+          <motion.div
+            className="kuliner-slider-wrapper"
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <div
+              className="kuliner-slider-container"
+              ref={sliderRef}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              style={{ cursor: isDragging ? "grabbing" : "grab" }}
+            >
+              <div className="kuliner-slider-track">
+                {kuliner.sliderImages.map((img, imgIdx) => (
+                  <div
+                    key={imgIdx}
+                    className={`kuliner-slider-slide ${
+                      activeSlide === imgIdx ? "active" : ""
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${kuliner.title} slider ${imgIdx + 1}`}
+                      draggable="false"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Slider Dots */}
+            <div className="kuliner-slider-dots">
+              {kuliner.sliderImages.map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  className={`kuliner-slider-dot ${
+                    activeSlide === dotIdx ? "active" : ""
+                  }`}
+                  onClick={() => setActiveSlide(dotIdx)}
+                  aria-label={`Slide ${dotIdx + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Custom Cursor for Slider */}
+            <div className="kuliner-slider-cursor">
+              <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 0L64 31.0588V32.9412L0 3.76471L1 0Z"></path>
+                <path d="M1 64L64 32.9412V31.0588L0 60.2353L1 64Z"></path>
+              </svg>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Content Section: Diamond + Description */}
+        <motion.div
+          className="kuliner-content-section"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
+          {/* Dashed Line Decoration (Horizontal - atas) */}
+          <div className="dashed-line-decoration-horizontal"></div>
+
+          {/* Dashed Line Decoration (Vertical - kiri) */}
+          <div className="dashed-line-decoration-vertical"></div>
+
+          {/* Description Text (Kiri) */}
+          <motion.div
+            className="content-description"
+            initial={{ opacity: 0, x: -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <p>{kuliner.description}</p>
+          </motion.div>
+
+          {/* Diamond Shape Image (Kanan Bawah) */}
+          <motion.div
+            className="content-diamond-image"
+            ref={diamondRef}
+            whileHover={{ scale: 1.05, rotate: 2 }}
+            transition={{ duration: 0.4 }}
+          >
+            <div className="diamond-shape">
+              <img
+                src={kuliner.images.diamond}
+                alt={`${kuliner.title} diamond`}
+              />
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* CTA Section */}
+        <motion.div
+          className="kuliner-cta"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
+          {/* CTA Image */}
+          <motion.div
+            className="cta-image"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          >
+            <img src={kuliner.images.cta} alt={`${kuliner.title} CTA`} />
+          </motion.div>
+
+          {/* CTA Content */}
+          <div className="cta-content">
+            <h4 className="cta-title">{kuliner.ctaTitle}</h4>
+            <p className="cta-description">{kuliner.ctaDescription}</p>
+          </div>
+
+          {/* CTA Button */}
+          <motion.a
+            href={kuliner.link}
+            className="cta-button"
+            whileHover={{ scale: 1.05, x: 5 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <span className="cta-icon">◉</span>
+            <span>{kuliner.ctaButton}</span>
+          </motion.a>
+        </motion.div>
+
+        {/* Bottom Border Line */}
+        <div className="kuliner-divider"></div>
+      </div>
+    </motion.section>
+  );
+}
+
 export default function KulinerPage() {
+  const sectionsRef = useRef([]);
+  const [currentSection, setCurrentSection] = useState(0);
+  const [isClient, setIsClient] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleMarkerClick = (cardNumber) => {
     setActiveCard(cardNumber);
   };
+
+  // Ensure client-side rendering
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+
+    const handleScroll = () => {
+      try {
+        const windowHeight = window.innerHeight;
+        const scrollPosition = window.scrollY;
+        
+        // Find which section is currently most in view
+        let closestSection = 0;
+        let closestDistance = Infinity;
+
+        sectionsRef.current.forEach((section, index) => {
+          if (section) {
+            const rect = section.getBoundingClientRect();
+            const sectionCenter = rect.top + rect.height / 2;
+            const viewportCenter = windowHeight / 2;
+            const distance = Math.abs(sectionCenter - viewportCenter);
+
+            if (distance < closestDistance) {
+              closestDistance = distance;
+              closestSection = index;
+            }
+          }
+        });
+
+        setCurrentSection(closestSection);
+      } catch (error) {
+        console.error("Scroll handler error:", error);
+      }
+    };
+
+    // Initial check
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isClient]);
 
   // Data untuk slider kuliner - semua gambar dalam satu array
   const kulinerImages = [
@@ -53,148 +327,44 @@ export default function KulinerPage() {
         </section>
 
         {/* CONTAINER SECTION - Menggunakan CSS Classes */}
-        <section className="map-wrapper">
-          <div className="map-container-wrapper">
-            
-            {/* Header */}
-            <div className="map-header">
-              <h1>
-                Eksplor Berbagai Kuliner <span className="highlight">Banyumas</span>,
-              </h1>
-              <h2>Cita Rasa Tradisional yang Memanjakan</h2>
-            </div>
+        
 
-            {/* Divider */}
-            <div className="map-divider"></div>
 
-            {/* Intro Text */}
-            <div className="map-intro-text">
-              <p>Banyumas menyimpan kekayaan kuliner tradisional yang menggugah selera. Dari mendoan yang renyah hingga soto sokaraja yang legendaris, setiap hidangan menawarkan cita rasa autentik yang unik. Nikmati kelezatan kuliner khasnya, jelajahi warung-warung tradisional, dan temukan berbagai makanan menarik lainnya mulai dari camilan ringan, makanan berat, hingga minuman segar yang menyegarkan.</p>
-            </div>
-
-            {/* Section Title */}
-            <h2 className="map-section-title">Rekomendasi Kuliner</h2>
-
-            {/* Map Section */}
-            <div className="map-section">
-              
-              {/* Map Container */}
-              <div className="map-container" style={{ backgroundImage: "url('/peta.png')" }}>
-                
-                {/* Capital Marker */}
-                <div className="capital-marker" title="Banyumas Regency"></div>
-
-                {/* Map Markers */}
-                <div className="map-marker marker-1" onMouseEnter={() => handleMarkerClick(1)} onMouseLeave={() => setActiveCard(null)}>1</div>
-                <div className="map-marker marker-2" onMouseEnter={() => handleMarkerClick(2)} onMouseLeave={() => setActiveCard(null)}>2</div>
-                <div className="map-marker marker-3" onMouseEnter={() => handleMarkerClick(3)} onMouseLeave={() => setActiveCard(null)}>3</div>
-                <div className="map-marker marker-4" onMouseEnter={() => handleMarkerClick(4)} onMouseLeave={() => setActiveCard(null)}>4</div>
-                <div className="map-marker marker-5" onMouseEnter={() => handleMarkerClick(5)} onMouseLeave={() => setActiveCard(null)}>5</div>
-
-                {/* Wave decorations */}
-                <svg className="wave-decoration wave-left" width="60" height="30" viewBox="0 0 60 30">
-                  <path d="M0,15 Q15,5 30,15 T60,15" stroke="#fff" fill="none" strokeWidth="2"/>
-                </svg>
-                
-                <svg className="wave-decoration wave-right" width="60" height="30" viewBox="0 0 60 30">
-                  <path d="M0,15 Q15,5 30,15 T60,15" stroke="#fff" fill="none" strokeWidth="2"/>
-                </svg>
-                
-                <svg className="wave-decoration wave-bottom" width="60" height="30" viewBox="0 0 60 30">
-                  <path d="M0,15 Q15,5 30,15 T60,15" stroke="#fff" fill="none" strokeWidth="2"/>
-                </svg>
-              </div>
-
-              {/* Info Cards - Desktop Layout */}
-              <div className="hidden xl:block">
-                {/* Card 1 */}
-                <div className={`info-card card-1 ${activeCard === 1 ? 'active' : ''}`}>
-                  <div className="info-card-number" data-number="1">1</div>
-                  <h3>Mendoan</h3>
-                  <p>Tempe goreng tipis khas Banyumas yang renyah dan gurih dengan bumbu yang khas.</p>
-                </div>
-
-                {/* Card 2 */}
-                <div className={`info-card card-2 ${activeCard === 2 ? 'active' : ''}`}>
-                  <div className="info-card-number" data-number="2">2</div>
-                  <h3>Soto Sokaraja</h3>
-                  <p>Soto daging legendaris dengan kuah bening yang segar dan daging yang empuk</p>
-                </div>
-
-                {/* Card 3 */}
-                <div className={`info-card card-3 ${activeCard === 3 ? 'active' : ''}`}>
-                  <div className="info-card-number" data-number="3">3</div>
-                  <h3>Getuk Goreng</h3>
-                  <p>Camilan manis dari singkong yang digoreng dengan gula merah yang legit</p>
-                </div>
-
-                {/* Card 4 */}
-                <div className={`info-card card-4 ${activeCard === 4 ? 'active' : ''}`}>
-                  <div className="info-card-number" data-number="4">4</div>
-                  <h3>Nasi Penggel</h3>
-                  <p>Nasi komplit dengan lauk pauk tradisional yang kaya rasa dan mengenyangkan</p>
-                </div>
-
-                {/* Card 5 */}
-                <div className={`info-card card-5 ${activeCard === 5 ? 'active' : ''}`}>
-                  <div className="info-card-number" data-number="5">5</div>
-                  <h3>Dawet Ayu</h3>
-                  <p>Minuman segar tradisional dengan santan, gula merah, dan cendol yang manis</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          {/* DESCRIPTION SECTION */}
-          <div className="description-container">
-            <div className="description-divider"></div>
-            <h2 className="description-title">Nikmati Setiap Kelezatan Kuliner Banyumas</h2>
-            <p className="description-text">
-              Mulai dari mendoan yang renyah, soto sokaraja yang legendaris, hingga dawet ayu yang menyegarkan. Tak hanya kelezatannya, keunikan bumbu dan cara pengolahan tradisional yang masih terjaga menjadikan kuliner Banyumas cita rasa yang istimewa untuk dicoba. Baik untuk sarapan, makan siang, camilan sore, maupun pencuci mulut, Banyumas selalu punya hidangan lezat di setiap waktu.
-            </p>
-          </div>
-        </section>
-
-        {/* SLIDER SECTION */}
-        <section className="slider-section">
-          <div className="slider-container">
-            {/* Nomor dan Judul */}
-            <div className="slide-number">
-              #{String(currentImageIndex + 1).padStart(2, '0')}
-            </div>
-
-            <div className="slide-header">
-              <h2>Eksplor <span className="highlight-text">{kulinerImages[currentImageIndex].title}:</span></h2>
-              <h3>{kulinerImages[currentImageIndex].subtitle}</h3>
-            </div>
-
-            {/* Frame dengan Gambar Utama (80%) dan Thumbnails (20%) */}
-            <div className="slider-frame">
-              {/* Gambar Utama (80%) */}
-              <div className="main-image-container">
-                <img 
-                  src={kulinerImages[currentImageIndex].src} 
-                  alt={kulinerImages[currentImageIndex].title}
-                  className="main-slide-image"
+        {/* KULINER SECTIONS - AYANA STYLE WITH NEW LAYOUT */}
+        <div className="ayana-kuliner-wrapper">
+          {/* Dots Navigation - Fixed Right */}
+          {isClient && kulinerData && kulinerData.length > 0 && (
+            <div className="ayana-dots-nav">
+              {kulinerData.map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  className={`ayana-dot ${
+                    currentSection === dotIdx ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    sectionsRef.current[dotIdx]?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                  }}
+                  aria-label={`Go to section ${dotIdx + 1}`}
                 />
-              </div>
-
-              {/* Thumbnails Preview (20%) */}
-              <div className="thumbnails-container">
-                {kulinerImages.map((image, index) => (
-                  <div
-                    key={image.id}
-                    className={`thumbnail-item ${currentImageIndex === index ? 'active' : ''}`}
-                    onClick={() => handleImageClick(index)}
-                  >
-                    <img src={image.src} alt={image.title} />
-                  </div>
-                ))}
-              </div>
+              ))}
             </div>
-          </div>
-        </section>
+          )}
+
+          {isClient &&
+            kulinerData &&
+            kulinerData.map((kuliner, index) => (
+              <KulinerSection
+                key={kuliner.id}
+                kuliner={kuliner}
+                index={index}
+                currentSection={currentSection}
+                sectionsRef={sectionsRef}
+              />
+            ))}
+        </div>
       </main>
       <Footer />
     </>

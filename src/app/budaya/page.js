@@ -75,13 +75,14 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
     <motion.section
       ref={(el) => {
         sectionsRef.current[index] = el;
+        sectionRef.current = el;
       }}
       className="budaya-section-new"
       initial={{ opacity: 0 }}
       animate={isInView ? { opacity: 1 } : { opacity: 0 }}
       transition={{ duration: 0.8 }}
     >
-      <div className="budaya-container" ref={sectionRef}>
+      <div className="budaya-container">
         {/* Header: Number + Title */}
         <motion.div
           className="budaya-header"
@@ -256,24 +257,35 @@ export default function BudayaPage() {
 
     const handleScroll = () => {
       try {
-        const scrollPosition = window.scrollY;
         const windowHeight = window.innerHeight;
+        const scrollPosition = window.scrollY;
+        
+        // Find which section is currently most in view
+        let closestSection = 0;
+        let closestDistance = Infinity;
 
         sectionsRef.current.forEach((section, index) => {
           if (section) {
             const rect = section.getBoundingClientRect();
-            const sectionTop = rect.top;
-            const sectionMiddle = sectionTop + rect.height / 2;
+            const sectionCenter = rect.top + rect.height / 2;
+            const viewportCenter = windowHeight / 2;
+            const distance = Math.abs(sectionCenter - viewportCenter);
 
-            if (sectionMiddle >= 0 && sectionMiddle <= windowHeight) {
-              setCurrentSection(index);
+            if (distance < closestDistance) {
+              closestDistance = distance;
+              closestSection = index;
             }
           }
         });
+
+        setCurrentSection(closestSection);
       } catch (error) {
         console.error("Scroll handler error:", error);
       }
     };
+
+    // Initial check
+    handleScroll();
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);

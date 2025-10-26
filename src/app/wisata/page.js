@@ -2,18 +2,292 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import wisataData from "./wisataData";
 import "./wisata.css";
 
+// Component for individual Wisata Section with new layout
+function WisataSection({ wisata, index, currentSection, sectionsRef }) {
+  const sectionRef = useRef(null);
+  const diamondRef = useRef(null);
+  const sliderRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
+
+  // Slider state
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  // Auto-advance slider
+  useEffect(() => {
+    if (!wisata.sliderImages || wisata.sliderImages.length === 0) return;
+
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % wisata.sliderImages.length);
+    }, 4000); // Change slide every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [wisata.sliderImages]);
+
+  // Sync slider scroll with active slide
+  useEffect(() => {
+    if (!sliderRef.current) return;
+    const slideWidth = sliderRef.current.offsetWidth;
+    sliderRef.current.scrollTo({
+      left: activeSlide * slideWidth,
+      behavior: "smooth",
+    });
+  }, [activeSlide]);
+
+  // Mouse drag handlers
+  const handleMouseDown = (e) => {
+    if (!sliderRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - sliderRef.current.offsetLeft);
+    setScrollLeft(sliderRef.current.scrollLeft);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging || !sliderRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - sliderRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    sliderRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    // Snap to nearest slide
+    if (!sliderRef.current) return;
+    const slideWidth = sliderRef.current.offsetWidth;
+    const newIndex = Math.round(sliderRef.current.scrollLeft / slideWidth);
+    setActiveSlide(newIndex);
+  };
+
+  return (
+    <motion.section
+      ref={(el) => {
+        sectionsRef.current[index] = el;
+        sectionRef.current = el;
+      }}
+      className="wisata-section-new"
+      initial={{ opacity: 0 }}
+      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      <div className="wisata-container">
+        {/* Header: Number + Title */}
+        <motion.div
+          className="wisata-header"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <h3 className="wisata-number">#{wisata.number}</h3>
+          <h2 className="wisata-title">
+            Eksplor{" "}
+            <span className="wisata-title-highlight">{wisata.title}</span>:
+          </h2>
+          <p className="wisata-subtitle">{wisata.subtitle}</p>
+        </motion.div>
+
+        {/* Ayana-Style Image Slider */}
+        {wisata.sliderImages && wisata.sliderImages.length > 0 && (
+          <motion.div
+            className="wisata-slider-wrapper"
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <div
+              className="wisata-slider-container"
+              ref={sliderRef}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              style={{ cursor: isDragging ? "grabbing" : "grab" }}
+            >
+              <div className="wisata-slider-track">
+                {wisata.sliderImages.map((img, imgIdx) => (
+                  <div
+                    key={imgIdx}
+                    className={`wisata-slider-slide ${
+                      activeSlide === imgIdx ? "active" : ""
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${wisata.title} slider ${imgIdx + 1}`}
+                      draggable="false"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Slider Dots */}
+            <div className="wisata-slider-dots">
+              {wisata.sliderImages.map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  className={`wisata-slider-dot ${
+                    activeSlide === dotIdx ? "active" : ""
+                  }`}
+                  onClick={() => setActiveSlide(dotIdx)}
+                  aria-label={`Slide ${dotIdx + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Custom Cursor for Slider */}
+            <div className="wisata-slider-cursor">
+              <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 0L64 31.0588V32.9412L0 3.76471L1 0Z"></path>
+                <path d="M1 64L64 32.9412V31.0588L0 60.2353L1 64Z"></path>
+              </svg>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Content Section: Diamond + Description */}
+        <motion.div
+          className="wisata-content-section"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
+          {/* Dashed Line Decoration (Horizontal - atas) */}
+          <div className="dashed-line-decoration-horizontal"></div>
+
+          {/* Dashed Line Decoration (Vertical - kiri) */}
+          <div className="dashed-line-decoration-vertical"></div>
+
+          {/* Description Text (Kiri) */}
+          <motion.div
+            className="content-description"
+            initial={{ opacity: 0, x: -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <p>{wisata.description}</p>
+          </motion.div>
+
+          {/* Diamond Shape Image (Kanan Bawah) */}
+          <motion.div
+            className="content-diamond-image"
+            ref={diamondRef}
+            whileHover={{ scale: 1.05, rotate: 2 }}
+            transition={{ duration: 0.4 }}
+          >
+            <div className="diamond-shape">
+              <img
+                src={wisata.images.diamond}
+                alt={`${wisata.title} diamond`}
+              />
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* CTA Section */}
+        <motion.div
+          className="wisata-cta"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
+          {/* CTA Image */}
+          <motion.div
+            className="cta-image"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          >
+            <img src={wisata.images.cta} alt={`${wisata.title} CTA`} />
+          </motion.div>
+
+          {/* CTA Content */}
+          <div className="cta-content">
+            <h4 className="cta-title">{wisata.ctaTitle}</h4>
+            <p className="cta-description">{wisata.ctaDescription}</p>
+          </div>
+
+          {/* CTA Button */}
+          <motion.a
+            href={wisata.link}
+            className="cta-button"
+            whileHover={{ scale: 1.05, x: 5 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <span className="cta-icon">◉</span>
+            <span>{wisata.ctaButton}</span>
+          </motion.a>
+        </motion.div>
+
+        {/* Bottom Border Line */}
+        <div className="wisata-divider"></div>
+      </div>
+    </motion.section>
+  );
+}
+
 export default function WisataPage() {
+  const sectionsRef = useRef([]);
+  const [currentSection, setCurrentSection] = useState(0);
+  const [isClient, setIsClient] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleMarkerClick = (cardNumber) => {
     setActiveCard(cardNumber);
   };
+
+  // Ensure client-side rendering
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+
+    const handleScroll = () => {
+      try {
+        const windowHeight = window.innerHeight;
+        const scrollPosition = window.scrollY;
+        
+        // Find which section is currently most in view
+        let closestSection = 0;
+        let closestDistance = Infinity;
+
+        sectionsRef.current.forEach((section, index) => {
+          if (section) {
+            const rect = section.getBoundingClientRect();
+            const sectionCenter = rect.top + rect.height / 2;
+            const viewportCenter = windowHeight / 2;
+            const distance = Math.abs(sectionCenter - viewportCenter);
+
+            if (distance < closestDistance) {
+              closestDistance = distance;
+              closestSection = index;
+            }
+          }
+        });
+
+        setCurrentSection(closestSection);
+      } catch (error) {
+        console.error("Scroll handler error:", error);
+      }
+    };
+
+    // Initial check
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isClient]);
 
   // Data untuk slider wisata - semua gambar dalam satu array
   const wisataImages = [
@@ -156,45 +430,42 @@ export default function WisataPage() {
         </div>
       </section>
 
-      {/* SLIDER SECTION */}
-      <section className="slider-section">
-        <div className="slider-container">
-          {/* Nomor dan Judul */}
-          <div className="slide-number">
-            #{String(currentImageIndex + 1).padStart(2, '0')}
-          </div>
 
-          <div className="slide-header">
-            <h2>Eksplor <span className="highlight-text">{wisataImages[currentImageIndex].title}:</span></h2>
-            <h3>{wisataImages[currentImageIndex].subtitle}</h3>
-          </div>
-
-          {/* Frame dengan Gambar Utama (80%) dan Thumbnails (20%) */}
-          <div className="slider-frame">
-            {/* Gambar Utama (80%) */}
-            <div className="main-image-container">
-              <img 
-                src={wisataImages[currentImageIndex].src} 
-                alt={wisataImages[currentImageIndex].title}
-                className="main-slide-image"
+      {/* WISATA SECTIONS - AYANA STYLE WITH NEW LAYOUT */}
+      <div className="ayana-wisata-wrapper">
+        {/* Dots Navigation - Fixed Right */}
+        {isClient && wisataData && wisataData.length > 0 && (
+          <div className="ayana-dots-nav">
+            {wisataData.map((_, dotIdx) => (
+              <button
+                key={dotIdx}
+                className={`ayana-dot ${
+                  currentSection === dotIdx ? "active" : ""
+                }`}
+                onClick={() => {
+                  sectionsRef.current[dotIdx]?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+                }}
+                aria-label={`Go to section ${dotIdx + 1}`}
               />
-            </div>
-
-            {/* Thumbnails Preview (20%) */}
-            <div className="thumbnails-container">
-              {wisataImages.map((image, index) => (
-                <div
-                  key={image.id}
-                  className={`thumbnail-item ${currentImageIndex === index ? 'active' : ''}`}
-                  onClick={() => handleImageClick(index)}
-                >
-                  <img src={image.src} alt={image.title} />
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
-        </div>
-      </section>
+        )}
+
+        {isClient &&
+          wisataData &&
+          wisataData.map((wisata, index) => (
+            <WisataSection
+              key={wisata.id}
+              wisata={wisata}
+              index={index}
+              currentSection={currentSection}
+              sectionsRef={sectionsRef}
+            />
+          ))}
+      </div>
       </main>
       <Footer />
     </>
