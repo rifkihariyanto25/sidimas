@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import kulinerData from "./kulinerData";
+import { supabase } from "@/lib/supabase";
 import "./kuliner.css";
 
 // Component for individual Kuliner Section with new layout
@@ -242,6 +242,104 @@ export default function KulinerPage() {
   const [activeCard, setActiveCard] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showDots, setShowDots] = useState(false);
+  const [kulinerData, setKulinerData] = useState([]); // State untuk data dari database
+  const [loading, setLoading] = useState(true); // Loading state
+
+  // Fetch data kuliner dari Supabase
+  useEffect(() => {
+    const fetchKulinerData = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("konten_kuliner") // Tabel kuliner
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          console.error("Error fetching kuliner data:", error);
+        } else if (data) {
+          console.log("🔍 Data kuliner dari database:", data);
+          console.log("🔍 Jumlah data:", data.length);
+          
+          // Transform data dari database ke format yang dibutuhkan komponen
+          const transformedData = data.map((item, index) => {
+            console.log(`\n📦 Item ${index + 1}:`, item.nama);
+            console.log("   gambar_url raw:", item.gambar_url);
+            
+            // Handle gambar_url - bisa jadi string (dengan separator |||) atau array
+            let sliderImages = [];
+            if (item.gambar_url) {
+              // Cek apakah gambar_url berisi multiple URLs (dipisah |||)
+              if (item.gambar_url.includes('|||')) {
+                sliderImages = item.gambar_url.split('|||').map(url => url.trim()).filter(url => url);
+                console.log("   ✅ Detected ||| separator, images:", sliderImages.length);
+              } 
+              // Cek apakah gambar_url berisi multiple URLs (dipisah koma - format lama)
+              else if (item.gambar_url.includes(',')) {
+                sliderImages = item.gambar_url.split(',').map(url => url.trim()).filter(url => url);
+                console.log("   ✅ Detected , separator, images:", sliderImages.length);
+              }
+              // Cek apakah JSON array
+              else if (item.gambar_url.startsWith('[')) {
+                try {
+                  sliderImages = JSON.parse(item.gambar_url);
+                  console.log("   ✅ Detected JSON array, images:", sliderImages.length);
+                } catch (e) {
+                  sliderImages = [item.gambar_url];
+                  console.log("   ⚠️ JSON parse failed, using single URL");
+                }
+              }
+              // Single URL
+              else {
+                sliderImages = [item.gambar_url];
+                console.log("   ✅ Single URL");
+              }
+            } else {
+              console.log("   ⚠️ No gambar_url found!");
+            }
+            
+            console.log("   📸 Final sliderImages:", sliderImages);
+            console.log("   🖼️ First image:", sliderImages[0]);
+
+            return {
+              id: item.id,
+              number: String(index + 1).padStart(2, "0"),
+              title: item.nama,
+              subtitle: item.subtittle || "",
+              description: item.deskripsi || "",
+              funFact: item.funfact || "",
+              sliderImages: sliderImages,
+              images: {
+                main: sliderImages[0] || "",
+                secondary: sliderImages[1] || sliderImages[0] || "",
+                diamond: sliderImages[2] || sliderImages[0] || "",
+                cta: sliderImages[3] || sliderImages[0] || "",
+              },
+              // Default values untuk CTA
+              ctaTitle: "Jelajahi Lebih Lanjut",
+              ctaDescription: item.funfact || item.deskripsi?.substring(0, 100) || "",
+              ctaButton: "Lihat Detail",
+              link: "#"
+            };
+          });
+          
+          console.log("✅ Data transformed successfully!");
+          console.log("📊 Total items:", transformedData.length);
+          transformedData.forEach((item, idx) => {
+            console.log(`   Item ${idx + 1}: ${item.title} - ${item.sliderImages.length} images`);
+          });
+          
+          setKulinerData(transformedData);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchKulinerData();
+  }, []);
 
   const handleMarkerClick = (cardNumber) => {
     setActiveCard(cardNumber);
@@ -327,6 +425,59 @@ export default function KulinerPage() {
     setCurrentImageIndex(index);
   };
 
+  // Loading state
+  if (!isClient || loading) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(135deg, #fdfcf8 0%, #f9f7f3 100%)",
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <div
+            style={{
+              width: "80px",
+              height: "80px",
+              border: "6px solid #f3f3f3",
+              borderTop: "6px solid #ef4444",
+              borderRadius: "50%",
+              animation: "spin 1.2s ease-in-out infinite",
+              margin: "0 auto",
+              boxShadow: "0 4px 12px rgba(239, 68, 68, 0.2)",
+            }}
+          ></div>
+          <p
+            style={{
+              marginTop: "2rem",
+              color: "#ef4444",
+              fontSize: "1.2rem",
+              fontWeight: "600",
+              fontFamily: "'Poppins', sans-serif",
+              letterSpacing: "0.5px",
+            }}
+          >
+            Memuat Kuliner Banyumas...
+          </p>
+          <p
+            style={{
+              marginTop: "0.5rem",
+              color: "#f87171",
+              fontSize: "0.9rem",
+              fontWeight: "400",
+              fontFamily: "'Poppins', sans-serif",
+            }}
+          >
+            Mohon tunggu sebentar 🍜
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <Navbar />
@@ -385,6 +536,52 @@ export default function KulinerPage() {
             </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Show message if no data */}
+          {isClient && kulinerData && kulinerData.length === 0 && (
+            <div style={{
+              minHeight: '60vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '6rem 2rem',
+              background: 'linear-gradient(135deg, #fdfcf8 0%, #f9f7f3 100%)'
+            }}>
+              <div style={{ 
+                maxWidth: '500px',
+                textAlign: 'center',
+                background: 'white',
+                padding: '4rem 3rem',
+                borderRadius: '24px',
+                boxShadow: '0 10px 40px rgba(239, 68, 68, 0.1)',
+                border: '2px solid #fee2e2'
+              }}>
+                <div style={{ 
+                  fontSize: '80px', 
+                  marginBottom: '1.5rem'
+                }}>
+                  🍜
+                </div>
+                <h3 style={{ 
+                  fontSize: '1.8rem', 
+                  color: '#ef4444', 
+                  marginBottom: '1rem',
+                  fontWeight: '700',
+                  fontFamily: "'Poppins', sans-serif"
+                }}>
+                  Belum Ada Data Kuliner
+                </h3>
+                <p style={{ 
+                  color: '#dc2626', 
+                  fontSize: '1.05rem',
+                  lineHeight: '1.6',
+                  marginBottom: '2rem'
+                }}>
+                  Data kuliner Banyumas sedang dalam proses kurasi. Silakan tambahkan melalui dashboard admin.
+                </p>
+              </div>
+            </div>
+          )}
 
           {isClient &&
             kulinerData &&
