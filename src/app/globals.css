@@ -15,56 +15,6 @@ html, body {
   scroll-behavior: smooth;
 }
 
-/* NAVBAR */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 20px 5%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 100;
-  /* Background akan di-override oleh inline style dari component */
-  transition: all 0.3s ease;
-}
-.navbar .logo {
-  font-weight: 700;
-  font-size: 1.4rem;
-  /* Color akan di-override oleh Tailwind class dari component */
-}
-.navbar ul {
-  list-style: none;
-  display: flex;
-  gap: 30px;
-}
-.navbar a {
-  text-decoration: none;
-  font-weight: 500;
-  /* Color akan di-override oleh Tailwind class dari component */
-}
-
-.nav-actions {
-  display: flex;
-  gap: 15px;
-}
-.nav-actions .login {
-  padding: 8px 18px;
-  /* Color akan di-override oleh Tailwind class dari component */
-}
-.nav-actions .signup {
-  background: #8FA31E;
-  color: #fff;
-  padding: 8px 18px;
-  border-radius: 10px;
-  font-weight: 600;
-  transition: background .3s;
-}
-.nav-actions .signup:hover {
-  background: #7a8c1a;
-}
-
 /* HERO SLIDER */
 .hero-slider {
   width: 100%;
@@ -812,13 +762,6 @@ html, body {
    RESPONSIVE
 ====================== */
 @media (max-width: 768px) {
-  .navbar ul { gap: 15px; font-size: 0.9rem; }
-  
-  /* Hide menu on mobile, show hamburger */
-  .navbar ul {
-    display: none;
-  }
-  
   .hero-slide { 
     padding-left: 20px; 
     padding-right: 20px;
@@ -955,16 +898,6 @@ html, body {
   .footer-links-container {
     grid-template-columns: 1fr;
     gap: 30px;
-  }
-  
-  .nav-actions {
-    gap: 10px;
-  }
-  
-  .nav-actions .login,
-  .nav-actions .signup {
-    padding: 6px 14px;
-    font-size: 0.85rem;
   }
 }
 
