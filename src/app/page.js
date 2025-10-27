@@ -22,61 +22,72 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch wisata - 4 terakhir berdasarkan kategori 'wisata'
+        console.log('🔍 Fetching hero slides data...');
+        
+        // Fetch wisata - 4 terbaru berdasarkan kategori 'wisata'
         const { data: wisataData, error: wisataError } = await supabase
           .from("konten")
-          .select("id, nama, gambar_url")
+          .select("id, gambar_url")
           .eq("kategori", "wisata")
           .order("created_at", { ascending: false })
           .limit(4);
 
-        if (wisataData && !wisataError && wisataData.length > 0) {
+        console.log('📸 Wisata data:', wisataData);
+        if (wisataError) console.error('❌ Wisata error:', wisataError);
+
+        if (wisataData && !wisataError) {
           setWisataSlides(
             wisataData.map((item) => ({
               id: item.id,
               img: item.gambar_url,
-              alt: item.nama,
+              alt: 'Wisata Banyumas',
             }))
           );
         }
 
-        // Fetch kuliner - 4 terakhir berdasarkan kategori 'kuliner'
+        // Fetch kuliner - 4 terbaru berdasarkan kategori 'kuliner'
         const { data: kulinerData, error: kulinerError } = await supabase
           .from("konten")
-          .select("id, nama, gambar_url")
+          .select("id, gambar_url")
           .eq("kategori", "kuliner")
           .order("created_at", { ascending: false })
           .limit(4);
 
-        if (kulinerData && !kulinerError && kulinerData.length > 0) {
+        console.log('🍜 Kuliner data:', kulinerData);
+        if (kulinerError) console.error('❌ Kuliner error:', kulinerError);
+
+        if (kulinerData && !kulinerError) {
           setKulinerSlides(
             kulinerData.map((item) => ({
               id: item.id,
               img: item.gambar_url,
-              alt: item.nama,
+              alt: 'Kuliner Banyumas',
             }))
           );
         }
 
-        // Fetch budaya - 4 terakhir berdasarkan kategori 'budaya'
+        // Fetch budaya - 4 terbaru berdasarkan kategori 'budaya'
         const { data: budayaData, error: budayaError } = await supabase
           .from("konten")
-          .select("id, nama, gambar_url")
+          .select("id, gambar_url")
           .eq("kategori", "budaya")
           .order("created_at", { ascending: false })
           .limit(4);
 
-        if (budayaData && !budayaError && budayaData.length > 0) {
+        console.log('🎭 Budaya data:', budayaData);
+        if (budayaError) console.error('❌ Budaya error:', budayaError);
+
+        if (budayaData && !budayaError) {
           setBudayaSlides(
             budayaData.map((item) => ({
               id: item.id,
               img: item.gambar_url,
-              alt: item.nama,
+              alt: 'Budaya Banyumas',
             }))
           );
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("❌ Error fetching data:", error);
       }
     };
 
