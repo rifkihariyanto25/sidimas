@@ -1149,8 +1149,9 @@ This project is **open source** and available for educational purposes.
 <div align="center">
 
 **🌐 Live Website:** [https://sidimas-six.vercel.app](https://sidimas-six.vercel.app)
+**🌐 Admin Panel:** [https://sidimas-six.vercel.app/admin/login](https://sidimas-six.vercel.app/admin/login)
 
-**📧 Email:** support@sidimas.id  
+**📧 Email:** hariyantorifki25@gmail.com  
 **💻 GitHub:** [rifkihariyanto25/sidimas](https://github.com/rifkihariyanto25/sidimas)  
 **🎓 Institution:** Telkom University Purwokerto
 
