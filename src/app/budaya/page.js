@@ -218,7 +218,7 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
           </div>
 
           {/* CTA Button */}
-          <motion.a
+          {/* <motion.a
             href={budaya.link}
             className="cta-button"
             whileHover={{ scale: 1.05, x: 5 }}
@@ -226,7 +226,7 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
           >
             <span className="cta-icon">◉</span>
             <span>{budaya.ctaButton}</span>
-          </motion.a>
+          </motion.a> */}
         </motion.div>
 
         {/* Bottom Border Line */}
@@ -317,10 +317,8 @@ export default function BudayaPage() {
                 cta: sliderImages[3] || sliderImages[0] || "",
               },
               // Default values untuk CTA
-              ctaTitle: "Jelajahi Lebih Lanjut",
+              ctaTitle: "Taukah Kamu?",
               ctaDescription: item.funfact || item.deskripsi?.substring(0, 100) || "",
-              ctaButton: "Lihat Detail",
-              link: "#"
             };
           });
           
@@ -355,6 +353,8 @@ export default function BudayaPage() {
   useEffect(() => {
     if (!isClient || sectionsRef.current.length === 0 || budayaData.length === 0) return;
 
+    console.log('🔍 Setting up observer for', sectionsRef.current.length, 'budaya sections');
+
     const observerOptions = {
       root: null,
       rootMargin: "-45% 0px -45% 0px",
@@ -368,6 +368,7 @@ export default function BudayaPage() {
             (section) => section === entry.target
           );
           if (index !== -1) {
+            console.log('📍 Active budaya section:', index);
             setCurrentSection(index);
           }
         }

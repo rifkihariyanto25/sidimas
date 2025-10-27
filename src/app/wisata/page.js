@@ -216,7 +216,7 @@ function WisataSection({ wisata, index, currentSection, sectionsRef }) {
           </div>
 
           {/* CTA Button */}
-          <motion.a
+          {/* <motion.a
             href={wisata.link}
             className="cta-button"
             whileHover={{ scale: 1.05, x: 5 }}
@@ -224,7 +224,7 @@ function WisataSection({ wisata, index, currentSection, sectionsRef }) {
           >
             <span className="cta-icon">◉</span>
             <span>{wisata.ctaButton}</span>
-          </motion.a>
+          </motion.a> */}
         </motion.div>
 
         {/* Bottom Border Line */}
@@ -316,10 +316,8 @@ export default function WisataPage() {
                 cta: sliderImages[3] || sliderImages[0] || "",
               },
               // Default values untuk CTA
-              ctaTitle: "Fun Fact",
+              ctaTitle: "Taukah Kamu?",
               ctaDescription: item.funfact || item.deskripsi?.substring(0, 100) || "",
-              ctaButton: "Lihat Detail",
-              link: "#"
             };
           });
           
@@ -352,7 +350,9 @@ export default function WisataPage() {
 
   // Track section changes with IntersectionObserver
   useEffect(() => {
-    if (!isClient || sectionsRef.current.length === 0) return;
+    if (!isClient || sectionsRef.current.length === 0 || wisataData.length === 0) return;
+
+    console.log('🔍 Setting up observer for', sectionsRef.current.length, 'sections');
 
     const observerOptions = {
       root: null,
@@ -367,6 +367,7 @@ export default function WisataPage() {
             (section) => section === entry.target
           );
           if (index !== -1) {
+            console.log('📍 Active section:', index);
             setCurrentSection(index);
           }
         }
@@ -387,11 +388,11 @@ export default function WisataPage() {
     return () => {
       observer.disconnect();
     };
-  }, [isClient]);
+  }, [isClient, wisataData.length]);
 
   // Track if we're in wisata wrapper area (show/hide dots)
   useEffect(() => {
-    if (!isClient || !wisataWrapperRef.current) return;
+    if (!isClient || !wisataWrapperRef.current || wisataData.length === 0) return;
 
     const wrapperElement = wisataWrapperRef.current;
 
@@ -410,7 +411,7 @@ export default function WisataPage() {
     return () => {
       observer.disconnect();
     };
-  }, [isClient]);
+  }, [isClient, wisataData.length]);
 
   // Data untuk slider wisata - semua gambar dalam satu array
   const wisataImages = [

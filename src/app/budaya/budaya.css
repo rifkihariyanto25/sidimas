@@ -465,6 +465,7 @@ body {
 .map-header {
   text-align: center;
   margin-bottom: 30px;
+  padding: 0 20px;
 }
 
 .map-header h1 {
@@ -472,6 +473,7 @@ body {
   color: #333;
   margin-bottom: 10px;
   margin-left: -200px;
+  transition: all 0.3s ease;
 }
 
 .map-header .highlight {
@@ -483,6 +485,7 @@ body {
   color: #555;
   font-weight: 500;
   margin-left: 320px;
+  transition: all 0.3s ease;
 }
 
 .map-divider {
@@ -500,6 +503,7 @@ body {
   color: #666;
   font-size: 0.95em;
   margin-left: 300px;
+  padding: 0 20px;
 }
 
 .map-section-title {
@@ -4376,14 +4380,19 @@ html {
 @media (max-width: 1024px) {
   .map-header h1 {
     font-size: 2rem;
+    margin-left: -100px;
   }
   
   .map-header h2 {
     font-size: 1.3rem;
+    margin-left: 150px;
   }
   
   .map-intro-text {
     font-size: 0.95rem;
+    margin-left: 0;
+    text-align: center;
+    padding: 0 30px;
   }
   
   .map-section-title {
@@ -4410,6 +4419,23 @@ html {
   }
 }
 
+@media (max-width: 900px) {
+  .map-header h1 {
+    margin-left: -50px;
+    font-size: 1.8rem;
+  }
+  
+  .map-header h2 {
+    margin-left: 80px;
+    font-size: 1.2rem;
+  }
+  
+  .map-intro-text {
+    margin-left: 100px;
+    padding: 0 40px;
+  }
+}
+
 @media (max-width: 768px) {
   .map-wrapper {
     padding: 3rem 0;
@@ -4422,22 +4448,28 @@ html {
   .map-header {
     text-align: center;
     margin-bottom: 2rem;
+    padding: 0 15px;
   }
   
   .map-header h1 {
     font-size: 1.5rem;
     line-height: 1.3;
+    margin-left: 0;
   }
   
   .map-header h2 {
     font-size: 1.1rem;
     margin-top: 0.5rem;
+    margin-left: 0;
   }
   
   .map-intro-text {
     font-size: 0.9rem;
     text-align: center;
-    padding: 0 1rem;
+    padding: 0 20px;
+    margin-left: 0;
+    max-width: 100%;
+    line-height: 1.6;
   }
   
   .map-section-title {
@@ -4631,10 +4663,21 @@ html {
 @media (max-width: 480px) {
   .map-header h1 {
     font-size: 1.2rem;
+    margin-left: 0;
+    line-height: 1.4;
+  }
+  
+  .map-header h2 {
+    font-size: 0.95rem;
+    margin-left: 0;
+    margin-top: 0.3rem;
   }
   
   .map-intro-text {
     font-size: 0.85rem;
+    padding: 0 15px;
+    margin-left: 0;
+    line-height: 1.5;
   }
   
   .map-container {
@@ -4664,5 +4707,26 @@ html {
   .description-divider {
     width: 90% !important;
     margin: 0 auto 15px auto !important;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  .map-header {
+    padding: 0 10px;
+  }
+  
+  .map-header h1 {
+    font-size: 1.1rem;
+    word-spacing: 0.1em;
+  }
+  
+  .map-header h2 {
+    font-size: 0.9rem;
+  }
+  
+  .map-intro-text {
+    font-size: 0.8rem;
+    padding: 0 10px;
   }
 }
