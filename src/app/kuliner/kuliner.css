@@ -1488,6 +1488,16 @@
   .kuliner-slider-cursor {
     display: none;
   }
+  
+  .kuliner-slider-dots {
+    margin-top: 20px;
+    gap: 10px;
+  }
+  
+  .kuliner-slider-dot {
+    width: 12px;
+    height: 12px;
+  }
 
   .kuliner-section-new {
     padding: 40px 40px;
@@ -1571,6 +1581,16 @@
 
   .kuliner-slider-slide {
     height: 300px;
+  }
+  
+  .kuliner-slider-dots {
+    margin-top: 16px;
+    gap: 8px;
+  }
+  
+  .kuliner-slider-dot {
+    width: 10px;
+    height: 10px;
   }
 
   .content-diamond-image {

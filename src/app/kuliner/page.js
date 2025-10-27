@@ -22,16 +22,33 @@ function KulinerSection({ kuliner, index, currentSection, sectionsRef }) {
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
+  // Debug log untuk melihat data yang masuk ke komponen
+  useEffect(() => {
+    console.log(`\n🍽️ KulinerSection ${index} rendered:`, kuliner.title);
+    console.log('   sliderImages:', kuliner.sliderImages);
+    console.log('   sliderImages length:', kuliner.sliderImages?.length);
+    if (kuliner.sliderImages && kuliner.sliderImages.length > 0) {
+      console.log('   First image URL:', kuliner.sliderImages[0]);
+      console.log('   ✅ Slider dots should be visible (images > 1):', kuliner.sliderImages.length > 1);
+    }
+  }, [kuliner, index]);
+
   // Auto-advance slider
   useEffect(() => {
     if (!kuliner.sliderImages || kuliner.sliderImages.length === 0) return;
 
+    console.log(`🎬 Slider ${index}: Auto-advance started with ${kuliner.sliderImages.length} images`);
+
     const interval = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % kuliner.sliderImages.length);
+      setActiveSlide((prev) => {
+        const nextSlide = (prev + 1) % kuliner.sliderImages.length;
+        console.log(`📸 Slider ${index}: Moving to slide ${nextSlide}`);
+        return nextSlide;
+      });
     }, 4000); // Change slide every 4 seconds
 
     return () => clearInterval(interval);
-  }, [kuliner.sliderImages]);
+  }, [kuliner.sliderImages, index]);
 
   // Sync slider scroll with active slide
   useEffect(() => {
@@ -394,14 +411,25 @@ export default function KulinerPage() {
     if (!isClient || !kulinerWrapperRef.current) return;
 
     const wrapperElement = kulinerWrapperRef.current;
+    console.log("🎯 Setting up IntersectionObserver for kuliner wrapper");
 
     const observer = new IntersectionObserver(
       ([entry]) => {
+        console.log("👁️ Wrapper intersection changed:", {
+          isIntersecting: entry.isIntersecting,
+          intersectionRatio: entry.intersectionRatio,
+          target: entry.target.className
+        });
+        console.log("📊 Current state:", {
+          isClient,
+          kulinerDataLength: kulinerData.length,
+          showDots: entry.isIntersecting
+        });
         setShowDots(entry.isIntersecting);
       },
       {
         root: null,
-        threshold: 0.01, // Trigger when even 1% of wrapper is visible
+        threshold: 0, // Trigger as soon as any part is visible
       }
     );
 
@@ -509,6 +537,7 @@ export default function KulinerPage() {
         {/* KULINER SECTIONS - AYANA STYLE WITH NEW LAYOUT */}
         <div className="ayana-kuliner-wrapper" ref={kulinerWrapperRef}>
           {/* Dots Navigation - Fixed Right */}
+          {console.log("🔍 Render check:", { isClient, kulinerDataLength: kulinerData?.length, showDots })}
           <AnimatePresence>
             {isClient && kulinerData && kulinerData.length > 0 && showDots && (
               <motion.div 
@@ -517,7 +546,42 @@ export default function KulinerPage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
+                style={{
+                  backgroundColor: 'rgba(255, 235, 59, 0.9)',
+                  padding: '20px 12px',
+                  borderRadius: '30px',
+                  border: '3px solid red'
+                }}
               >
+              <div style={{
+                position: 'absolute',
+                top: '-30px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: 'red',
+                color: 'white',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                whiteSpace: 'nowrap'
+              }}>
+                {showDots ? 'VISIBLE' : 'HIDDEN'}
+              </div>
+              <div style={{
+                position: 'absolute',
+                bottom: '-25px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: 'black',
+                color: 'white',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                fontSize: '10px',
+                whiteSpace: 'nowrap'
+              }}>
+                {kulinerData.length} items
+              </div>
               {kulinerData.map((_, dotIdx) => (
                 <button
                   key={dotIdx}
@@ -525,12 +589,18 @@ export default function KulinerPage() {
                     currentSection === dotIdx ? "active" : ""
                   }`}
                   onClick={() => {
+                    console.log(`🔘 Navigation dot ${dotIdx} clicked`);
                     sectionsRef.current[dotIdx]?.scrollIntoView({
                       behavior: "smooth",
                       block: "start",
                     });
                   }}
                   aria-label={`Go to section ${dotIdx + 1}`}
+                  style={{
+                    width: '16px',
+                    height: '16px',
+                    backgroundColor: currentSection === dotIdx ? 'red' : 'black'
+                  }}
                 />
               ))}
             </motion.div>
