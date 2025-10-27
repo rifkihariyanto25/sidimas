@@ -375,6 +375,10 @@ export default function AdminDashboard() {
     setActivePage(page)
     setCategory(page)
     setFilterCategory(page)
+    // Close sidebar on mobile after selection
+    if (window.innerWidth <= 768) {
+      setIsSidebarOpen(false)
+    }
     // Reset form when changing page
     if (!isEditMode) {
       setTitle('')
@@ -385,23 +389,170 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div style={{
-      display: 'flex',
-      minHeight: '100vh',
-      background: '#f3f4f6'
-    }}>
-      {/* Sidebar */}
+    <>
+      <style jsx global>{`
+        /* Media Queries for Responsive Design */
+        @media (max-width: 768px) {
+          .admin-sidebar {
+            width: ${isSidebarOpen ? '280px' : '0'} !important;
+            transform: translateX(${isSidebarOpen ? '0' : '-100%'});
+          }
+          .admin-main-content {
+            margin-left: 0 !important;
+            padding: 16px !important;
+          }
+          .admin-content-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .mobile-menu-toggle {
+            display: flex !important;
+          }
+          .admin-stats-card {
+            flex-direction: column !important;
+            text-align: center;
+          }
+          .admin-stats-icon {
+            width: 60px !important;
+            height: 60px !important;
+            font-size: 30px !important;
+          }
+          .admin-stats-text {
+            font-size: 28px !important;
+          }
+          .admin-form-card, .admin-list-card {
+            padding: 20px !important;
+          }
+          .admin-image-grid {
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)) !important;
+          }
+          .item-card-content {
+            flex-direction: column !important;
+          }
+          .item-card-buttons {
+            flex-direction: row !important;
+            width: 100%;
+            justify-content: flex-end !important;
+          }
+          .item-images-grid {
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)) !important;
+          }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .admin-sidebar {
+            width: ${isSidebarOpen ? '240px' : '70px'} !important;
+          }
+          .admin-main-content {
+            margin-left: ${isSidebarOpen ? '240px' : '70px'} !important;
+            padding: 24px !important;
+          }
+          .admin-content-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .admin-stats-card {
+            padding: 20px !important;
+          }
+          .admin-stats-text {
+            font-size: 32px !important;
+          }
+          .item-images-grid {
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)) !important;
+          }
+        }
+
+        @media (min-width: 1025px) and (max-width: 1366px) {
+          .admin-content-grid {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)) !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .admin-content-grid {
+            grid-template-columns: 1fr !important;
+            gap: 20px !important;
+          }
+          .admin-form-card, .admin-list-card {
+            padding: 16px !important;
+          }
+          .admin-stats-card {
+            padding: 16px !important;
+          }
+          .admin-main-content {
+            padding: 12px !important;
+          }
+        }
+
+        /* Mobile Menu Toggle Button (hidden on desktop) */
+        .mobile-menu-toggle {
+          display: none;
+          position: fixed;
+          top: 16px;
+          left: 16px;
+          z-index: 1001;
+          background: linear-gradient(135deg, #15803d 0%, #065f46 100%);
+          color: white;
+          border: none;
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;
+          cursor: pointer;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+          align-items: center;
+          justify-content: center;
+          font-size: 24px;
+        }
+
+        /* Overlay for mobile sidebar */
+        .sidebar-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0,0,0,0.5);
+          z-index: 999;
+        }
+
+        @media (max-width: 768px) {
+          .sidebar-overlay {
+            display: ${isSidebarOpen ? 'block' : 'none'};
+          }
+        }
+      `}</style>
+
+      {/* Mobile Menu Toggle Button */}
+      <button 
+        className="mobile-menu-toggle"
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        aria-label="Toggle Menu"
+      >
+        {isSidebarOpen ? '✕' : '☰'}
+      </button>
+
+      {/* Sidebar Overlay for Mobile */}
+      <div 
+        className="sidebar-overlay"
+        onClick={() => setIsSidebarOpen(false)}
+      />
+
       <div style={{
-        width: isSidebarOpen ? '280px' : '80px',
-        background: 'linear-gradient(180deg, #15803d 0%, #065f46 100%)',
-        color: 'white',
-        transition: 'width 0.3s ease',
-        position: 'fixed',
-        height: '100vh',
-        overflowY: 'auto',
-        boxShadow: '4px 0 20px rgba(0,0,0,0.1)',
-        zIndex: 1000
+        display: 'flex',
+        minHeight: '100vh',
+        background: '#f3f4f6'
       }}>
+        {/* Sidebar */}
+        <div className="admin-sidebar" style={{
+          width: isSidebarOpen ? '280px' : '80px',
+          background: 'linear-gradient(180deg, #15803d 0%, #065f46 100%)',
+          color: 'white',
+          transition: 'all 0.3s ease',
+          position: 'fixed',
+          height: '100vh',
+          overflowY: 'auto',
+          boxShadow: '4px 0 20px rgba(0,0,0,0.1)',
+          zIndex: 1000
+        }}>
         {/* Logo & Toggle */}
         <div style={{
           padding: '24px 20px',
@@ -606,7 +757,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Main Content */}
-      <div style={{
+      <div className="admin-main-content" style={{
         marginLeft: isSidebarOpen ? '280px' : '80px',
         flex: 1,
         transition: 'margin-left 0.3s ease',
@@ -619,19 +770,20 @@ export default function AdminDashboard() {
         }}>
           <h1 style={{
             margin: '0 0 8px 0',
-            fontSize: '32px',
+            fontSize: 'clamp(24px, 5vw, 32px)',
             fontWeight: '800',
             color: '#1f2937',
             display: 'flex',
             alignItems: 'center',
-            gap: '12px'
+            gap: '12px',
+            flexWrap: 'wrap'
           }}>
             {getCategoryData(activePage).icon}
             <span>Kelola {getCategoryData(activePage).label.split(' ')[1]}</span>
           </h1>
           <p style={{
             margin: 0,
-            fontSize: '15px',
+            fontSize: 'clamp(13px, 2vw, 15px)',
             color: '#6b7280'
           }}>
             Tambah, edit, dan kelola konten {getCategoryData(activePage).label.split(' ')[1].toLowerCase()} Banyumas
@@ -639,7 +791,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Card */}
-        <div style={{
+        <div className="admin-stats-card" style={{
           background: `linear-gradient(135deg, ${getCategoryData(activePage).color}15 0%, ${getCategoryData(activePage).color}08 100%)`,
           border: `2px solid ${getCategoryData(activePage).color}30`,
           borderRadius: '16px',
@@ -649,7 +801,7 @@ export default function AdminDashboard() {
           alignItems: 'center',
           gap: '20px'
         }}>
-          <div style={{
+          <div className="admin-stats-icon" style={{
             background: getCategoryData(activePage).gradient,
             width: '80px',
             height: '80px',
@@ -658,7 +810,8 @@ export default function AdminDashboard() {
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '40px',
-            boxShadow: `0 8px 20px ${getCategoryData(activePage).color}40`
+            boxShadow: `0 8px 20px ${getCategoryData(activePage).color}40`,
+            flexShrink: 0
           }}>
             {getCategoryData(activePage).icon}
           </div>
@@ -675,21 +828,23 @@ export default function AdminDashboard() {
               fontSize: '36px',
               fontWeight: '800',
               color: getCategoryData(activePage).color
-            }}>
+            }}
+            className="admin-stats-text"
+            >
               {items.filter(item => item.kategori === activePage).length}
             </div>
           </div>
         </div>
 
         {/* Main Content Grid */}
-        <div style={{
+        <div className="admin-content-grid" style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 450px), 1fr))',
           gap: '30px',
           alignItems: 'start'
         }}>
           {/* Form Card */}
-          <div style={{
+          <div className="admin-form-card" style={{
             background: 'white',
             borderRadius: '24px',
             padding: '32px',
@@ -703,12 +858,13 @@ export default function AdminDashboard() {
             }}>
               <h2 style={{ 
                 margin: 0,
-                fontSize: '24px',
+                fontSize: 'clamp(20px, 4vw, 24px)',
                 fontWeight: '700',
                 color: '#1f2937',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '8px',
+                flexWrap: 'wrap'
               }}>
                 {isEditMode ? '✏️ Edit Konten' : '✨ Tambah Konten Baru'}
               </h2>
@@ -947,6 +1103,7 @@ export default function AdminDashboard() {
                 {imagePreviews.length > 0 && (
                   <div 
                     key={`preview-grid-${activePage}`}
+                    className="admin-image-grid"
                     style={{
                       display: 'grid',
                       gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))',
@@ -1127,7 +1284,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* List Card */}
-          <div style={{
+          <div className="admin-list-card" style={{
             background: 'white',
             borderRadius: '24px',
             padding: '32px',
@@ -1144,12 +1301,13 @@ export default function AdminDashboard() {
             }}>
               <h2 style={{ 
                 margin: 0,
-                fontSize: '24px',
+                fontSize: 'clamp(20px, 4vw, 24px)',
                 fontWeight: '700',
                 color: '#1f2937',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '10px'
+                gap: '10px',
+                flexWrap: 'wrap'
               }}>
                 <span>📋</span>
                 <span>Daftar {getCategoryData(activePage).label.split(' ')[1]}</span>
@@ -1215,7 +1373,7 @@ export default function AdminDashboard() {
                     >
                       {/* Multiple Images Grid */}
                       {imageUrls.length > 0 && (
-                        <div style={{
+                        <div className="item-images-grid" style={{
                           display: 'grid',
                           gridTemplateColumns: imageUrls.length === 1 ? '1fr' : 'repeat(auto-fill, minmax(100px, 1fr))',
                           gap: '8px',
@@ -1255,7 +1413,7 @@ export default function AdminDashboard() {
                         </div>
                       )}
                       
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: '16px' }}>
+                      <div className="item-card-content" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: '16px' }}>
                         <div style={{ flex: 1 }}>
                           <div style={{ marginBottom: '12px' }}>
                             <span style={{
@@ -1274,9 +1432,10 @@ export default function AdminDashboard() {
                           </div>
                           <h3 style={{ 
                             margin: '0 0 4px 0', 
-                            fontSize: '20px',
+                            fontSize: 'clamp(18px, 3vw, 20px)',
                             fontWeight: '700',
-                            color: '#1f2937'
+                            color: '#1f2937',
+                            wordBreak: 'break-word'
                           }}>
                             {item.nama}
                           </h3>
@@ -1284,9 +1443,10 @@ export default function AdminDashboard() {
                             <p style={{ 
                               margin: '0 0 8px 0', 
                               color: '#16a34a', 
-                              fontSize: '14px', 
+                              fontSize: 'clamp(13px, 2vw, 14px)', 
                               fontWeight: '600',
-                              lineHeight: '1.4'
+                              lineHeight: '1.4',
+                              wordBreak: 'break-word'
                             }}>
                               {item.subtittle}
                             </p>
@@ -1295,14 +1455,15 @@ export default function AdminDashboard() {
                             <p style={{ 
                               margin: 0, 
                               color: '#6b7280', 
-                              fontSize: '14px', 
-                              lineHeight: '1.6'
+                              fontSize: 'clamp(13px, 2vw, 14px)', 
+                              lineHeight: '1.6',
+                              wordBreak: 'break-word'
                             }}>
                               {item.deskripsi}
                             </p>
                           )}
                         </div>
-                        <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                        <div className="item-card-buttons" style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
                           <button
                             onClick={() => handleEdit(item)}
                             style={{
@@ -1368,5 +1529,6 @@ export default function AdminDashboard() {
         </div>
       </div>
     </div>
+    </>
   )
 }
