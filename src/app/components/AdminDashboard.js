@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import Image from 'next/image'
 
 const STORAGE_KEY = 'sidimas_admin_contents'
 const CATEGORIES = [
@@ -67,7 +68,7 @@ export default function AdminDashboard() {
       // Update ref untuk next comparison
       prevActivePageRef.current = activePage
     }
-  }, [activePage]) // HANYA dependency activePage, BUKAN isEditMode
+  }, [activePage, isEditMode]) // Include isEditMode in dependencies
 
   async function loadContents() {
     try {
@@ -961,9 +962,11 @@ export default function AdminDashboard() {
                         overflow: 'hidden',
                         boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
                       }}>
-                        <img 
+                        <Image 
                           src={preview.url} 
                           alt={`Preview ${index + 1}`}
+                          width={200}
+                          height={200}
                           style={{
                             width: '100%',
                             height: '100%',
@@ -1220,9 +1223,11 @@ export default function AdminDashboard() {
                         }}>
                           {imageUrls.slice(0, 5).map((url, idx) => (
                             <div key={idx} style={{ position: 'relative', aspectRatio: '1' }}>
-                              <img 
+                              <Image 
                                 src={url} 
                                 alt={`${item.nama} ${idx + 1}`}
+                                width={100}
+                                height={100}
                                 style={{
                                   width: '100%',
                                   height: '100%',

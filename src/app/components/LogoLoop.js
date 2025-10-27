@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, memo } from 'react';
+import Image from 'next/image';
 import './LogoLoop.css';
 
 const ANIMATION_CONFIG = {
@@ -204,12 +205,10 @@ export const LogoLoop = memo(
           {item.node}
         </span>
       ) : (
-        <img
+        <Image
           src={item.src}
-          srcSet={item.srcSet}
-          sizes={item.sizes}
-          width={item.width}
-          height={item.height}
+          width={item.width || 100}
+          height={item.height || 100}
           alt={item.alt ?? ''}
           title={item.title}
           loading="lazy"

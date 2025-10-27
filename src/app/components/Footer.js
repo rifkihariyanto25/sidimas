@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -56,16 +57,16 @@ export default function Footer() {
             <h3>Navigasi</h3>
             <ul>
               <li>
-                <a href="/">Beranda</a>
+                <Link href="/">Beranda</Link>
               </li>
               <li>
-                <a href="/wisata">Wisata</a>
+                <Link href="/wisata">Wisata</Link>
               </li>
               <li>
-                <a href="/kuliner">Kuliner</a>
+                <Link href="/kuliner">Kuliner</Link>
               </li>
               <li>
-                <a href="/budaya">Budaya</a>
+                <Link href="/budaya">Budaya</Link>
               </li>
             </ul>
           </div>
