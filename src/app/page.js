@@ -123,9 +123,9 @@ export default function Home() {
               <p className="max-w-lg mb-6">
                 Eksplorasi Keindahan Bumi Ngapak dari Lereng Gunung hingga Kota
               </p>
-              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 shadow-xl relative z-50 inline-block" style={{ filter: 'brightness(1.2) contrast(1.1)' }}>
+              {/* <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 shadow-xl relative z-50 inline-block" style={{ filter: 'brightness(1.2) contrast(1.1)' }}>
                 Mulai Jelajahi
-              </a>
+              </a> */}
             </div>
 
             {/* LOGO LOOP WISATA */}
@@ -171,9 +171,9 @@ export default function Home() {
                 Mendoan hangat, sroto Sokaraja, hingga gethuk goreng yang bikin
                 kangen!
               </p>
-              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 shadow-xl relative z-50 inline-block" style={{ filter: 'brightness(1.2) contrast(1.1)' }}>
+              {/* <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 shadow-xl relative z-50 inline-block" style={{ filter: 'brightness(1.2) contrast(1.1)' }}>
                 Jelajahi Kuliner
-              </a>
+              </a> */}
             </div>
 
             {/* LOGO LOOP KULINER */}
@@ -219,9 +219,9 @@ export default function Home() {
                 Dari wayang kulit, jaranan, hingga kesenian tradisional yang
                 memikat hati
               </p>
-              <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 shadow-xl relative z-50 inline-block" style={{ filter: 'brightness(1.2) contrast(1.1)' }}>
+              {/* <a href="#" className="cta bg-lime-400 px-6 py-3 rounded-lg font-semibold hover:bg-lime-500 shadow-xl relative z-50 inline-block" style={{ filter: 'brightness(1.2) contrast(1.1)' }}>
                 Kenali Budaya
-              </a>
+              </a> */}
             </div>
 
             {/* LOGO LOOP BUDAYA */}
@@ -304,14 +304,15 @@ export default function Home() {
           >
             <span className="timeline-dot"></span>
             <div className="timeline-content">
-              <h3>Bahasa Banyumasan</h3>
+              <h3>Pemandangan Pegunungan</h3>
               <p>
-                Bahasa Banyumasan itu unik banget dan punya ciri khas sendiri.
-                Tau bahasanya bikin kita lebih dekat sama warga lokal.
+                Pemandangan pegunungan di Banyumas sangat memukau dan
+                menenangkan. Udara segar dan pemandangan hijau membuat kita
+                betah berlama-lama di sini.
               </p>
             </div>
             <div className="timeline-img-side">
-              <img src="/IMG3.png" alt="Bahasa Banyumasan" />
+              <img src="/IMG3.png" alt="Pemandangan Pegunungan" />
             </div>
           </motion.div>
 
@@ -325,7 +326,7 @@ export default function Home() {
           >
             <span className="timeline-dot"></span>
             <div className="timeline-img-side">
-              <img src="/jaranan.jpeg" alt="Budaya dan Tradisi" />
+              <img src="/tariannnnn.jpg" alt="Budaya dan Tradisi" />
             </div>
             <div className="timeline-content">
               <h3>Budaya & Tradisi</h3>
@@ -333,6 +334,28 @@ export default function Home() {
                 Dari wayang kulit sampai upacara adat, Banyumas punya banyak
                 kegiatan seru.
               </p>
+            </div>
+          </motion.div>
+
+          {/* Item kiri */}
+          <motion.div
+            className="timeline-item left"
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: false }}
+          >
+            <span className="timeline-dot"></span>
+            <div className="timeline-content">
+              <h3>Makanan Khas</h3>
+              <p>
+                Makanan khas Banyumas sangat beragam dan menggugah selera.
+                Dari nasi goreng khas hingga sate, semua memiliki cita rasa
+                yang unik dan lezat.
+              </p>
+            </div>
+            <div className="timeline-img-side">
+              <img src="/getuk.png" alt="Makanan Khas" />
             </div>
           </motion.div>
         </div>

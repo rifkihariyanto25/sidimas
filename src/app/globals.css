@@ -209,16 +209,16 @@ html, body {
 /* Dot */
 .timeline-dot {
   position: absolute;
-  top: 30px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   width: 18px;
   height: 18px;
   background: #8FA31E;
   border: 4px solid #fff;
   border-radius: 50%;
-  z-index: 2;
-  box-shadow: 0 0 6px rgba(0,0,0,0.15);
+  z-index: 3;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 
 /* Item */
@@ -244,6 +244,7 @@ html, body {
   align-items: center;
   justify-content: space-between;
   margin: 40px 0;
+  position: relative; /* Tambahkan ini agar dot bisa position absolute relatif ke item */
 }
 
 .timeline-item.left {
@@ -558,13 +559,13 @@ html, body {
   padding: 120px 5%;
   text-align: center;
   position: relative;
-  opacity: 100%;
+  filter: brightness(1.5) contrast(1.1); /* Cerahkan background image */
 }
 .cta::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0, 0, 0, 0.0,3); /* Kurangi dari 0.55 jadi 0.3 agar lebih terang */
 }
 .cta h2 {
   font-size: 2rem;
@@ -577,7 +578,7 @@ html, body {
   background: #fff;
   padding: 12px 32px;
   border-radius: 50px;
-  color: #7cb342;
+  color: #81d12a;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.3s ease;
