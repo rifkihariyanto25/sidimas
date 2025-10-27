@@ -433,7 +433,7 @@ html, body {
 .khas .grid > div:nth-child(1) {
   grid-column: 1 / 3;
   grid-row: 1 / 3;
-  background-image: url('/IMG_6806 1.png');
+  background-image: url('/tarilengger23.jpg');
   background-size: cover;
   background-position: center;
 }
@@ -442,7 +442,7 @@ html, body {
 .khas .grid > div:nth-child(2) {
   grid-column: 3 / 4;
   grid-row: 1 / 2;
-  background-image: url('/IMG_5702 2.png');
+  background-image: url('/limpakuwus.jpg');
   background-size: cover;
   background-position: center;
 }
@@ -451,7 +451,7 @@ html, body {
 .khas .grid > div:nth-child(3) {
   grid-column: 3 / 4;
   grid-row: 2 / 3;
-  background-image: url('/IMG_7236 3.png');
+  background-image: url('/tari2345.jpg');
   background-size: cover;
   background-position: center;
 }
@@ -470,9 +470,9 @@ html, body {
 .khas .grid > div:nth-child(5) {
   grid-column: 2 / 3;
   grid-row: 3 / 4;
-  background-image: url('/Mendoan.png');
+  background-image: url('/kotalama.png');
   background-size: cover;
-  background-position: center;
+  background-position: center 80%;
 }
 
 /* Gambar 6 - Wide (2 kolom x 1 baris) */
@@ -481,7 +481,7 @@ html, body {
   grid-row: 3 / 3;
   background-image: url('/jaranan.jpeg');
   background-size: cover;
-  background-position: center;
+  background-position: center 30%;
 }
 
 /* ROW 3 */
@@ -489,18 +489,18 @@ html, body {
 .khas .grid > div:nth-child(7) {
   grid-column: 1 / 2;
   grid-row: 4 / 5;
-  background-image: url('/IMG3.png');
+  background-image: url('/klenteng.png');
   background-size: cover;
-  background-position: center;
+  background-position: center 100%; /* Turunkan posisi gambar */
 }
 
 /* Gambar 8 - Extra Large (2 kolom x 2 baris) */
 .khas .grid > div:nth-child(8) {
   grid-column: 2 / 4;
   grid-row: 4 / 6;
-  background-image: url('/pemandangan.png');
+  background-image: url('/teratai.jpeg');
   background-size: cover;
-  background-position: center;
+  background-position: center 80%;
 }
 
 /* Responsive Design */

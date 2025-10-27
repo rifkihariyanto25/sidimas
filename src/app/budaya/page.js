@@ -187,32 +187,47 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
             transition={{ duration: 0.4 }}
           >
             <div className="diamond-shape">
-              <Image
+              <img
                 src={budaya.images.diamond}
                 alt={`${budaya.title} diamond`}
-                width={400}
-                height={400}
-                style={{ width: '100%', height: 'auto' }}
               />
             </div>
           </motion.div>
         </motion.div>
 
-        {/* Fun Facts Section */}
-        {budaya.funFact && (
+        {/* CTA Section */}
+        <motion.div
+          className="budaya-cta"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
+          {/* CTA Image */}
           <motion.div
-            className="budaya-funfact"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 1 }}
+            className="cta-image"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
           >
-            <div className="funfact-icon">💡</div>
-            <div className="funfact-content">
-              <h4 className="funfact-title">Tahukah Kamu?</h4>
-              <p className="funfact-text">{budaya.funFact}</p>
-            </div>
+            <img src={budaya.images.cta} alt={`${budaya.title} CTA`} />
           </motion.div>
-        )}
+
+          {/* CTA Content */}
+          <div className="cta-content">
+            <h4 className="cta-title">{budaya.ctaTitle}</h4>
+            <p className="cta-description">{budaya.ctaDescription}</p>
+          </div>
+
+          {/* CTA Button */}
+          <motion.a
+            href={budaya.link}
+            className="cta-button"
+            whileHover={{ scale: 1.05, x: 5 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <span className="cta-icon">◉</span>
+            <span>{budaya.ctaButton}</span>
+          </motion.a>
+        </motion.div>
 
         {/* Bottom Border Line */}
         <div className="budaya-divider"></div>
@@ -299,9 +314,10 @@ export default function BudayaPage() {
                 main: sliderImages[0] || "",
                 secondary: sliderImages[1] || sliderImages[0] || "",
                 diamond: sliderImages[2] || sliderImages[0] || "",
+                cta: sliderImages[3] || sliderImages[0] || "",
               },
               // Default values untuk CTA
-              ctaTitle: "Fun Fact",
+              ctaTitle: "Jelajahi Lebih Lanjut",
               ctaDescription: item.funfact || item.deskripsi?.substring(0, 100) || "",
               ctaButton: "Lihat Detail",
               link: "#"
