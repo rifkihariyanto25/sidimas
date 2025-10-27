@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import "../wisata/wisata.css"; // IMPORT WISATA CSS UNTUK MAP SECTION
 import "./budaya.css";
 import "./new-layout.css";
@@ -137,14 +138,16 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
                       activeSlide === imgIdx ? "active" : ""
                     }`}
                   >
-                    <img
+                    <Image
                       src={img || '/placeholder.jpg'}
                       alt={`${budaya.title} slider ${imgIdx + 1}`}
-                      draggable="false"
+                      width={800}
+                      height={600}
+                      draggable={false}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       onError={(e) => {
                         console.error(`❌ Failed to load image: ${img}`);
                         e.target.style.backgroundColor = '#f3f4f6';
-                        e.target.alt = 'Gambar gagal dimuat';
                       }}
                       onLoad={() => {
                         console.log(`✅ Image loaded successfully: ${img?.substring(0, 50)}...`);
@@ -210,9 +213,12 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
             transition={{ duration: 0.4 }}
           >
             <div className="diamond-shape">
-              <img
+              <Image
                 src={budaya.images.diamond}
                 alt={`${budaya.title} diamond`}
+                width={400}
+                height={400}
+                style={{ width: '100%', height: 'auto' }}
               />
             </div>
           </motion.div>
