@@ -27,9 +27,16 @@ export default function AdminDashboard() {
   const [imagePreviews, setImagePreviews] = useState([])
   const [editingId, setEditingId] = useState(null)
   const [isEditMode, setIsEditMode] = useState(false)
-  const [activePage, setActivePage] = useState('wisata') // New: untuk sidebar navigation
+  const [activePage, setActivePage] = useState('dashboard') // New: untuk sidebar navigation (ubah default ke dashboard)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true) // New: untuk toggle sidebar di mobile
-  const prevActivePageRef = useRef('wisata') // Track previous activePage
+  const prevActivePageRef = useRef('dashboard') // Track previous activePage
+  
+  // State untuk Dashboard (konten beranda)
+  const [dashboardItems, setDashboardItems] = useState([])
+  const [dashboardCategory, setDashboardCategory] = useState('wisata')
+  const [dashboardImageFile, setDashboardImageFile] = useState(null)
+  const [dashboardImagePreview, setDashboardImagePreview] = useState('')
+  const [editingDashboardId, setEditingDashboardId] = useState(null)
 
   // Check if user is logged in
   useEffect(() => {
@@ -47,6 +54,7 @@ export default function AdminDashboard() {
   // Load data from Supabase
   useEffect(() => {
     loadContents()
+    loadDashboardContents()
   }, [])
 
   // Auto-clear form ketika pindah kategori (hanya jika activePage benar-benar berubah)
@@ -98,6 +106,159 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error('Error loading contents:', error.message)
     }
+  }
+
+  async function loadDashboardContents() {
+    try {
+      const { data, error } = await supabase
+        .from('konten')
+        .select('*')
+        .order('created_at', { ascending: false })
+      
+      if (error) throw error
+      
+      setDashboardItems(data || [])
+    } catch (error) {
+      console.error('Error loading dashboard contents:', error.message)
+    }
+  }
+
+  function handleDashboardImageChange(e) {
+    const file = e.target.files[0]
+    if (!file) return
+
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024
+    if (file.size > maxSize) {
+      alert('⚠️ File melebihi 5MB. Silakan pilih file yang lebih kecil.')
+      return
+    }
+
+    setDashboardImageFile(file)
+
+    // Create preview
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setDashboardImagePreview(reader.result)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  async function handleDashboardSubmit(e) {
+    e.preventDefault()
+    
+    if (!dashboardImageFile && !editingDashboardId) {
+      alert('⚠️ Pilih gambar terlebih dahulu!')
+      return
+    }
+
+    setIsLoading(true)
+
+    try {
+      let imageUrl = ''
+
+      // Upload gambar jika ada file baru
+      if (dashboardImageFile) {
+        const fileExt = dashboardImageFile.name.split('.').pop()
+        const fileName = `konten_${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`
+        const filePath = `${fileName}`
+
+        // Upload ke bucket 'images' (pastikan bucket ini sudah dibuat di Supabase Storage)
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('images')
+          .upload(filePath, dashboardImageFile, {
+            cacheControl: '3600',
+            upsert: false
+          })
+
+        if (uploadError) {
+          console.error('Upload error:', uploadError)
+          throw new Error(`Gagal upload gambar: ${uploadError.message}. Pastikan bucket 'images' sudah dibuat di Supabase Storage.`)
+        }
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('images')
+          .getPublicUrl(filePath)
+
+        imageUrl = publicUrl
+      }
+
+      if (editingDashboardId) {
+        // Update existing
+        const updateData = {
+          kategori: dashboardCategory,
+          ...(imageUrl && { gambar_url: imageUrl })
+        }
+
+        const { error } = await supabase
+          .from('konten')
+          .update(updateData)
+          .eq('id', editingDashboardId)
+
+        if (error) throw error
+        alert('✅ Konten beranda berhasil diupdate!')
+      } else {
+        // Insert new
+        const { error } = await supabase
+          .from('konten')
+          .insert([{
+            kategori: dashboardCategory,
+            gambar_url: imageUrl
+          }])
+
+        if (error) throw error
+        alert('✅ Konten beranda berhasil ditambahkan!')
+      }
+
+      // Reset form
+      setDashboardCategory('wisata')
+      setDashboardImageFile(null)
+      setDashboardImagePreview('')
+      setEditingDashboardId(null)
+
+      // Reload data
+      await loadDashboardContents()
+
+    } catch (error) {
+      console.error('Error:', error)
+      alert('❌ Gagal menyimpan konten: ' + error.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function handleDashboardDelete(id) {
+    if (!confirm('⚠️ Yakin ingin menghapus konten ini?')) return
+
+    try {
+      const { error } = await supabase
+        .from('konten')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+
+      alert('✅ Konten berhasil dihapus!')
+      await loadDashboardContents()
+    } catch (error) {
+      console.error('Error:', error)
+      alert('❌ Gagal menghapus konten: ' + error.message)
+    }
+  }
+
+  function handleDashboardEdit(item) {
+    setEditingDashboardId(item.id)
+    setDashboardCategory(item.kategori)
+    setDashboardImagePreview(item.gambar_url)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function cancelDashboardEdit() {
+    setEditingDashboardId(null)
+    setDashboardCategory('wisata')
+    setDashboardImageFile(null)
+    setDashboardImagePreview('')
   }
 
   function handleMultipleImageChange(e) {
@@ -351,6 +512,15 @@ export default function AdminDashboard() {
   }
 
   const getCategoryData = (cat) => {
+    if (cat === 'dashboard') {
+      return {
+        value: 'dashboard',
+        label: '🏠 Dashboard',
+        icon: '🏠',
+        color: '#3b82f6',
+        gradient: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)'
+      }
+    }
     return CATEGORIES.find(c => c.value === cat) || CATEGORIES[0]
   }
 
@@ -615,6 +785,70 @@ export default function AdminDashboard() {
               marginBottom: '12px',
               paddingLeft: '12px'
             }}>
+              Menu Utama
+            </div>
+          )}
+          
+          {/* Dashboard Menu */}
+          <button
+            onClick={() => handlePageChange('dashboard')}
+            style={{
+              width: '100%',
+              background: activePage === 'dashboard' ? 'rgba(255,255,255,0.15)' : 'transparent',
+              border: activePage === 'dashboard' ? '2px solid rgba(255,255,255,0.3)' : '2px solid transparent',
+              color: 'white',
+              padding: isSidebarOpen ? '14px 16px' : '14px 8px',
+              borderRadius: '12px',
+              marginBottom: '8px',
+              cursor: 'pointer',
+              fontSize: '15px',
+              fontWeight: activePage === 'dashboard' ? '700' : '600',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              transition: 'all 0.2s',
+              textAlign: 'left',
+              justifyContent: isSidebarOpen ? 'flex-start' : 'center'
+            }}
+            onMouseEnter={(e) => {
+              if (activePage !== 'dashboard') {
+                e.target.style.background = 'rgba(255,255,255,0.08)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activePage !== 'dashboard') {
+                e.target.style.background = 'transparent'
+              }
+            }}
+          >
+            <span style={{ fontSize: '24px' }}>🏠</span>
+            {isSidebarOpen && (
+              <>
+                <span style={{ flex: 1 }}>Dashboard</span>
+                <span style={{
+                  background: activePage === 'dashboard' ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)',
+                  padding: '4px 10px',
+                  borderRadius: '12px',
+                  fontSize: '13px',
+                  fontWeight: '700'
+                }}>
+                  {dashboardItems.length}
+                </span>
+              </>
+            )}
+          </button>
+
+          {isSidebarOpen && (
+            <div style={{
+              fontSize: '11px',
+              fontWeight: '700',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              opacity: 0.6,
+              marginTop: '20px',
+              marginBottom: '12px',
+              paddingLeft: '12px'
+            }}>
               Kategori Konten
             </div>
           )}
@@ -831,12 +1065,327 @@ export default function AdminDashboard() {
             }}
             className="admin-stats-text"
             >
-              {items.filter(item => item.kategori === activePage).length}
+              {activePage === 'dashboard' 
+                ? dashboardItems.length 
+                : items.filter(item => item.kategori === activePage).length
+              }
             </div>
           </div>
         </div>
 
-        {/* Main Content Grid */}
+        {/* Conditional Content - Dashboard atau Kategori Konten */}
+        {activePage === 'dashboard' ? (
+          /* ========== DASHBOARD CONTENT ========== */
+          <div className="admin-content-grid" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 450px), 1fr))',
+            gap: '30px',
+            alignItems: 'start'
+          }}>
+            {/* Form Card - Dashboard */}
+            <div className="admin-form-card" style={{
+              background: 'white',
+              borderRadius: '24px',
+              padding: '32px',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
+            }}>
+              <div style={{ 
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '24px'
+              }}>
+                <h2 style={{ 
+                  margin: 0,
+                  fontSize: 'clamp(20px, 4vw, 24px)',
+                  fontWeight: '700',
+                  color: '#1f2937',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  flexWrap: 'wrap'
+                }}>
+                  {editingDashboardId ? '✏️ Edit Gambar Beranda' : '✨ Tambah Gambar Beranda'}
+                </h2>
+                {editingDashboardId && (
+                  <button
+                    type="button"
+                    onClick={cancelDashboardEdit}
+                    style={{
+                      background: '#6b7280',
+                      color: 'white',
+                      border: 'none',
+                      padding: '8px 16px',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'background 0.2s'
+                    }}
+                    onMouseEnter={(e) => e.target.style.background = '#4b5563'}
+                    onMouseLeave={(e) => e.target.style.background = '#6b7280'}
+                  >
+                    ✕ Batal Edit
+                  </button>
+                )}
+              </div>
+              
+              <form onSubmit={handleDashboardSubmit} style={{ display: 'grid', gap: '20px' }}>
+                <div>
+                  <label style={{ 
+                    display: 'block', 
+                    fontWeight: '600', 
+                    marginBottom: '8px',
+                    color: '#374151',
+                    fontSize: '14px'
+                  }}>
+                    Kategori
+                  </label>
+                  <select
+                    value={dashboardCategory}
+                    onChange={(e) => setDashboardCategory(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '14px 16px',
+                      border: '2px solid #e5e7eb',
+                      borderRadius: '12px',
+                      fontSize: '15px',
+                      boxSizing: 'border-box',
+                      outline: 'none'
+                    }}
+                  >
+                    {CATEGORIES.map(cat => (
+                      <option key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ 
+                    display: 'block', 
+                    fontWeight: '600', 
+                    marginBottom: '8px',
+                    color: '#374151',
+                    fontSize: '14px'
+                  }}>
+                    Upload Gambar
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleDashboardImageChange}
+                    style={{
+                      width: '100%',
+                      padding: '14px 16px',
+                      border: '2px dashed #e5e7eb',
+                      borderRadius: '12px',
+                      fontSize: '15px',
+                      boxSizing: 'border-box',
+                      cursor: 'pointer'
+                    }}
+                  />
+                  <p style={{ fontSize: '12px', color: '#6b7280', marginTop: '8px', marginBottom: 0 }}>
+                    Max 5MB • Format: JPG, PNG, WEBP
+                  </p>
+                </div>
+
+                {/* Image Preview */}
+                {dashboardImagePreview && (
+                  <div style={{
+                    position: 'relative',
+                    width: '100%',
+                    height: '200px',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    border: '2px solid #e5e7eb'
+                  }}>
+                    <Image
+                      src={dashboardImagePreview}
+                      alt="Preview"
+                      fill
+                      style={{ objectFit: 'cover' }}
+                    />
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  style={{
+                    background: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '16px',
+                    borderRadius: '12px',
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    opacity: isLoading ? 0.7 : 1,
+                    transition: 'all 0.2s',
+                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isLoading) e.target.style.boxShadow = '0 6px 16px rgba(59, 130, 246, 0.4)'
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isLoading) e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)'
+                  }}
+                >
+                  {isLoading ? '⏳ Menyimpan...' : editingDashboardId ? '✏️ Update Gambar' : '✨ Tambah Gambar'}
+                </button>
+              </form>
+            </div>
+
+            {/* List Card - Dashboard */}
+            <div style={{
+              background: 'white',
+              borderRadius: '24px',
+              padding: '32px',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
+              maxHeight: '700px',
+              overflowY: 'auto'
+            }}>
+              <h2 style={{
+                margin: '0 0 24px 0',
+                fontSize: 'clamp(20px, 4vw, 24px)',
+                fontWeight: '700',
+                color: '#1f2937',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}>
+                <span>📸 Daftar Gambar Beranda</span>
+                <span style={{
+                  background: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)',
+                  color: 'white',
+                  padding: '4px 12px',
+                  borderRadius: '20px',
+                  fontSize: '14px',
+                  fontWeight: '700'
+                }}>
+                  {dashboardItems.length}
+                </span>
+              </h2>
+
+              {dashboardItems.length === 0 ? (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '40px 20px',
+                  color: '#9ca3af'
+                }}>
+                  <div style={{ fontSize: '48px', marginBottom: '16px' }}>📸</div>
+                  <p style={{ margin: 0, fontSize: '15px' }}>
+                    Belum ada gambar beranda
+                  </p>
+                </div>
+              ) : (
+                <div style={{ display: 'grid', gap: '16px' }}>
+                  {dashboardItems.map((item) => (
+                    <div
+                      key={item.id}
+                      style={{
+                        background: '#f9fafb',
+                        border: '2px solid #e5e7eb',
+                        borderRadius: '16px',
+                        padding: '16px',
+                        display: 'flex',
+                        gap: '16px',
+                        alignItems: 'center'
+                      }}
+                    >
+                      {/* Image Thumbnail */}
+                      <div style={{
+                        position: 'relative',
+                        width: '80px',
+                        height: '80px',
+                        flexShrink: 0,
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        border: '2px solid #d1d5db'
+                      }}>
+                        <Image
+                          src={item.gambar_url}
+                          alt={item.kategori}
+                          fill
+                          style={{ objectFit: 'cover' }}
+                        />
+                      </div>
+
+                      {/* Info */}
+                      <div style={{ flex: 1 }}>
+                        <div style={{
+                          display: 'inline-block',
+                          background: getCategoryData(item.kategori).gradient,
+                          color: 'white',
+                          padding: '4px 12px',
+                          borderRadius: '8px',
+                          fontSize: '13px',
+                          fontWeight: '600',
+                          marginBottom: '4px'
+                        }}>
+                          {getCategoryData(item.kategori).icon} {getCategoryData(item.kategori).label.split(' ')[1]}
+                        </div>
+                        <div style={{
+                          fontSize: '12px',
+                          color: '#6b7280'
+                        }}>
+                          {new Date(item.created_at).toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                          onClick={() => handleDashboardEdit(item)}
+                          style={{
+                            background: '#3b82f6',
+                            color: 'white',
+                            border: 'none',
+                            padding: '8px 12px',
+                            borderRadius: '8px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.target.style.background = '#2563eb'}
+                          onMouseLeave={(e) => e.target.style.background = '#3b82f6'}
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          onClick={() => handleDashboardDelete(item.id)}
+                          style={{
+                            background: '#ef4444',
+                            color: 'white',
+                            border: 'none',
+                            padding: '8px 12px',
+                            borderRadius: '8px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.target.style.background = '#dc2626'}
+                          onMouseLeave={(e) => e.target.style.background = '#ef4444'}
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          /* ========== KATEGORI KONTEN (WISATA, KULINER, BUDAYA) ========== */
         <div className="admin-content-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 450px), 1fr))',
@@ -1527,6 +2076,8 @@ export default function AdminDashboard() {
             )}
           </div>
         </div>
+        )}
+        {/* End of Conditional Content */}
       </div>
     </div>
     </>
