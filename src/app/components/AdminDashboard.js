@@ -30,6 +30,7 @@ export default function AdminDashboard() {
   const [activePage, setActivePage] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const prevActivePageRef = useRef('dashboard')
+  const [resetKey, setResetKey] = useState(0)
   
   const [dashboardItems, setDashboardItems] = useState([])
   const [dashboardCategory, setDashboardCategory] = useState('wisata')
@@ -196,6 +197,7 @@ export default function AdminDashboard() {
       setDashboardImageFile(null)
       setDashboardImagePreview('')
       setEditingDashboardId(null)
+      setResetKey(prev => prev + 1)
 
       await loadDashboardContents()
 
@@ -238,6 +240,7 @@ export default function AdminDashboard() {
     setDashboardCategory('wisata')
     setDashboardImageFile(null)
     setDashboardImagePreview('')
+    setResetKey(prev => prev + 1)
   }
 
   function handleMultipleImageChange(e) {
@@ -1120,6 +1123,7 @@ export default function AdminDashboard() {
                     Upload Gambar
                   </label>
                   <input
+                    key={resetKey}
                     type="file"
                     accept="image/*"
                     onChange={handleDashboardImageChange}
