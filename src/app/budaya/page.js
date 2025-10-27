@@ -18,16 +18,6 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
   const sliderRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
 
-  // Debug log untuk melihat data yang masuk ke komponen
-  useEffect(() => {
-    console.log(`\n🎴 BudayaSection ${index} rendered:`, budaya.title);
-    console.log("   sliderImages:", budaya.sliderImages);
-    console.log("   sliderImages length:", budaya.sliderImages?.length);
-    if (budaya.sliderImages && budaya.sliderImages.length > 0) {
-      console.log("   First image URL:", budaya.sliderImages[0]);
-    }
-  }, [budaya, index]);
-
   // Slider state
   const [activeSlide, setActiveSlide] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -36,17 +26,14 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
 
   // Auto-advance slider
   useEffect(() => {
-    if (!budaya.sliderImages || budaya.sliderImages.length === 0) {
-      console.log(`⚠️ BudayaSection ${index}: No slider images!`);
-      return;
-    }
+    if (!budaya.sliderImages || budaya.sliderImages.length === 0) return;
 
     const interval = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % budaya.sliderImages.length);
     }, 4000); // Change slide every 4 seconds
 
     return () => clearInterval(interval);
-  }, [budaya.sliderImages, index]);
+  }, [budaya.sliderImages]);
 
   // Sync slider scroll with active slide
   useEffect(() => {
@@ -82,9 +69,6 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
     const newIndex = Math.round(sliderRef.current.scrollLeft / slideWidth);
     setActiveSlide(newIndex);
   };
-
-  // Diamond hover scale animation - using CSS instead of GSAP
-  // Removed GSAP dependency
 
   return (
     <motion.section
@@ -138,20 +122,10 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
                       activeSlide === imgIdx ? "active" : ""
                     }`}
                   >
-                    <Image
-                      src={img || '/placeholder.jpg'}
+                    <img
+                      src={img}
                       alt={`${budaya.title} slider ${imgIdx + 1}`}
-                      width={800}
-                      height={600}
-                      draggable={false}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={(e) => {
-                        console.error(`❌ Failed to load image: ${img}`);
-                        e.target.style.backgroundColor = '#f3f4f6';
-                      }}
-                      onLoad={() => {
-                        console.log(`✅ Image loaded successfully: ${img?.substring(0, 50)}...`);
-                      }}
+                      draggable="false"
                     />
                   </div>
                 ))}
@@ -326,6 +300,11 @@ export default function BudayaPage() {
                 secondary: sliderImages[1] || sliderImages[0] || "",
                 diamond: sliderImages[2] || sliderImages[0] || "",
               },
+              // Default values untuk CTA
+              ctaTitle: "Fun Fact",
+              ctaDescription: item.funfact || item.deskripsi?.substring(0, 100) || "",
+              ctaButton: "Lihat Detail",
+              link: "#"
             };
           });
           

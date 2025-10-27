@@ -67,7 +67,7 @@ export default function Home() {
           .limit(4);
 
         if (budayaData && !budayaError && budayaData.length > 0) {
-          setBudayaSlides(
+          setBudayaSlides( 
             budayaData.map((item) => ({
               id: item.id,
               img: item.gambar_url,

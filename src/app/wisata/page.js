@@ -316,7 +316,7 @@ export default function WisataPage() {
                 cta: sliderImages[3] || sliderImages[0] || "",
               },
               // Default values untuk CTA
-              ctaTitle: "Jelajahi Lebih Lanjut",
+              ctaTitle: "Fun Fact",
               ctaDescription: item.funfact || item.deskripsi?.substring(0, 100) || "",
               ctaButton: "Lihat Detail",
               link: "#"
