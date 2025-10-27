@@ -484,7 +484,7 @@ export default function BudayaPage() {
 
       {/* CONTAINER SECTION - Menggunakan CSS Classes */}
       <motion.section 
-        className="map-wrapper"
+        className="map-wrapper bg-gray-50"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
@@ -738,7 +738,7 @@ export default function BudayaPage() {
       </motion.section>
 
       {/* BUDAYA SECTIONS - AYANA STYLE WITH NEW LAYOUT */}
-      <div className="ayana-budaya-wrapper" ref={budayaWrapperRef}>
+      <section className="ayana-budaya-wrapper bg-white" ref={budayaWrapperRef}>
         {/* Dots Navigation - Fixed Right */}
         <AnimatePresence>
           {isClient && budayaData && budayaData.length > 0 && showDots && (
@@ -808,7 +808,7 @@ export default function BudayaPage() {
               sectionsRef={sectionsRef}
             />
           ))}
-      </div>
+      </section>
 
       <Footer />
     </main>

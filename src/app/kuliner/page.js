@@ -535,7 +535,7 @@ export default function KulinerPage() {
 
 
         {/* KULINER SECTIONS - AYANA STYLE WITH NEW LAYOUT */}
-        <div className="ayana-kuliner-wrapper" ref={kulinerWrapperRef}>
+        <section className="ayana-kuliner-wrapper bg-white" ref={kulinerWrapperRef}>
           {/* Dots Navigation - Fixed Right */}
           {console.log("🔍 Render check:", { isClient, kulinerDataLength: kulinerData?.length, showDots })}
           <AnimatePresence>
@@ -664,7 +664,7 @@ export default function KulinerPage() {
                 sectionsRef={sectionsRef}
               />
             ))}
-        </div>
+        </section>
       </main>
       <Footer />
     </>

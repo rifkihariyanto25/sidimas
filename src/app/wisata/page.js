@@ -451,7 +451,7 @@ export default function WisataPage() {
 
       {/* CONTAINER SECTION - Menggunakan CSS Classes */}
       <motion.section 
-        className="map-wrapper"
+        className="map-wrapper bg-gray-50"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
@@ -707,7 +707,7 @@ export default function WisataPage() {
 
 
       {/* WISATA SECTIONS - AYANA STYLE WITH NEW LAYOUT */}
-      <div className="ayana-wisata-wrapper" ref={wisataWrapperRef}>
+      <section className="ayana-wisata-wrapper bg-white" ref={wisataWrapperRef}>
         {/* Dots Navigation - Fixed Right */}
         <AnimatePresence>
           {isClient && wisataData && wisataData.length > 0 && showDots && (
@@ -748,7 +748,7 @@ export default function WisataPage() {
               sectionsRef={sectionsRef}
             />
           ))}
-      </div>
+      </section>
       </main>
       <Footer />
     </>
