@@ -1,5 +1,3 @@
-// Data wisata untuk CMS
-// File ini menyimpan konten wisata yang akan ditampilkan
 
 export const wisataData = [
   {
@@ -13,7 +11,6 @@ export const wisataData = [
     ctaDescription:
       "Liburanmu di Banyumas belum lengkap tanpa menikmati pesona alam Baturraden. Cocok untuk healing, liburan keluarga, atau sekadar melepas penat dari hiruk-pikuk kota.",
     ctaButton: "Eksplor Baturraden Sekarang!",
-    // Slider images - Ayana style (akan di-scroll horizontal)
     sliderImages: [
       "/pemandangan.png",
       "/pemandangan.png",

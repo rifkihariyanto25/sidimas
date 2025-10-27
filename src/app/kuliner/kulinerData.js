@@ -1,5 +1,3 @@
-// Data kuliner untuk CMS
-// File ini menyimpan konten kuliner yang akan ditampilkan
 
 export const kulinerData = [
   {
@@ -13,7 +11,6 @@ export const kulinerData = [
     ctaDescription:
       "Kuliner Banyumas belum lengkap tanpa mencoba mendoan yang renyah dan gurih. Cocok untuk camilan sore atau teman ngopi di pagi hari.",
     ctaButton: "Temukan Mendoan Terbaik",
-    // Slider images - Ayana style (akan di-scroll horizontal)
     sliderImages: [
       "/Mendoan.png",
       "/pemandangan.png",

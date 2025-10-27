@@ -1,5 +1,3 @@
-// Data budaya untuk CMS
-// File ini menyimpan konten budaya yang akan ditampilkan
 
 export const budayaData = [
   {
@@ -13,7 +11,6 @@ export const budayaData = [
     ctaDescription:
       "Liburanmu di Banyumas belum lengkap tanpa menikmati pesona alam dan budaya Baturraden. Cocok untuk healing, liburan keluarga, atau sekadar melepas penat dari hiruk-pikuk kota",
     ctaButton: "Eksplor baturraden sekarang!",
-    // Slider images - Ayana style (akan di-scroll horizontal)
     sliderImages: [
       "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=600&fit=crop",
       "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=1200&h=600&fit=crop",
@@ -22,12 +19,12 @@ export const budayaData = [
       "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=1200&h=600&fit=crop",
     ],
     images: {
-      main: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=800&h=500&fit=crop", // Main landscape image
+      main: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=800&h=500&fit=crop",
       secondary:
-        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop", // Vertical image
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop",
       diamond:
-        "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400&h=400&fit=crop", // Diamond shape image
-      cta: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=200&h=200&fit=crop", // Small CTA image
+        "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400&h=400&fit=crop",
+      cta: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=200&h=200&fit=crop",
     },
     link: "/wisata/baturraden",
   },
@@ -87,7 +84,6 @@ export const budayaData = [
     },
     link: "/budaya/ebeg",
   },
-  // Tambahkan budaya lainnya sesuai kebutuhan dengan struktur yang sama
 ];
 
 export default budayaData;

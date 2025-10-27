@@ -4,7 +4,6 @@ import { useEffect } from "react";
 
 export default function Error({ error, reset }) {
   useEffect(() => {
-    // Log the error to an error reporting service
     console.error("Kuliner page error:", error);
   }, [error]);
 

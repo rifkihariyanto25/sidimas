@@ -4,38 +4,34 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import "../wisata/wisata.css"; // IMPORT WISATA CSS UNTUK MAP SECTION
+import "../wisata/wisata.css";
 import "./budaya.css";
 import "./new-layout.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { supabase } from "@/lib/supabase";
 
-// Component for individual Budaya Section with new layout
 function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
   const sectionRef = useRef(null);
   const diamondRef = useRef(null);
   const sliderRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
 
-  // Slider state
   const [activeSlide, setActiveSlide] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  // Auto-advance slider
   useEffect(() => {
     if (!budaya.sliderImages || budaya.sliderImages.length === 0) return;
 
     const interval = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % budaya.sliderImages.length);
-    }, 4000); // Change slide every 4 seconds
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [budaya.sliderImages]);
 
-  // Sync slider scroll with active slide
   useEffect(() => {
     if (!sliderRef.current) return;
     const slideWidth = sliderRef.current.offsetWidth;
@@ -45,7 +41,6 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
     });
   }, [activeSlide]);
 
-  // Mouse drag handlers
   const handleMouseDown = (e) => {
     if (!sliderRef.current) return;
     setIsDragging(true);
@@ -63,7 +58,6 @@ function BudayaSection({ budaya, index, currentSection, sectionsRef }) {
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    // Snap to nearest slide
     if (!sliderRef.current) return;
     const slideWidth = sliderRef.current.offsetWidth;
     const newIndex = Math.round(sliderRef.current.scrollLeft / slideWidth);
@@ -246,61 +240,42 @@ export default function BudayaPage() {
   const [budayaData, setBudayaData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch data budaya dari Supabase
   useEffect(() => {
     const fetchBudayaData = async () => {
       try {
         setLoading(true);
         const { data, error } = await supabase
-          .from("konten_budaya") // Update: gunakan tabel baru
+          .from("konten_budaya")
           .select("*")
           .order("created_at", { ascending: false });
 
         if (error) {
           console.error("Error fetching budaya data:", error);
         } else if (data) {
-          console.log("🔍 Data budaya dari database:", data); // Debug log
-          console.log("🔍 Jumlah data:", data.length);
           
-          // Transform data dari database ke format yang dibutuhkan komponen
           const transformedData = data.map((item, index) => {
-            console.log(`\n📦 Item ${index + 1}:`, item.nama);
-            console.log("   gambar_url raw:", item.gambar_url);
             
-            // Handle gambar_url - bisa jadi string (dengan separator |||) atau array
             let sliderImages = [];
             if (item.gambar_url) {
-              // Cek apakah gambar_url berisi multiple URLs (dipisah |||)
               if (item.gambar_url.includes('|||')) {
                 sliderImages = item.gambar_url.split('|||').map(url => url.trim()).filter(url => url);
-                console.log("   ✅ Detected ||| separator, images:", sliderImages.length);
               } 
-              // Cek apakah gambar_url berisi multiple URLs (dipisah koma - format lama)
               else if (item.gambar_url.includes(',')) {
                 sliderImages = item.gambar_url.split(',').map(url => url.trim()).filter(url => url);
-                console.log("   ✅ Detected , separator, images:", sliderImages.length);
               }
-              // Cek apakah JSON array
               else if (item.gambar_url.startsWith('[')) {
                 try {
                   sliderImages = JSON.parse(item.gambar_url);
-                  console.log("   ✅ Detected JSON array, images:", sliderImages.length);
                 } catch (e) {
                   sliderImages = [item.gambar_url];
-                  console.log("   ⚠️ JSON parse failed, using single URL");
                 }
               }
-              // Single URL
               else {
                 sliderImages = [item.gambar_url];
-                console.log("   ✅ Single URL");
               }
             } else {
-              console.log("   ⚠️ No gambar_url found!");
             }
             
-            console.log("   📸 Final sliderImages:", sliderImages);
-            console.log("   🖼️ First image:", sliderImages[0]);
 
             return {
               id: item.id,
@@ -308,7 +283,7 @@ export default function BudayaPage() {
               title: item.nama,
               subtitle: item.subtittle || "",
               description: item.deskripsi || "",
-              funFact: item.funfact || "", // Update: gunakan 'funfact' bukan 'fun_fact'
+              funFact: item.funfact || "",
               sliderImages: sliderImages,
               images: {
                 main: sliderImages[0] || "",
@@ -316,16 +291,12 @@ export default function BudayaPage() {
                 diamond: sliderImages[2] || sliderImages[0] || "",
                 cta: sliderImages[3] || sliderImages[0] || "",
               },
-              // Default values untuk CTA
               ctaTitle: "Taukah Kamu?",
               ctaDescription: item.funfact || item.deskripsi?.substring(0, 100) || "",
             };
           });
           
-          console.log("✅ Data transformed successfully!");
-          console.log("📊 Total items:", transformedData.length);
           transformedData.forEach((item, idx) => {
-            console.log(`   Item ${idx + 1}: ${item.title} - ${item.sliderImages.length} images`);
           });
           
           setBudayaData(transformedData);
@@ -344,16 +315,13 @@ export default function BudayaPage() {
     setActiveCard(cardNumber);
   };
 
-  // Ensure client-side rendering
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Track section changes with IntersectionObserver
   useEffect(() => {
     if (!isClient || sectionsRef.current.length === 0 || budayaData.length === 0) return;
 
-    console.log('🔍 Setting up observer for', sectionsRef.current.length, 'budaya sections');
 
     const observerOptions = {
       root: null,
@@ -368,7 +336,6 @@ export default function BudayaPage() {
             (section) => section === entry.target
           );
           if (index !== -1) {
-            console.log('📍 Active budaya section:', index);
             setCurrentSection(index);
           }
         }
@@ -391,7 +358,6 @@ export default function BudayaPage() {
     };
   }, [isClient, budayaData.length]);
 
-  // Track if we're in budaya wrapper area (show/hide dots)
   useEffect(() => {
     if (!isClient || !budayaWrapperRef.current || budayaData.length === 0) return;
 
@@ -414,7 +380,6 @@ export default function BudayaPage() {
     };
   }, [isClient, budayaData.length]);
 
-  // Loading state
   if (!isClient || loading) {
     return (
       <div

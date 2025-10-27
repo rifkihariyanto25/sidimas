@@ -9,7 +9,6 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import LogoLoop from "./components/LogoLoop";
 import { supabase } from "@/lib/supabase";
-// import { LogoLoop } from "react-bits";
 import "swiper/css";
 import "swiper/css/effect-fade";
 
@@ -18,13 +17,10 @@ export default function Home() {
   const [kulinerSlides, setKulinerSlides] = useState([]);
   const [budayaSlides, setBudayaSlides] = useState([]);
 
-  // Fetch data dari Supabase berdasarkan kategori
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('🔍 Fetching hero slides data...');
         
-        // Fetch wisata - 4 terbaru berdasarkan kategori 'wisata'
         const { data: wisataData, error: wisataError } = await supabase
           .from("konten")
           .select("id, gambar_url")
@@ -32,7 +28,6 @@ export default function Home() {
           .order("created_at", { ascending: false })
           .limit(4);
 
-        console.log('📸 Wisata data:', wisataData);
         if (wisataError) console.error('❌ Wisata error:', wisataError);
 
         if (wisataData && !wisataError) {
@@ -45,7 +40,6 @@ export default function Home() {
           );
         }
 
-        // Fetch kuliner - 4 terbaru berdasarkan kategori 'kuliner'
         const { data: kulinerData, error: kulinerError } = await supabase
           .from("konten")
           .select("id, gambar_url")
@@ -53,7 +47,6 @@ export default function Home() {
           .order("created_at", { ascending: false })
           .limit(4);
 
-        console.log('🍜 Kuliner data:', kulinerData);
         if (kulinerError) console.error('❌ Kuliner error:', kulinerError);
 
         if (kulinerData && !kulinerError) {
@@ -66,7 +59,6 @@ export default function Home() {
           );
         }
 
-        // Fetch budaya - 4 terbaru berdasarkan kategori 'budaya'
         const { data: budayaData, error: budayaError } = await supabase
           .from("konten")
           .select("id, gambar_url")
@@ -133,19 +125,19 @@ export default function Home() {
               <div className="mini-slider">
                 <LogoLoop
                   logos={wisataSlides
-                    .filter((slide) => slide.img) // Filter hanya yang punya gambar
+                    .filter((slide) => slide.img)
                     .map((slide) => ({
                       src: slide.img,
                       alt: slide.alt || 'Wisata Banyumas',
                       width: 120,
                       height: 90,
                     }))}
-                  speed={60} // Kecepatan scroll
+                  speed={60}
                   direction="left" // 'left' atau 'right'
-                  logoHeight={90} // Tinggi logo
-                  gap={24} // Jarak antar logo (diperbesar)
-                  pauseOnHover={true} // Pause ketika hover
-                  scaleOnHover={true} // Zoom ketika hover
+                  logoHeight={90}
+                  gap={24}
+                  pauseOnHover={true}
+                  scaleOnHover={true}
                   ariaLabel="Wisata Banyumas"
                 />
               </div>
@@ -181,7 +173,7 @@ export default function Home() {
               <div className="mini-slider">
                 <LogoLoop
                   logos={kulinerSlides
-                    .filter((slide) => slide.img) // Filter hanya yang punya gambar
+                    .filter((slide) => slide.img)
                     .map((slide) => ({
                       src: slide.img,
                       alt: slide.alt || 'Kuliner Banyumas',
@@ -229,7 +221,7 @@ export default function Home() {
               <div className="mini-slider">
                 <LogoLoop
                   logos={budayaSlides
-                    .filter((slide) => slide.img) // Filter hanya yang punya gambar
+                    .filter((slide) => slide.img)
                     .map((slide) => ({
                       src: slide.img,
                       alt: slide.alt || 'Budaya Banyumas',

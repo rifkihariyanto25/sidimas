@@ -19,7 +19,7 @@ export default function AdminDashboard() {
   const [subtitle, setSubtitle] = useState('')
   const [category, setCategory] = useState('wisata')
   const [description, setDescription] = useState('')
-  const [funfact, setFunfact] = useState('') // Tambahan: untuk fun fact
+  const [funfact, setFunfact] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [filterCategory, setFilterCategory] = useState('all')
   const [adminEmail, setAdminEmail] = useState('')
@@ -27,18 +27,16 @@ export default function AdminDashboard() {
   const [imagePreviews, setImagePreviews] = useState([])
   const [editingId, setEditingId] = useState(null)
   const [isEditMode, setIsEditMode] = useState(false)
-  const [activePage, setActivePage] = useState('dashboard') // New: untuk sidebar navigation (ubah default ke dashboard)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true) // New: untuk toggle sidebar di mobile
-  const prevActivePageRef = useRef('dashboard') // Track previous activePage
+  const [activePage, setActivePage] = useState('dashboard')
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const prevActivePageRef = useRef('dashboard')
   
-  // State untuk Dashboard (konten beranda)
   const [dashboardItems, setDashboardItems] = useState([])
   const [dashboardCategory, setDashboardCategory] = useState('wisata')
   const [dashboardImageFile, setDashboardImageFile] = useState(null)
   const [dashboardImagePreview, setDashboardImagePreview] = useState('')
   const [editingDashboardId, setEditingDashboardId] = useState(null)
 
-  // Check if user is logged in
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('sidimas_admin_logged_in')
     const email = localStorage.getItem('sidimas_admin_email')
@@ -51,55 +49,45 @@ export default function AdminDashboard() {
     setAdminEmail(email || '')
   }, [router])
 
-  // Load data from Supabase
   useEffect(() => {
     loadContents()
     loadDashboardContents()
   }, [])
 
-  // Auto-clear form ketika pindah kategori (hanya jika activePage benar-benar berubah)
   useEffect(() => {
-    // Cek apakah activePage benar-benar berubah
     if (prevActivePageRef.current !== activePage) {
-      console.log(`🔄 Kategori berubah dari ${prevActivePageRef.current} ke ${activePage}`)
       
-      // Hanya clear jika tidak sedang edit
       if (!isEditMode) {
         setTitle('')
         setSubtitle('')
         setDescription('')
-        setFunfact('') // Clear funfact juga
+        setFunfact('')
         clearAllImages()
         setCategory(activePage)
       }
       
-      // Update ref untuk next comparison
       prevActivePageRef.current = activePage
     }
-  }, [activePage, isEditMode]) // Include isEditMode in dependencies
+  }, [activePage, isEditMode])
 
   async function loadContents() {
     try {
-      // Load dari 3 tabel terpisah
       const [wisataResult, kulinerResult, budayaResult] = await Promise.all([
         supabase.from('konten_wisata').select('*').order('created_at', { ascending: false }),
         supabase.from('konten_kuliner').select('*').order('created_at', { ascending: false }),
         supabase.from('konten_budaya').select('*').order('created_at', { ascending: false })
       ])
 
-      // Check errors
       if (wisataResult.error) throw wisataResult.error
       if (kulinerResult.error) throw kulinerResult.error
       if (budayaResult.error) throw budayaResult.error
       
-      // Combine data dengan menambahkan field 'kategori' untuk filtering
       const allItems = [
         ...(wisataResult.data || []).map(item => ({ ...item, kategori: 'wisata' })),
         ...(kulinerResult.data || []).map(item => ({ ...item, kategori: 'kuliner' })),
         ...(budayaResult.data || []).map(item => ({ ...item, kategori: 'budaya' }))
       ]
       
-      // Sort by created_at
       allItems.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
       
       setItems(allItems)
@@ -127,7 +115,6 @@ export default function AdminDashboard() {
     const file = e.target.files[0]
     if (!file) return
 
-    // Validate file size (max 5MB)
     const maxSize = 5 * 1024 * 1024
     if (file.size > maxSize) {
       alert('⚠️ File melebihi 5MB. Silakan pilih file yang lebih kecil.')
@@ -136,7 +123,6 @@ export default function AdminDashboard() {
 
     setDashboardImageFile(file)
 
-    // Create preview
     const reader = new FileReader()
     reader.onloadend = () => {
       setDashboardImagePreview(reader.result)
@@ -157,13 +143,11 @@ export default function AdminDashboard() {
     try {
       let imageUrl = ''
 
-      // Upload gambar jika ada file baru
       if (dashboardImageFile) {
         const fileExt = dashboardImageFile.name.split('.').pop()
         const fileName = `konten_${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`
         const filePath = `${fileName}`
 
-        // Upload ke bucket 'images' (pastikan bucket ini sudah dibuat di Supabase Storage)
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('images')
           .upload(filePath, dashboardImageFile, {
@@ -176,7 +160,6 @@ export default function AdminDashboard() {
           throw new Error(`Gagal upload gambar: ${uploadError.message}. Pastikan bucket 'images' sudah dibuat di Supabase Storage.`)
         }
 
-        // Get public URL
         const { data: { publicUrl } } = supabase.storage
           .from('images')
           .getPublicUrl(filePath)
@@ -185,7 +168,6 @@ export default function AdminDashboard() {
       }
 
       if (editingDashboardId) {
-        // Update existing
         const updateData = {
           kategori: dashboardCategory,
           ...(imageUrl && { gambar_url: imageUrl })
@@ -199,7 +181,6 @@ export default function AdminDashboard() {
         if (error) throw error
         alert('✅ Konten beranda berhasil diupdate!')
       } else {
-        // Insert new
         const { error } = await supabase
           .from('konten')
           .insert([{
@@ -211,13 +192,11 @@ export default function AdminDashboard() {
         alert('✅ Konten beranda berhasil ditambahkan!')
       }
 
-      // Reset form
       setDashboardCategory('wisata')
       setDashboardImageFile(null)
       setDashboardImagePreview('')
       setEditingDashboardId(null)
 
-      // Reload data
       await loadDashboardContents()
 
     } catch (error) {
@@ -262,22 +241,16 @@ export default function AdminDashboard() {
   }
 
   function handleMultipleImageChange(e) {
-    console.log('🔍 handleMultipleImageChange dipanggil!')
-    console.log('📂 Active Page:', activePage)
-    console.log('📁 Files selected:', e.target.files)
     
     const files = Array.from(e.target.files)
     const remainingSlots = 5 - imagePreviews.length
     
-    console.log('📊 Image Previews saat ini:', imagePreviews.length)
-    console.log('🎯 Remaining Slots:', remainingSlots)
     
     if (files.length > remainingSlots) {
       alert(`⚠️ Maksimal ${remainingSlots} gambar lagi (Total maksimal 5 gambar)`)
       return
     }
     
-    // Validate file size (max 5MB per file)
     const maxSize = 5 * 1024 * 1024 // 5MB
     const oversizedFiles = files.filter(file => file.size > maxSize)
     if (oversizedFiles.length > 0) {
@@ -285,25 +258,19 @@ export default function AdminDashboard() {
       return
     }
     
-    // Add files
     const newFiles = [...imageFiles, ...files]
     setImageFiles(newFiles)
     
-    console.log('📦 Total files after add:', newFiles.length)
     
-    // Create previews
     files.forEach(file => {
-      console.log('🖼️ Creating preview untuk:', file.name)
       const reader = new FileReader()
       reader.onloadend = () => {
-        console.log('✅ Preview berhasil dibuat:', file.name)
         setImagePreviews(prev => {
           const updated = [...prev, {
             url: reader.result,
             file: file,
             name: file.name
           }]
-          console.log('📸 Total previews sekarang:', updated.length)
           return updated
         })
       }
@@ -321,7 +288,6 @@ export default function AdminDashboard() {
     setImagePreviews([])
   }
 
-  // Helper function untuk mendapatkan nama tabel berdasarkan kategori
   function getTableName(kategori) {
     return `konten_${kategori}` // 'wisata' -> 'konten_wisata'
   }
@@ -333,14 +299,11 @@ export default function AdminDashboard() {
     setSubtitle(item.subtittle || '')
     setCategory(item.kategori)
     setDescription(item.deskripsi || '')
-    setFunfact(item.funfact || '') // Set funfact dari database
+    setFunfact(item.funfact || '')
     
-    // Handle multiple images from gambar_url (stored with ||| separator)
     if (item.gambar_url) {
-      // Parse URLs from string
       const urls = item.gambar_url.split('|||').filter(url => url.trim())
       
-      // Set previews from existing URLs
       const previews = urls.map((url, index) => ({
         url: url.trim(),
         file: null,
@@ -350,7 +313,6 @@ export default function AdminDashboard() {
       setImagePreviews(previews)
     }
     
-    // Scroll ke form
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -359,9 +321,9 @@ export default function AdminDashboard() {
     setEditingId(null)
     setTitle('')
     setSubtitle('')
-    setCategory(activePage) // FIX: Sync dengan activePage
+    setCategory(activePage)
     setDescription('')
-    setFunfact('') // Clear funfact
+    setFunfact('')
     clearAllImages()
   }
 
@@ -374,12 +336,10 @@ export default function AdminDashboard() {
     try {
       let gambarUrls = []
 
-      // Get existing URLs from previews (for edit mode)
       const existingUrls = imagePreviews
         .filter(preview => preview.isExisting)
         .map(preview => preview.url)
 
-      // Upload new images to Supabase Storage
       const newFiles = imageFiles.filter((_, index) => 
         !imagePreviews[index]?.isExisting
       )
@@ -395,7 +355,6 @@ export default function AdminDashboard() {
 
         if (uploadError) throw uploadError
 
-        // Get public URL
         const { data: urlData } = supabase.storage
           .from('images')
           .getPublicUrl(filePath)
@@ -403,22 +362,19 @@ export default function AdminDashboard() {
         gambarUrls.push(urlData.publicUrl)
       }
 
-      // Combine existing and new URLs
       const allUrls = [...existingUrls, ...gambarUrls]
-      const gambarUrlsString = allUrls.join('|||') // Store as string with separator
+      const gambarUrlsString = allUrls.join('|||')
 
       if (isEditMode) {
-        // UPDATE mode
         const updateData = {
           nama: title.trim(),
           subtittle: subtitle.trim(),
           deskripsi: description.trim(),
-          funfact: funfact.trim(), // Tambahkan funfact
+          funfact: funfact.trim(),
           gambar_url: gambarUrlsString,
         }
 
-        // Gunakan tabel sesuai kategori item yang sedang diedit
-        const tableName = getTableName(category) // category dari item yang diedit
+        const tableName = getTableName(category)
         
         const { data, error } = await supabase
           .from(tableName)
@@ -429,7 +385,6 @@ export default function AdminDashboard() {
         if (error) throw error
 
         if (data && data[0]) {
-          // Tambahkan field kategori untuk konsistensi di state
           const updatedItem = { ...data[0], kategori: category }
           setItems(prev => prev.map(item => 
             item.id === editingId ? updatedItem : item
@@ -439,16 +394,14 @@ export default function AdminDashboard() {
         alert('✅ Konten berhasil diupdate!')
         cancelEdit()
       } else {
-        // INSERT mode
         const newItem = {
           nama: title.trim(),
           subtittle: subtitle.trim(),
           deskripsi: description.trim(),
-          funfact: funfact.trim(), // Tambahkan funfact
+          funfact: funfact.trim(),
           gambar_url: gambarUrlsString,
         }
 
-        // Gunakan tabel sesuai dengan activePage (kategori yang sedang dipilih)
         const tableName = getTableName(activePage)
         
         const { data, error } = await supabase
@@ -459,19 +412,17 @@ export default function AdminDashboard() {
         if (error) throw error
 
         if (data && data[0]) {
-          // Tambahkan field kategori untuk konsistensi di state
           const insertedItem = { ...data[0], kategori: activePage }
           setItems(prev => [insertedItem, ...prev])
         }
 
         alert('✅ Konten berhasil ditambahkan!')
         
-        // Reset form
         setTitle('')
         setSubtitle('')
-        setCategory(activePage) // Sync category dengan activePage
+        setCategory(activePage)
         setDescription('')
-        setFunfact('') // Clear funfact
+        setFunfact('')
         clearAllImages()
       }
     } catch (error) {
@@ -486,14 +437,12 @@ export default function AdminDashboard() {
     if (!confirm('⚠️ Yakin ingin menghapus konten ini?')) return
 
     try {
-      // Cari item untuk tahu kategorinya
       const item = items.find(i => i.id === id)
       if (!item) {
         alert('❌ Konten tidak ditemukan!')
         return
       }
       
-      // Gunakan tabel sesuai kategori
       const tableName = getTableName(item.kategori)
       
       const { error } = await supabase
@@ -545,11 +494,9 @@ export default function AdminDashboard() {
     setActivePage(page)
     setCategory(page)
     setFilterCategory(page)
-    // Close sidebar on mobile after selection
     if (window.innerWidth <= 768) {
       setIsSidebarOpen(false)
     }
-    // Reset form when changing page
     if (!isEditMode) {
       setTitle('')
       setSubtitle('')
@@ -1892,7 +1839,6 @@ export default function AdminDashboard() {
                 {items.filter(item => item.kategori === activePage).map(item => {
                   const catData = getCategoryData(item.kategori)
                   
-                  // Parse multiple image URLs from gambar_url (stored with ||| separator)
                   let imageUrls = []
                   if (item.gambar_url) {
                     imageUrls = item.gambar_url.split('|||').filter(url => url.trim()).map(url => url.trim())

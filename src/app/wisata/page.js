@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -9,31 +9,27 @@ import Footer from "../components/Footer";
 import { supabase } from "@/lib/supabase";
 import "./wisata.css";
 
-// Component for individual Wisata Section with new layout
 function WisataSection({ wisata, index, currentSection, sectionsRef }) {
   const sectionRef = useRef(null);
   const diamondRef = useRef(null);
   const sliderRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
 
-  // Slider state
   const [activeSlide, setActiveSlide] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  // Auto-advance slider
   useEffect(() => {
     if (!wisata.sliderImages || wisata.sliderImages.length === 0) return;
 
     const interval = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % wisata.sliderImages.length);
-    }, 4000); // Change slide every 4 seconds
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [wisata.sliderImages]);
 
-  // Sync slider scroll with active slide
   useEffect(() => {
     if (!sliderRef.current) return;
     const slideWidth = sliderRef.current.offsetWidth;
@@ -43,7 +39,6 @@ function WisataSection({ wisata, index, currentSection, sectionsRef }) {
     });
   }, [activeSlide]);
 
-  // Mouse drag handlers
   const handleMouseDown = (e) => {
     if (!sliderRef.current) return;
     setIsDragging(true);
@@ -61,7 +56,6 @@ function WisataSection({ wisata, index, currentSection, sectionsRef }) {
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    // Snap to nearest slide
     if (!sliderRef.current) return;
     const slideWidth = sliderRef.current.offsetWidth;
     const newIndex = Math.round(sliderRef.current.scrollLeft / slideWidth);
@@ -242,64 +236,45 @@ export default function WisataPage() {
   const [activeCard, setActiveCard] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showDots, setShowDots] = useState(false);
-  const [wisataData, setWisataData] = useState([]); // State untuk data dari database
-  const [loading, setLoading] = useState(true); // Loading state
+  const [wisataData, setWisataData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch data wisata dari Supabase
   useEffect(() => {
     const fetchWisataData = async () => {
       try {
         setLoading(true);
         const { data, error } = await supabase
-          .from("konten_wisata") // Tabel wisata
+          .from("konten_wisata")
           .select("*")
           .order("created_at", { ascending: false });
 
         if (error) {
           console.error("Error fetching wisata data:", error);
         } else if (data) {
-          console.log("🔍 Data wisata dari database:", data);
-          console.log("🔍 Jumlah data:", data.length);
           
-          // Transform data dari database ke format yang dibutuhkan komponen
           const transformedData = data.map((item, index) => {
-            console.log(`\n📦 Item ${index + 1}:`, item.nama);
-            console.log("   gambar_url raw:", item.gambar_url);
             
-            // Handle gambar_url - bisa jadi string (dengan separator |||) atau array
             let sliderImages = [];
             if (item.gambar_url) {
-              // Cek apakah gambar_url berisi multiple URLs (dipisah |||)
               if (item.gambar_url.includes('|||')) {
                 sliderImages = item.gambar_url.split('|||').map(url => url.trim()).filter(url => url);
-                console.log("   ✅ Detected ||| separator, images:", sliderImages.length);
               } 
-              // Cek apakah gambar_url berisi multiple URLs (dipisah koma - format lama)
               else if (item.gambar_url.includes(',')) {
                 sliderImages = item.gambar_url.split(',').map(url => url.trim()).filter(url => url);
-                console.log("   ✅ Detected , separator, images:", sliderImages.length);
               }
-              // Cek apakah JSON array
               else if (item.gambar_url.startsWith('[')) {
                 try {
                   sliderImages = JSON.parse(item.gambar_url);
-                  console.log("   ✅ Detected JSON array, images:", sliderImages.length);
                 } catch (e) {
                   sliderImages = [item.gambar_url];
-                  console.log("   ⚠️ JSON parse failed, using single URL");
                 }
               }
-              // Single URL
               else {
                 sliderImages = [item.gambar_url];
-                console.log("   ✅ Single URL");
               }
             } else {
-              console.log("   ⚠️ No gambar_url found!");
             }
             
-            console.log("   📸 Final sliderImages:", sliderImages);
-            console.log("   🖼️ First image:", sliderImages[0]);
 
             return {
               id: item.id,
@@ -315,16 +290,12 @@ export default function WisataPage() {
                 diamond: sliderImages[2] || sliderImages[0] || "",
                 cta: sliderImages[3] || sliderImages[0] || "",
               },
-              // Default values untuk CTA
               ctaTitle: "Taukah Kamu?",
               ctaDescription: item.funfact || item.deskripsi?.substring(0, 100) || "",
             };
           });
           
-          console.log("✅ Data transformed successfully!");
-          console.log("📊 Total items:", transformedData.length);
           transformedData.forEach((item, idx) => {
-            console.log(`   Item ${idx + 1}: ${item.title} - ${item.sliderImages.length} images`);
           });
           
           setWisataData(transformedData);
@@ -343,16 +314,13 @@ export default function WisataPage() {
     setActiveCard(cardNumber);
   };
 
-  // Ensure client-side rendering
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Track section changes with IntersectionObserver
   useEffect(() => {
     if (!isClient || sectionsRef.current.length === 0 || wisataData.length === 0) return;
 
-    console.log('🔍 Setting up observer for', sectionsRef.current.length, 'sections');
 
     const observerOptions = {
       root: null,
@@ -367,7 +335,6 @@ export default function WisataPage() {
             (section) => section === entry.target
           );
           if (index !== -1) {
-            console.log('📍 Active section:', index);
             setCurrentSection(index);
           }
         }
@@ -390,7 +357,6 @@ export default function WisataPage() {
     };
   }, [isClient, wisataData.length]);
 
-  // Track if we're in wisata wrapper area (show/hide dots)
   useEffect(() => {
     if (!isClient || !wisataWrapperRef.current || wisataData.length === 0) return;
 
@@ -402,7 +368,7 @@ export default function WisataPage() {
       },
       {
         root: null,
-        threshold: 0.01, // Trigger when even 1% of wrapper is visible
+        threshold: 0.01,
       }
     );
 
@@ -413,7 +379,6 @@ export default function WisataPage() {
     };
   }, [isClient, wisataData.length]);
 
-  // Data untuk slider wisata - semua gambar dalam satu array
   const wisataImages = [
     { id: 1, src: "/pemandangan.png", title: "Baturraden", subtitle: "Surga di Kaki Gunung Slamet" },
     { id: 2, src: "/manggala_ranch.jpg", title: "Manggala Ranch", subtitle: "Keindahan Alam yang Memukau" },

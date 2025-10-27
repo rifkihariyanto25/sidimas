@@ -9,31 +9,27 @@ import Footer from "../components/Footer";
 import { supabase } from "@/lib/supabase";
 import "./kuliner.css";
 
-// Component for individual Kuliner Section with new layout
 function KulinerSection({ kuliner, index, currentSection, sectionsRef }) {
   const sectionRef = useRef(null);
   const diamondRef = useRef(null);
   const sliderRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
 
-  // Slider state
   const [activeSlide, setActiveSlide] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  // Auto-advance slider
   useEffect(() => {
     if (!kuliner.sliderImages || kuliner.sliderImages.length === 0) return;
 
     const interval = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % kuliner.sliderImages.length);
-    }, 4000); // Change slide every 4 seconds
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [kuliner.sliderImages]);
 
-  // Sync slider scroll with active slide
   useEffect(() => {
     if (!sliderRef.current) return;
     const slideWidth = sliderRef.current.offsetWidth;
@@ -43,7 +39,6 @@ function KulinerSection({ kuliner, index, currentSection, sectionsRef }) {
     });
   }, [activeSlide]);
 
-  // Mouse drag handlers
   const handleMouseDown = (e) => {
     if (!sliderRef.current) return;
     setIsDragging(true);
@@ -61,7 +56,6 @@ function KulinerSection({ kuliner, index, currentSection, sectionsRef }) {
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    // Snap to nearest slide
     if (!sliderRef.current) return;
     const slideWidth = sliderRef.current.offsetWidth;
     const newIndex = Math.round(sliderRef.current.scrollLeft / slideWidth);
@@ -242,64 +236,45 @@ export default function KulinerPage() {
   const [activeCard, setActiveCard] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showDots, setShowDots] = useState(false);
-  const [kulinerData, setKulinerData] = useState([]); // State untuk data dari database
-  const [loading, setLoading] = useState(true); // Loading state
+  const [kulinerData, setKulinerData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch data kuliner dari Supabase
   useEffect(() => {
     const fetchKulinerData = async () => {
       try {
         setLoading(true);
         const { data, error } = await supabase
-          .from("konten_kuliner") // Tabel kuliner
+          .from("konten_kuliner")
           .select("*")
           .order("created_at", { ascending: false });
 
         if (error) {
           console.error("Error fetching kuliner data:", error);
         } else if (data) {
-          console.log("🔍 Data kuliner dari database:", data);
-          console.log("🔍 Jumlah data:", data.length);
           
-          // Transform data dari database ke format yang dibutuhkan komponen
           const transformedData = data.map((item, index) => {
-            console.log(`\n📦 Item ${index + 1}:`, item.nama);
-            console.log("   gambar_url raw:", item.gambar_url);
             
-            // Handle gambar_url - bisa jadi string (dengan separator |||) atau array
             let sliderImages = [];
             if (item.gambar_url) {
-              // Cek apakah gambar_url berisi multiple URLs (dipisah |||)
               if (item.gambar_url.includes('|||')) {
                 sliderImages = item.gambar_url.split('|||').map(url => url.trim()).filter(url => url);
-                console.log("   ✅ Detected ||| separator, images:", sliderImages.length);
               } 
-              // Cek apakah gambar_url berisi multiple URLs (dipisah koma - format lama)
               else if (item.gambar_url.includes(',')) {
                 sliderImages = item.gambar_url.split(',').map(url => url.trim()).filter(url => url);
-                console.log("   ✅ Detected , separator, images:", sliderImages.length);
               }
-              // Cek apakah JSON array
               else if (item.gambar_url.startsWith('[')) {
                 try {
                   sliderImages = JSON.parse(item.gambar_url);
-                  console.log("   ✅ Detected JSON array, images:", sliderImages.length);
                 } catch (e) {
                   sliderImages = [item.gambar_url];
-                  console.log("   ⚠️ JSON parse failed, using single URL");
                 }
               }
-              // Single URL
               else {
                 sliderImages = [item.gambar_url];
-                console.log("   ✅ Single URL");
               }
             } else {
-              console.log("   ⚠️ No gambar_url found!");
             }
             
-            console.log("   📸 Final sliderImages:", sliderImages);
-            console.log("   🖼️ First image:", sliderImages[0]);
 
             return {
               id: item.id,
@@ -315,16 +290,12 @@ export default function KulinerPage() {
                 diamond: sliderImages[2] || sliderImages[0] || "",
                 cta: sliderImages[3] || sliderImages[0] || "",
               },
-              // Default values untuk CTA
               ctaTitle: "Taukah Kamu?",
               ctaDescription: item.funfact || item.deskripsi?.substring(0, 100) || "",
             };
           });
           
-          console.log("✅ Data transformed successfully!");
-          console.log("📊 Total items:", transformedData.length);
           transformedData.forEach((item, idx) => {
-            console.log(`   Item ${idx + 1}: ${item.title} - ${item.sliderImages.length} images`);
           });
           
           setKulinerData(transformedData);
@@ -343,12 +314,10 @@ export default function KulinerPage() {
     setActiveCard(cardNumber);
   };
 
-  // Ensure client-side rendering
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Track section changes with IntersectionObserver
   useEffect(() => {
     if (!isClient || sectionsRef.current.length === 0 || kulinerData.length === 0) return;
 
@@ -387,7 +356,6 @@ export default function KulinerPage() {
     };
   }, [isClient, kulinerData.length]);
 
-  // Track if we're in kuliner wrapper area (show/hide dots)
   useEffect(() => {
     if (!isClient || !kulinerWrapperRef.current || kulinerData.length === 0) return;
 
@@ -410,7 +378,6 @@ export default function KulinerPage() {
     };
   }, [isClient, kulinerData.length]);
 
-  // Data untuk slider kuliner - semua gambar dalam satu array
   const kulinerImages = [
     { id: 1, src: "/Mendoan.png", title: "Mendoan", subtitle: "Tempe Goreng Khas Banyumas" },
     { id: 2, src: "/pemandangan.png", title: "Soto Sokaraja", subtitle: "Soto Daging Legendaris" },
@@ -423,7 +390,6 @@ export default function KulinerPage() {
     setCurrentImageIndex(index);
   };
 
-  // Loading state
   if (!isClient || loading) {
     return (
       <div
